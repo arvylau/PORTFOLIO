@@ -64,19 +64,15 @@ def parse_csv(filename):
                 last_task_id += 1
 
                 # Parse priority - handle empty/None values
+                content = row.get('CONTENT', '').strip()
                 priority_str = row.get('PRIORITY', '').strip()
                 if priority_str == '' or priority_str is None:
-                    priority = 1  # Default to lowest
+                    priority = 4  # Default to lowest (P4)
                 else:
                     try:
                         priority = int(priority_str)
                     except:
-                        priority = 1
-
-                # Special handling for @PROJECT tasks - set to highest priority
-                content = row.get('CONTENT', '').strip()
-                if '@PROJECT' in content.upper():
-                    priority = 4  # Force highest priority
+                        priority = 4
 
                 task = {
                     'id': last_task_id,
@@ -135,17 +131,17 @@ def generate_html(sections, tasks):
     priorities = sorted(set(task['priority'] for task in tasks), reverse=True)
 
     priority_labels = {
-        4: 'P1 (Highest)',
-        3: 'P2 (High)',
-        2: 'P3 (Medium)',
-        1: 'P4 (Low)'
+        1: 'P1 (Highest)',
+        2: 'P2 (High)',
+        3: 'P3 (Medium)',
+        4: 'P4 (Low)'
     }
 
     priority_colors = {
-        4: '#d1453b',
-        3: '#eb8909',
-        2: '#246fe0',
-        1: '#808080'
+        1: '#d1453b',
+        2: '#eb8909',
+        3: '#246fe0',
+        4: '#808080'
     }
 
     html = f'''<!DOCTYPE html>
@@ -620,6 +616,15 @@ def generate_html(sections, tasks):
 
         <div class="filters">
             <div class="filter-group">
+                <label for="filter-status">Status</label>
+                <select id="filter-status">
+                    <option value="all">All Tasks</option>
+                    <option value="with-dates" selected>Active (With Dates)</option>
+                    <option value="no-dates">Backlog (No Dates)</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
                 <label for="filter-section">Section</label>
                 <select id="filter-section">
                     <option value="all">All Sections</option>
@@ -736,6 +741,9 @@ def generate_html(sections, tasks):
             Object.keys(tasksBySection).sort().forEach(section => {{
                 const sectionTasks = tasksBySection[section];
                 const hierarchy = buildHierarchy(sectionTasks);
+
+                // Sort root tasks by priority (1=highest first)
+                hierarchy.sort((a, b) => a.priority - b.priority);
 
                 html += `
                     <div class="section-group">
@@ -859,6 +867,8 @@ def generate_html(sections, tasks):
             toggle.textContent = notes.classList.contains('expanded') ? `💬 Hide Notes (${{count}})` : `💬 Show Notes (${{count}})`;
         }}
 
+        let timelineViewMode = 'months'; // 'months' or 'quarters'
+
         function renderTimeline(tasks) {{
             const container = document.getElementById('timeline-view');
 
@@ -878,35 +888,84 @@ def generate_html(sections, tasks):
 
             // Find date range from tasks with dates
             const tasksWithDates = tasks.filter(t => t.date || t.deadline);
-            let minDate, maxDate, totalDays, months = [];
+            let minDate, maxDate, totalDays, timePeriods = [];
 
             if (tasksWithDates.length > 0) {{
                 const dates = tasksWithDates.flatMap(t => [t.date, t.deadline]).filter(Boolean);
                 minDate = new Date(Math.min(...dates.map(d => new Date(d))));
                 maxDate = new Date(Math.max(...dates.map(d => new Date(d))));
 
-                minDate.setMonth(minDate.getMonth() - 1);
-                maxDate.setMonth(maxDate.getMonth() + 1);
+                // Round to start/end of month
+                minDate = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+                maxDate = new Date(maxDate.getFullYear(), maxDate.getMonth() + 1, 0);
                 totalDays = (maxDate - minDate) / (1000 * 60 * 60 * 24);
 
-                let current = new Date(minDate);
-                while (current <= maxDate) {{
-                    months.push(current.toLocaleString('default', {{ month: 'short', year: 'numeric' }}));
-                    current.setMonth(current.getMonth() + 1);
+                // Generate time periods based on view mode
+                if (timelineViewMode === 'quarters') {{
+                    let current = new Date(minDate);
+                    while (current <= maxDate) {{
+                        const quarter = Math.floor(current.getMonth() / 3) + 1;
+                        const year = current.getFullYear();
+                        const qStart = new Date(year, (quarter - 1) * 3, 1);
+                        const qEnd = new Date(year, quarter * 3, 0);
+                        const daysInPeriod = Math.min((qEnd - current) / (1000 * 60 * 60 * 24), (maxDate - current) / (1000 * 60 * 60 * 24));
+                        const widthPercent = (daysInPeriod / totalDays) * 100;
+
+                        timePeriods.push({{
+                            label: `Q${{quarter}} ${{year}}`,
+                            width: widthPercent
+                        }});
+
+                        current = new Date(year, quarter * 3, 1);
+                    }}
+                }} else {{
+                    let current = new Date(minDate);
+                    while (current <= maxDate) {{
+                        const nextMonth = new Date(current.getFullYear(), current.getMonth() + 1, 1);
+                        const monthEnd = new Date(nextMonth - 1);
+                        const daysInMonth = (Math.min(monthEnd, maxDate) - current) / (1000 * 60 * 60 * 24) + 1;
+                        const widthPercent = (daysInMonth / totalDays) * 100;
+
+                        timePeriods.push({{
+                            label: current.toLocaleString('default', {{ month: 'short', year: 'numeric' }}),
+                            width: widthPercent
+                        }});
+
+                        current = nextMonth;
+                    }}
                 }}
             }}
 
             let html = '<div class="gantt-container">';
 
             if (tasksWithDates.length > 0) {{
+                // Calculate today's position
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const todayOffset = today >= minDate && today <= maxDate
+                    ? ((today - minDate) / (1000 * 60 * 60 * 24)) / totalDays * 100
+                    : -1;
+
                 html += `
-                    <div class="gantt-header">
+                    <div class="gantt-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h3>Project Timeline (${{tasks.length}} tasks, ${{tasksWithDates.length}} with dates)</h3>
-                    </div>
-                    <div class="gantt-chart">
-                        <div class="gantt-timeline">
-                            ${{months.map(m => `<div class="gantt-month">${{m}}</div>`).join('')}}
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="toggleTimelineView('months')" style="padding: 8px 16px; background: ${{timelineViewMode === 'months' ? '#667eea' : '#e0e0e0'}}; color: ${{timelineViewMode === 'months' ? 'white' : '#333'}}; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Months</button>
+                            <button onclick="toggleTimelineView('quarters')" style="padding: 8px 16px; background: ${{timelineViewMode === 'quarters' ? '#667eea' : '#e0e0e0'}}; color: ${{timelineViewMode === 'quarters' ? 'white' : '#333'}}; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Quarters</button>
                         </div>
+                    </div>
+                    <div class="gantt-chart" style="position: relative;">
+                        <div style="display: flex;">
+                            <div style="width: 50px; flex-shrink: 0;"></div>
+                            <div class="gantt-timeline" style="display: flex; flex: 1; border-bottom: 2px solid #667eea; margin-bottom: 10px; position: relative;">
+                                ${{timePeriods.map(p => `<div class="gantt-period" style="width: ${{p.width}}%; text-align: center; font-weight: 600; color: #667eea; font-size: 14px; padding: 5px; border-right: 1px solid #e0e0e0;">${{p.label}}</div>`).join('')}}
+                            </div>
+                        </div>
+                        ${{todayOffset >= 0 ? `
+                        <div style="position: absolute; left: calc(50px + ${{todayOffset}}%); top: 0; bottom: 0; width: 2px; background: #ff4444; z-index: 100; pointer-events: none;">
+                            <div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #ff4444; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; white-space: nowrap;">TODAY</div>
+                        </div>
+                        ` : ''}}
                 `;
             }} else {{
                 html += `
@@ -922,6 +981,9 @@ def generate_html(sections, tasks):
                 const sectionTasks = tasksBySection[section];
                 const hierarchy = buildHierarchy(sectionTasks);
 
+                // Sort root tasks by priority (1=highest first)
+                hierarchy.sort((a, b) => a.priority - b.priority);
+
                 html += `
                     <div style="margin-top: 20px;">
                         <div style="font-weight: 600; padding: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 4px; margin-bottom: 10px;">
@@ -936,43 +998,110 @@ def generate_html(sections, tasks):
             container.innerHTML = html;
         }}
 
+        function toggleTimelineView(mode) {{
+            timelineViewMode = mode;
+            applyFilters();
+        }}
+
         function renderTimelineTask(task, level, minDate, totalDays, showBars) {{
-            const indent = level * 20;
+            const indent = level * 15;
             const priorityColor = priorityColors[task.priority] || '#808080';
             const priorityLabel = priorityLabels[task.priority] || `P${{task.priority}}`;
             const hasChildren = task.children && task.children.length > 0;
             const hasDate = task.date || task.deadline;
+            const isMainTask = level === 0;
 
             let barHtml = '';
+            let dateTooltip = '';
             if (showBars && hasDate) {{
                 const start = task.date ? new Date(task.date) : new Date(task.deadline);
                 const end = task.deadline ? new Date(task.deadline) : new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
                 const startOffset = ((start - minDate) / (1000 * 60 * 60 * 24)) / totalDays * 100;
                 const duration = ((end - start) / (1000 * 60 * 60 * 24)) / totalDays * 100;
 
+                const startStr = task.date || '';
+                const endStr = task.deadline || '';
+                dateTooltip = startStr && endStr && startStr !== endStr
+                    ? `${{startStr}} → ${{endStr}}`
+                    : (startStr || endStr);
+
                 barHtml = `
-                    <div class="gantt-task-bar" style="left: calc(300px + ${{startOffset}}%); width: ${{Math.max(duration, 2)}}%; background: ${{priorityColor}}">
-                        ${{task.deadline ? '⏰ ' + task.deadline : ''}}
+                    <div style="position: absolute; left: ${{startOffset}}%; width: ${{Math.max(duration, 0.5)}}%; height: 28px; background: ${{priorityColor}}; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" title="${{dateTooltip}}"></div>
+                    <div style="position: absolute; left: ${{startOffset + Math.max(duration, 0.5) + 0.5}}%; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                        <span style="background: ${{priorityColor}}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;">${{priorityLabel}}</span>
+                        <span style="font-size: 12px; font-weight: ${{isMainTask ? '700' : '500'}}; color: #333;">${{task.content}}</span>
+                        <span style="font-size: 11px; color: #666;">(${{dateTooltip}})</span>
+                    </div>
+                `;
+            }} else if (!showBars) {{
+                barHtml = `
+                    <div style="width: 100%; display: flex; align-items: center; gap: 8px; padding: 4px 8px;">
+                        <span style="background: ${{priorityColor}}; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600;">${{priorityLabel}}</span>
+                        <span style="font-weight: ${{isMainTask ? '700' : '400'}};">${{task.content}}</span>
+                        <span style="color: #999; font-size: 12px; margin-left: 10px;">(no date)</span>
+                    </div>
+                `;
+            }} else {{
+                // Has showBars but no date for this task
+                barHtml = `
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 4px 8px;">
+                        <span style="background: ${{priorityColor}}; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600;">${{priorityLabel}}</span>
+                        <span style="font-weight: ${{isMainTask ? '700' : '400'}}; color: #666;">${{task.content}}</span>
+                        <span style="color: #999; font-size: 11px;">(no date)</span>
                     </div>
                 `;
             }}
 
+            const hasDescription = task.description && task.description.trim().length > 0;
+
+            const rowStyle = `
+                display: flex;
+                align-items: center;
+                padding: 6px 0;
+                border-bottom: 1px solid #f5f5f5;
+                position: relative;
+                background: ${{isMainTask ? '#f8f8f8' : 'transparent'}};
+            `;
+
             let html = `
-                <div class="gantt-row" style="padding-left: ${{indent}}px;">
-                    <div class="gantt-task-label" style="display: flex; align-items: center; gap: 8px;">
-                        ${{hasChildren ? `<span class="task-expand-btn" onclick="toggleTimelineChildren(${{task.id}})" id="tl-expand-${{task.id}}" style="cursor: pointer; user-select: none;">▼</span>` : '<span style="width: 14px;"></span>'}}
-                        <span class="priority-badge" style="background: ${{priorityColor}}; padding: 2px 8px; border-radius: 3px; font-size: 11px;">${{priorityLabel}}</span>
-                        <span>${{task.content}}</span>
-                        ${{hasDate ? '' : '<span style="color: #999; font-size: 12px; margin-left: 10px;">(no date)</span>'}}
+                <div style="${{rowStyle}}">
+                    <div style="width: 50px; flex-shrink: 0; display: flex; align-items: center; padding-left: ${{indent}}px;">
+                        ${{hasChildren ? `<span class="task-expand-btn" onclick="toggleTimelineChildren(${{task.id}})" id="tl-expand-${{task.id}}" style="cursor: pointer; user-select: none; font-size: 14px;">▼</span>` : ''}}
                     </div>
-                    ${{barHtml}}
+                    <div style="flex: 1; position: relative; height: 36px; display: flex; align-items: center;">
+                        ${{barHtml}}
+                    </div>
+                    ${{hasDescription ? `
+                    <div style="width: 30px; display: flex; align-items: center; justify-content: center;">
+                        <button onclick="toggleTimelineDescription(${{task.id}})" style="background: #667eea; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 11px;">📝</button>
+                    </div>
+                    ` : ''}}
                 </div>
+                ${{hasDescription ? `
+                <div id="tl-desc-${{task.id}}" class="task-description" style="display: none; padding: 10px 20px 10px ${{50 + indent}}px; background: #f9f9f9; border-left: 3px solid ${{priorityColor}}; margin: 5px 0; font-size: 13px; color: #555; white-space: pre-wrap;">
+                    ${{task.description}}
+                </div>
+                ` : ''}}
             `;
 
             if (hasChildren) {{
+                // Sort children by deadline/date
+                const sortedChildren = [...task.children].sort((a, b) => {{
+                    const aDate = a.deadline || a.date;
+                    const bDate = b.deadline || b.date;
+
+                    // Tasks with dates come first
+                    if (aDate && !bDate) return -1;
+                    if (!aDate && bDate) return 1;
+                    if (!aDate && !bDate) return 0;
+
+                    // Sort by date
+                    return new Date(aDate) - new Date(bDate);
+                }});
+
                 html += `
                     <div class="timeline-subtasks" id="tl-subtasks-${{task.id}}">
-                        ${{task.children.map(child => renderTimelineTask(child, level + 1, minDate, totalDays, showBars)).join('')}}
+                        ${{sortedChildren.map(child => renderTimelineTask(child, level + 1, minDate, totalDays, showBars)).join('')}}
                     </div>
                 `;
             }}
@@ -995,12 +1124,28 @@ def generate_html(sections, tasks):
             }}
         }}
 
+        function toggleTimelineDescription(taskId) {{
+            const desc = document.getElementById(`tl-desc-${{taskId}}`);
+            if (!desc) return;
+
+            if (desc.style.display === 'none') {{
+                desc.style.display = 'block';
+            }} else {{
+                desc.style.display = 'none';
+            }}
+        }}
+
         function getFilteredTasks() {{
+            const statusFilter = document.getElementById('filter-status').value;
             const sectionFilter = document.getElementById('filter-section').value;
             const priorityFilter = document.getElementById('filter-priority').value;
             const searchQuery = document.getElementById('filter-search').value.toLowerCase();
 
             return allTasks.filter(task => {{
+                // Status filter
+                if (statusFilter === 'with-dates' && !task.date && !task.deadline) return false;
+                if (statusFilter === 'no-dates' && (task.date || task.deadline)) return false;
+
                 if (sectionFilter !== 'all' && task.section !== sectionFilter) return false;
                 if (priorityFilter !== 'all' && task.priority !== parseInt(priorityFilter)) return false;
                 if (searchQuery && !task.content.toLowerCase().includes(searchQuery) &&
@@ -1019,12 +1164,13 @@ def generate_html(sections, tasks):
         }}
 
         // Event listeners
+        document.getElementById('filter-status').addEventListener('change', applyFilters);
         document.getElementById('filter-section').addEventListener('change', applyFilters);
         document.getElementById('filter-priority').addEventListener('change', applyFilters);
         document.getElementById('filter-search').addEventListener('input', applyFilters);
 
-        // Initial render
-        renderListView(allTasks);
+        // Initial render with filters applied (default: with-dates)
+        renderListView(getFilteredTasks());
     </script>
 </body>
 </html>'''

@@ -1,0 +1,81 @@
+Priority Summary:
+================================================================================
+Total tasks: 65
+Tasks with @PROJECT override: 4
+
+High Priority Tasks (P1 = priority 4):
+--------------------------------------------------------------------------------
+  House Rules & Links
+  Pateikta paraiška TSTI dėl planuojamos doktorantūr
+  Juodraštinė Europos Horizonto 2026-2027 m. darbo p
+  Įvertinti "HORIZON-MISS-2027-02-CANCER-01: Leverag
+  Rotomskio iniciatyva
+  **Kvietimas „Stiprinti inovacijų ekosistemas moksl
+  Kvietimas "Europos Personalizuotos medicinos partn
+  PPM LMT 2024-2027 @PROJECT (OVERRIDE from @PROJECT)
+  OUTPUT 1.1.1. An expert document
+  OUTPUT 1.1.2 Digitized research object (a sample d
+  OUTPUT 1.1.3. Two peer-reviewed research articles 
+  Martynas et al PPM pipepine
+  Mantas et al RCC PPM TACS
+  OUTPUT 1. 1.4 Two oral or poster presentations in 
+  OUTPUT 2.1.1 One peer-reviewed research article in
+  OUTPUT 2.1.2 Two oral or poster presentations in i
+  LMT PhD Melanoma Vygante
+  SMEC Kidnex @PROJECT (OVERRIDE from @PROJECT)
+  SMEC ADMIN
+  Parengti turinį įkėlimui į SMEC tinklapį
+  PLAN
+  HALO intaliacija VU MF GPU
+  1 publication
+  3 publication
+  2 publication
+  6\. Select Ox - Darius
+  7\. Scan Ox - Aida.
+  **MEL-AI bioetika**
+  PROBASE bioetikos papildymas
+  Bioetikų suvestinė
+  ONCOINTEGRA @PROJECT (OVERRIDE from @PROJECT)
+  Onco panelės pirkimas
+  IHC/molekulinių reagentų pirkimas
+  Nuspręsti koks yra galutinis perkamų antikūnų sąra
+  Parengti specifikaciją pagal anksčiau pirktų reage
+  Biudžeto keitimas: 1) pagrindimas 2) finansai 3) I
+  Darbuotojų darbinimai
+  Ataskaitos
+  Jarvis
+  Norman
+  Nasir
+  Paraiška. Studentų tyrimai semestrų metu.
+  LT-TW paraiška 2025
+  Eureka paraiška. LT-TW
+  ONCOINTEGRA with VUGENE @PROJECT (OVERRIDE from @PROJECT)
+  Bioethics / Study design
+  NefBx bioetika
+  Paraiška. **Studentų vasaros praktika**
+  **Kvietimas. Dėl lėšų paskelbti mokslinius straips
+  Kvietimas. Technologinės plėtros projektas
+
+Medium-High Priority Tasks (P2 = priority 3):
+--------------------------------------------------------------------------------
+
+Medium Priority Tasks (P3 = priority 2):
+--------------------------------------------------------------------------------
+  Tematinės grupės - Rare Disease Phenotype Data-Dri
+  EIC Pathfinder Challenges (genAI in Cancer)
+  PROBASE
+  The Hub
+  Hex4Path IT paraiška
+  PATHFINDER PARAISKA MACIULAITIS
+  MSCA podoktorantūros stipendijų kvietimas
+
+Low Priority Tasks (P4 = priority 1):
+--------------------------------------------------------------------------------
+  *PerMed* kvietimas. "... Kidney diseases" (CARMEN2
+  LT_TAIWAN Multimodal Learning
+  VPC-VU-SK skaitmenine platforma - ADMIN
+  Startiniai galimybių paketai
+  ESDP Vilnius 2024
+  Kvietimas tapti MSCA podoktorantūros stažuotojų va
+  Podoktorantūros stažuotės kvietimas
+  EMPAIA
