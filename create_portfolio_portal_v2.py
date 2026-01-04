@@ -62,11 +62,27 @@ def parse_csv(filename):
 
             elif row_type == 'task':
                 last_task_id += 1
+
+                # Parse priority - handle empty/None values
+                priority_str = row.get('PRIORITY', '').strip()
+                if priority_str == '' or priority_str is None:
+                    priority = 1  # Default to lowest
+                else:
+                    try:
+                        priority = int(priority_str)
+                    except:
+                        priority = 1
+
+                # Special handling for @PROJECT tasks - set to highest priority
+                content = row.get('CONTENT', '').strip()
+                if '@PROJECT' in content.upper():
+                    priority = 4  # Force highest priority
+
                 task = {
                     'id': last_task_id,
-                    'content': row.get('CONTENT', '').strip(),
+                    'content': content,
                     'description': row.get('DESCRIPTION', '').strip(),
-                    'priority': int(row.get('PRIORITY', 1)),
+                    'priority': priority,
                     'indent': int(row.get('INDENT', 1)),
                     'section': current_section['name'] if current_section else 'No Section',
                     'author': row.get('AUTHOR', '').strip(),
@@ -846,63 +862,137 @@ def generate_html(sections, tasks):
         function renderTimeline(tasks) {{
             const container = document.getElementById('timeline-view');
 
-            // Filter tasks with dates
-            const tasksWithDates = tasks.filter(t => t.date || t.deadline);
-
-            if (tasksWithDates.length === 0) {{
-                container.innerHTML = '<div class="no-results">No tasks with dates to display in timeline view</div>';
+            if (tasks.length === 0) {{
+                container.innerHTML = '<div class="no-results">No tasks match the current filters</div>';
                 return;
             }}
 
-            // Find date range
-            const dates = tasksWithDates.flatMap(t => [t.date, t.deadline]).filter(Boolean);
-            const minDate = new Date(Math.min(...dates.map(d => new Date(d))));
-            const maxDate = new Date(Math.max(...dates.map(d => new Date(d))));
+            // Build hierarchy for all tasks
+            const tasksBySection = {{}};
+            tasks.forEach(task => {{
+                if (!tasksBySection[task.section]) {{
+                    tasksBySection[task.section] = [];
+                }}
+                tasksBySection[task.section].push(task);
+            }});
 
-            // Add padding
-            minDate.setMonth(minDate.getMonth() - 1);
-            maxDate.setMonth(maxDate.getMonth() + 1);
+            // Find date range from tasks with dates
+            const tasksWithDates = tasks.filter(t => t.date || t.deadline);
+            let minDate, maxDate, totalDays, months = [];
 
-            const totalDays = (maxDate - minDate) / (1000 * 60 * 60 * 24);
+            if (tasksWithDates.length > 0) {{
+                const dates = tasksWithDates.flatMap(t => [t.date, t.deadline]).filter(Boolean);
+                minDate = new Date(Math.min(...dates.map(d => new Date(d))));
+                maxDate = new Date(Math.max(...dates.map(d => new Date(d))));
 
-            // Generate timeline header
-            const months = [];
-            let current = new Date(minDate);
-            while (current <= maxDate) {{
-                months.push(current.toLocaleString('default', {{ month: 'short', year: 'numeric' }}));
-                current.setMonth(current.getMonth() + 1);
+                minDate.setMonth(minDate.getMonth() - 1);
+                maxDate.setMonth(maxDate.getMonth() + 1);
+                totalDays = (maxDate - minDate) / (1000 * 60 * 60 * 24);
+
+                let current = new Date(minDate);
+                while (current <= maxDate) {{
+                    months.push(current.toLocaleString('default', {{ month: 'short', year: 'numeric' }}));
+                    current.setMonth(current.getMonth() + 1);
+                }}
             }}
 
-            let html = `
-                <div class="gantt-container">
+            let html = '<div class="gantt-container">';
+
+            if (tasksWithDates.length > 0) {{
+                html += `
                     <div class="gantt-header">
-                        <h3>Project Timeline (${{tasksWithDates.length}} tasks)</h3>
+                        <h3>Project Timeline (${{tasks.length}} tasks, ${{tasksWithDates.length}} with dates)</h3>
                     </div>
                     <div class="gantt-chart">
                         <div class="gantt-timeline">
                             ${{months.map(m => `<div class="gantt-month">${{m}}</div>`).join('')}}
                         </div>
-                        ${{tasksWithDates.map(task => {{
-                            const start = task.date ? new Date(task.date) : new Date(task.deadline);
-                            const end = task.deadline ? new Date(task.deadline) : new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-                            const startOffset = ((start - minDate) / (1000 * 60 * 60 * 24)) / totalDays * 100;
-                            const duration = ((end - start) / (1000 * 60 * 60 * 24)) / totalDays * 100;
-
-                            return `
-                                <div class="gantt-row">
-                                    <div class="gantt-task-label">${{task.content}}</div>
-                                    <div class="gantt-task-bar" style="left: calc(300px + ${{startOffset}}%); width: ${{Math.max(duration, 2)}}%);">
-                                        ${{task.deadline ? '⏰ ' + task.deadline : ''}}
-                                    </div>
-                                </div>
-                            `;
-                        }}).join('')}}
+                `;
+            }} else {{
+                html += `
+                    <div class="gantt-header">
+                        <h3>Project Structure (${{tasks.length}} tasks - no dates available)</h3>
                     </div>
+                    <div class="gantt-chart">
+                `;
+            }}
+
+            // Render each section with hierarchy
+            Object.keys(tasksBySection).sort().forEach(section => {{
+                const sectionTasks = tasksBySection[section];
+                const hierarchy = buildHierarchy(sectionTasks);
+
+                html += `
+                    <div style="margin-top: 20px;">
+                        <div style="font-weight: 600; padding: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 4px; margin-bottom: 10px;">
+                            ${{section}} (${{sectionTasks.length}})
+                        </div>
+                        ${{hierarchy.map(task => renderTimelineTask(task, 0, minDate, totalDays, tasksWithDates.length > 0)).join('')}}
+                    </div>
+                `;
+            }});
+
+            html += '</div></div>';
+            container.innerHTML = html;
+        }}
+
+        function renderTimelineTask(task, level, minDate, totalDays, showBars) {{
+            const indent = level * 20;
+            const priorityColor = priorityColors[task.priority] || '#808080';
+            const priorityLabel = priorityLabels[task.priority] || `P${{task.priority}}`;
+            const hasChildren = task.children && task.children.length > 0;
+            const hasDate = task.date || task.deadline;
+
+            let barHtml = '';
+            if (showBars && hasDate) {{
+                const start = task.date ? new Date(task.date) : new Date(task.deadline);
+                const end = task.deadline ? new Date(task.deadline) : new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+                const startOffset = ((start - minDate) / (1000 * 60 * 60 * 24)) / totalDays * 100;
+                const duration = ((end - start) / (1000 * 60 * 60 * 24)) / totalDays * 100;
+
+                barHtml = `
+                    <div class="gantt-task-bar" style="left: calc(300px + ${{startOffset}}%); width: ${{Math.max(duration, 2)}}%; background: ${{priorityColor}}">
+                        ${{task.deadline ? '⏰ ' + task.deadline : ''}}
+                    </div>
+                `;
+            }}
+
+            let html = `
+                <div class="gantt-row" style="padding-left: ${{indent}}px;">
+                    <div class="gantt-task-label" style="display: flex; align-items: center; gap: 8px;">
+                        ${{hasChildren ? `<span class="task-expand-btn" onclick="toggleTimelineChildren(${{task.id}})" id="tl-expand-${{task.id}}" style="cursor: pointer; user-select: none;">▼</span>` : '<span style="width: 14px;"></span>'}}
+                        <span class="priority-badge" style="background: ${{priorityColor}}; padding: 2px 8px; border-radius: 3px; font-size: 11px;">${{priorityLabel}}</span>
+                        <span>${{task.content}}</span>
+                        ${{hasDate ? '' : '<span style="color: #999; font-size: 12px; margin-left: 10px;">(no date)</span>'}}
+                    </div>
+                    ${{barHtml}}
                 </div>
             `;
 
-            container.innerHTML = html;
+            if (hasChildren) {{
+                html += `
+                    <div class="timeline-subtasks" id="tl-subtasks-${{task.id}}">
+                        ${{task.children.map(child => renderTimelineTask(child, level + 1, minDate, totalDays, showBars)).join('')}}
+                    </div>
+                `;
+            }}
+
+            return html;
+        }}
+
+        function toggleTimelineChildren(taskId) {{
+            const subtasks = document.getElementById(`tl-subtasks-${{taskId}}`);
+            const expandBtn = document.getElementById(`tl-expand-${{taskId}}`);
+
+            if (!subtasks) return;
+
+            if (subtasks.style.display === 'none') {{
+                subtasks.style.display = 'block';
+                expandBtn.textContent = '▼';
+            }} else {{
+                subtasks.style.display = 'none';
+                expandBtn.textContent = '▶';
+            }}
         }}
 
         function getFilteredTasks() {{

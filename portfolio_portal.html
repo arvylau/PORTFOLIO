@@ -810,7 +810,7 @@
     "id": 12,
     "content": "PPM LMT 2024-2027 @PROJECT",
     "description": "[Network • Co-Intell / F2 • Kumu](https://kumu.io/arvylau/network#co-intell/ppm4ml)\n\n[PPMTest](onenote:https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/Documents/PPMTest/)  ([Web view](https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/_layouts/Doc.aspx?sourcedoc=%7bD4A4E6AC-452D-48B8-8204-0C9136D5A48F%7d&end=\\(\\)&end))\n\n**The Aim** of the study is to assess the potential of PPM imaging for ML-based tissue pathology biomarkers.\n\n**Objective 1**. Explore and optimize tissue processing/data extraction approaches by PPM imaging for informative ML algorithms.\n\n**Objective 2**. Explore diagnostic and clinical utility of PPM-based computational biomarkers in tissue pathology.\n\nThe expected outputs of the study will contribute to the rapidly advancing domain of computational pathology with affordable and unique modality of polarized microscopy which enables vectorial data on collagen microarchitecture to supplement clinical models of tissue microenvironment.\n\n**Objective 1**. \n\nMultiple combinations of tissue processing, imaging and analytical techniques will be explored to establish most informative and robust data extraction and processing pathways. Formalin fixed paraffin embedded (FFPE) tissue techniques, routinely used in pathology labs, will form the basis of the experiments to ensure broad applicability of the techniques to be developed. Along with unstained (label-free) FFPE sections, various histochemistry screening methods will be tested for the informative value and signal-to-noise ratio of the tissue components be represented. Further, the PPM-extracted data will be verified by immunofluorescence (IF) and/or immunohistochemistry (IHC) labeling techniques as well as combined brightfield/PPM/fluorescence protocols will be tested for specific tissue component assessment tasks. Performance of PPM imaging with reference to SHG microscopy will be assessed (in collaboration with prof. Virginijus Barzda). Both single PPM-extracted signals and combined (multimodal) imaging data will be tested by image processing and ML algorithms to generate informative and reproducible computational signatures of tissue components, with primary focus on normal, fibrotic, neoplastic, and peri-neoplastic collagen architecture. In addition, pathologic substances like amyloid, hyaline, will be explored.  The image-generated data will be processed with multivariate/spatial analysis methods, DL neural networks and other ML methods.\n\n**Activity 1.1 Months 1-24.**\n\nCalibrate PPM imaging equipment to further streamline and automate experimental tissue and image processing workflow.\n\nVarious regimes of PPM imaging settings will be tested to optimize signal-to-noise ratio and reproducibility, also taking into account the impact of tissue specimen preparation variance such as section thickness, slide cover-slipping, etc.\n\nNext, a series of experiments testing various tissue staining techniques and their combinations will be tested for their interactions with the PPM imaging to explore light absorbance and other possible effects.\n\nBenefits and drawbacks of combining PPM imaging with IF and IHC will be assessed.\n\nWhere needed, IF and/or IHC will be used as a reference method to verify the PPM-generated signals, also producing labels for ML algorithms.\n\nOn the other hand, potential synergies of the PPM and other staining/imaging techniques will be sought for innovative research and clinical applications.\n\n**Objective 2.**\n\nSelected PPM-based biomarker candidates will be assessed for their diagnostic and clinical value in retrospective patient cohorts with renal cell carcinoma and non-neoplastic kidney pathology. This will allow to cover a broad spectrum of microarchitectural collagen patterns in the context of diverse pathologic conditions and their interfaces.\n\n**Activity 2.1 Months 25-36.**\n\nSelected tissue processing/PPM protocols will be used to generate digital data from microscopy sections from patients (at least 250) with neoplastic and non-neoplastic kidney pathology. Primary focus will be on tumor-associated collagen signatures, especially in the tumor-host interface area, as well as fibrotic transformations in the non-neoplastic renal tissue. Segmentation of kidney structures will be applied for specific sampling of the PPM data. Potential diagnostic and predictive value of the novel indicators will be assessed in the context of clinical and pathology data available.\n\nIn addition, the annexes include the project implementation plan (Annex 1), the project risk and risk management plan (Annex 2), and a description of the project's main equipment and data resources (Annex 3).\n\n **Objective 1**.  **Activity 1.1 Months 1-24.**\n\nOUTPUT 1.1.1. An expert document representing a procedure manual for optimized PPM-imaging settings applied for various tissue processing and staining techniques, their expected imaging and data processing results. This output is important for quality assurance and reproducibility of the applications.\n\nOUTPUT 1.1.2 Digitized research object (a sample dataset of at least 40 FFPE samples processed with PPM technology). This will include a library of experimental digital signatures of various tissue components including visual representation and description of the analysis results. The output will focus on candidate methods for research and clinical applications.\n\nOUTPUT 1.1.3. Two peer-reviewed research articles in Clarivate Analytics Web of Science (CA WOS) journals accepted for publication (experimental methods and potential applications based on PPM). The results will represent novel opportunities of PPM imaging for tissue pathology assessment.\n\nOUTPUT 1. 1.4 Two oral or poster presentations in international meetings.\n\n**Objective 2. Activity 2.1 Months 25-36.**\n\nOUTPUT 2.1.1 One peer-reviewed research article in CA WOS journals accepted for publication (PPM-biomarkers for kidney pathology).\n\nOUTPUT 2.1.2 Two oral or poster presentations in international meetings.",
-    "priority": 1,
+    "priority": 4,
     "indent": 1,
     "section": "ACTIVE",
     "author": "Danutė (43831156)",
@@ -1021,7 +1021,7 @@
     "id": 22,
     "content": "SMEC Kidnex @PROJECT",
     "description": "Skaitmeninės medicinos ekselencijos centras\n\nUniversitetų ekscelencijos iniciatyva",
-    "priority": 1,
+    "priority": 4,
     "indent": 1,
     "section": "ACTIVE",
     "author": "Arvydas (43613934)",
@@ -1508,7 +1508,7 @@
     "id": 37,
     "content": "ONCOINTEGRA @PROJECT",
     "description": "",
-    "priority": 1,
+    "priority": 4,
     "indent": 1,
     "section": "ACTIVE",
     "author": "Danutė (43831156)",
@@ -2223,7 +2223,7 @@
     "id": 59,
     "content": "ONCOINTEGRA with VUGENE @PROJECT",
     "description": "",
-    "priority": 2,
+    "priority": 4,
     "indent": 1,
     "section": "ARCHIVED",
     "author": "Arvydas (43613934)",
@@ -2666,63 +2666,137 @@
         function renderTimeline(tasks) {
             const container = document.getElementById('timeline-view');
 
-            // Filter tasks with dates
-            const tasksWithDates = tasks.filter(t => t.date || t.deadline);
-
-            if (tasksWithDates.length === 0) {
-                container.innerHTML = '<div class="no-results">No tasks with dates to display in timeline view</div>';
+            if (tasks.length === 0) {
+                container.innerHTML = '<div class="no-results">No tasks match the current filters</div>';
                 return;
             }
 
-            // Find date range
-            const dates = tasksWithDates.flatMap(t => [t.date, t.deadline]).filter(Boolean);
-            const minDate = new Date(Math.min(...dates.map(d => new Date(d))));
-            const maxDate = new Date(Math.max(...dates.map(d => new Date(d))));
+            // Build hierarchy for all tasks
+            const tasksBySection = {};
+            tasks.forEach(task => {
+                if (!tasksBySection[task.section]) {
+                    tasksBySection[task.section] = [];
+                }
+                tasksBySection[task.section].push(task);
+            });
 
-            // Add padding
-            minDate.setMonth(minDate.getMonth() - 1);
-            maxDate.setMonth(maxDate.getMonth() + 1);
+            // Find date range from tasks with dates
+            const tasksWithDates = tasks.filter(t => t.date || t.deadline);
+            let minDate, maxDate, totalDays, months = [];
 
-            const totalDays = (maxDate - minDate) / (1000 * 60 * 60 * 24);
+            if (tasksWithDates.length > 0) {
+                const dates = tasksWithDates.flatMap(t => [t.date, t.deadline]).filter(Boolean);
+                minDate = new Date(Math.min(...dates.map(d => new Date(d))));
+                maxDate = new Date(Math.max(...dates.map(d => new Date(d))));
 
-            // Generate timeline header
-            const months = [];
-            let current = new Date(minDate);
-            while (current <= maxDate) {
-                months.push(current.toLocaleString('default', { month: 'short', year: 'numeric' }));
-                current.setMonth(current.getMonth() + 1);
+                minDate.setMonth(minDate.getMonth() - 1);
+                maxDate.setMonth(maxDate.getMonth() + 1);
+                totalDays = (maxDate - minDate) / (1000 * 60 * 60 * 24);
+
+                let current = new Date(minDate);
+                while (current <= maxDate) {
+                    months.push(current.toLocaleString('default', { month: 'short', year: 'numeric' }));
+                    current.setMonth(current.getMonth() + 1);
+                }
             }
 
-            let html = `
-                <div class="gantt-container">
+            let html = '<div class="gantt-container">';
+
+            if (tasksWithDates.length > 0) {
+                html += `
                     <div class="gantt-header">
-                        <h3>Project Timeline (${tasksWithDates.length} tasks)</h3>
+                        <h3>Project Timeline (${tasks.length} tasks, ${tasksWithDates.length} with dates)</h3>
                     </div>
                     <div class="gantt-chart">
                         <div class="gantt-timeline">
                             ${months.map(m => `<div class="gantt-month">${m}</div>`).join('')}
                         </div>
-                        ${tasksWithDates.map(task => {
-                            const start = task.date ? new Date(task.date) : new Date(task.deadline);
-                            const end = task.deadline ? new Date(task.deadline) : new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-                            const startOffset = ((start - minDate) / (1000 * 60 * 60 * 24)) / totalDays * 100;
-                            const duration = ((end - start) / (1000 * 60 * 60 * 24)) / totalDays * 100;
-
-                            return `
-                                <div class="gantt-row">
-                                    <div class="gantt-task-label">${task.content}</div>
-                                    <div class="gantt-task-bar" style="left: calc(300px + ${startOffset}%); width: ${Math.max(duration, 2)}%);">
-                                        ${task.deadline ? '⏰ ' + task.deadline : ''}
-                                    </div>
-                                </div>
-                            `;
-                        }).join('')}
+                `;
+            } else {
+                html += `
+                    <div class="gantt-header">
+                        <h3>Project Structure (${tasks.length} tasks - no dates available)</h3>
                     </div>
+                    <div class="gantt-chart">
+                `;
+            }
+
+            // Render each section with hierarchy
+            Object.keys(tasksBySection).sort().forEach(section => {
+                const sectionTasks = tasksBySection[section];
+                const hierarchy = buildHierarchy(sectionTasks);
+
+                html += `
+                    <div style="margin-top: 20px;">
+                        <div style="font-weight: 600; padding: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 4px; margin-bottom: 10px;">
+                            ${section} (${sectionTasks.length})
+                        </div>
+                        ${hierarchy.map(task => renderTimelineTask(task, 0, minDate, totalDays, tasksWithDates.length > 0)).join('')}
+                    </div>
+                `;
+            });
+
+            html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        function renderTimelineTask(task, level, minDate, totalDays, showBars) {
+            const indent = level * 20;
+            const priorityColor = priorityColors[task.priority] || '#808080';
+            const priorityLabel = priorityLabels[task.priority] || `P${task.priority}`;
+            const hasChildren = task.children && task.children.length > 0;
+            const hasDate = task.date || task.deadline;
+
+            let barHtml = '';
+            if (showBars && hasDate) {
+                const start = task.date ? new Date(task.date) : new Date(task.deadline);
+                const end = task.deadline ? new Date(task.deadline) : new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+                const startOffset = ((start - minDate) / (1000 * 60 * 60 * 24)) / totalDays * 100;
+                const duration = ((end - start) / (1000 * 60 * 60 * 24)) / totalDays * 100;
+
+                barHtml = `
+                    <div class="gantt-task-bar" style="left: calc(300px + ${startOffset}%); width: ${Math.max(duration, 2)}%; background: ${priorityColor}">
+                        ${task.deadline ? '⏰ ' + task.deadline : ''}
+                    </div>
+                `;
+            }
+
+            let html = `
+                <div class="gantt-row" style="padding-left: ${indent}px;">
+                    <div class="gantt-task-label" style="display: flex; align-items: center; gap: 8px;">
+                        ${hasChildren ? `<span class="task-expand-btn" onclick="toggleTimelineChildren(${task.id})" id="tl-expand-${task.id}" style="cursor: pointer; user-select: none;">▼</span>` : '<span style="width: 14px;"></span>'}
+                        <span class="priority-badge" style="background: ${priorityColor}; padding: 2px 8px; border-radius: 3px; font-size: 11px;">${priorityLabel}</span>
+                        <span>${task.content}</span>
+                        ${hasDate ? '' : '<span style="color: #999; font-size: 12px; margin-left: 10px;">(no date)</span>'}
+                    </div>
+                    ${barHtml}
                 </div>
             `;
 
-            container.innerHTML = html;
+            if (hasChildren) {
+                html += `
+                    <div class="timeline-subtasks" id="tl-subtasks-${task.id}">
+                        ${task.children.map(child => renderTimelineTask(child, level + 1, minDate, totalDays, showBars)).join('')}
+                    </div>
+                `;
+            }
+
+            return html;
+        }
+
+        function toggleTimelineChildren(taskId) {
+            const subtasks = document.getElementById(`tl-subtasks-${taskId}`);
+            const expandBtn = document.getElementById(`tl-expand-${taskId}`);
+
+            if (!subtasks) return;
+
+            if (subtasks.style.display === 'none') {
+                subtasks.style.display = 'block';
+                expandBtn.textContent = '▼';
+            } else {
+                subtasks.style.display = 'none';
+                expandBtn.textContent = '▶';
+            }
         }
 
         function getFilteredTasks() {
