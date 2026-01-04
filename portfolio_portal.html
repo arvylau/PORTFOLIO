@@ -1,0 +1,2760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Management Portal v2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #202020;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .view-switcher {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            background: #f0f4ff;
+        }
+
+        .view-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .filter-group select:hover, .filter-group input:hover {
+            border-color: #667eea;
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .stats {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* List View Styles */
+        .list-view {
+            display: block;
+        }
+
+        .timeline-view {
+            display: none;
+        }
+
+        .section-group {
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-header:hover {
+            opacity: 0.95;
+        }
+
+        .section-toggle {
+            font-size: 14px;
+            transition: transform 0.3s;
+        }
+
+        .section-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .section-count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .tasks-container {
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .tasks-container.collapsed {
+            max-height: 0 !important;
+            border: none;
+            box-shadow: none;
+        }
+
+        .task-card {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 16px 20px;
+            transition: all 0.2s;
+        }
+
+        .task-card:last-child {
+            border-bottom: none;
+        }
+
+        .task-card:hover {
+            background: #f8f9ff;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .task-expand-btn {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: bold;
+            user-select: none;
+            transition: transform 0.2s;
+            min-width: 20px;
+        }
+
+        .task-expand-btn.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .task-expand-btn.no-children {
+            opacity: 0;
+            cursor: default;
+        }
+
+        .priority-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .task-content {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 500;
+            color: #202020;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+            margin-left: 32px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .description-toggle {
+            color: #667eea;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+            margin-left: 32px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .description-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .task-description, .task-notes {
+            display: none;
+            margin-top: 12px;
+            margin-left: 32px;
+            padding: 12px;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .task-description {
+            background: #f8f9fa;
+        }
+
+        .task-notes {
+            background: #fff9e6;
+            border-left-color: #eb8909;
+        }
+
+        .task-description.expanded, .task-notes.expanded {
+            display: block;
+        }
+
+        .note-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0e5c5;
+        }
+
+        .note-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .note-content {
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+
+        .note-meta {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .subtasks-container {
+            margin-left: 40px;
+            margin-top: 8px;
+            border-left: 3px solid #e0e0e0;
+            padding-left: 10px;
+            display: none;
+        }
+
+        .subtasks-container.expanded {
+            display: block;
+        }
+
+        .deadline {
+            color: #d1453b;
+            font-weight: 600;
+        }
+
+        /* Timeline/Gantt View Styles */
+        .gantt-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .gantt-header {
+            margin-bottom: 20px;
+        }
+
+        .gantt-chart {
+            position: relative;
+            min-width: 100%;
+        }
+
+        .gantt-timeline {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+
+        .gantt-month {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+            font-size: 14px;
+            padding: 5px;
+            border-right: 1px solid #f0f0f0;
+        }
+
+        .gantt-month:last-child {
+            border-right: none;
+        }
+
+        .gantt-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f5f5f5;
+            position: relative;
+        }
+
+        .gantt-task-label {
+            width: 300px;
+            padding-right: 20px;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .gantt-task-bar {
+            position: absolute;
+            left: 300px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            color: white;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .subtasks-container {
+                margin-left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Portfolio Management Portal v2</h1>
+            <p>Smart task management with timeline visualization</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="view-switcher">
+            <button class="view-btn active" onclick="switchView('list')">List View</button>
+            <button class="view-btn" onclick="switchView('timeline')">Timeline View</button>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="filter-section">Section</label>
+                <select id="filter-section">
+                    <option value="all">All Sections</option>
+                    <option value="ACTIVE">ACTIVE</option>
+<option value="ARCHIVED">ARCHIVED</option>
+<option value="EXPLORE">EXPLORE</option>
+<option value="PENDING">PENDING</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filter-priority">Priority</label>
+                <select id="filter-priority">
+                    <option value="all">All Priorities</option>
+                    <option value="4">P1 (Highest)</option>
+<option value="2">P3 (Medium)</option>
+<option value="1">P4 (Low)</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filter-search">Search</label>
+                <input type="text" id="filter-search" placeholder="Search tasks...">
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Total Tasks:</span>
+                <span class="stat-value" id="total-tasks">65</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Visible:</span>
+                <span class="stat-value" id="visible-tasks">65</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Sections:</span>
+                <span class="stat-value">4</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">With Deadlines:</span>
+                <span class="stat-value">11</span>
+            </div>
+        </div>
+
+        <div id="list-view" class="list-view"></div>
+        <div id="timeline-view" class="timeline-view"></div>
+    </div>
+
+    <script>
+        const allTasks = [
+  {
+    "id": 1,
+    "content": "House Rules & Links",
+    "description": "\\\\\\filesrv\\Projects\\Projektai\\PORTFOLIO",
+    "priority": 4,
+    "indent": 1,
+    "section": "EXPLORE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Ikeliau atnaujinta portfolio xls",
+        "author": "Arvydas (43613934)",
+        "date": "2024-07-23T08:18:37.819000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 2,
+    "content": "*PerMed* kvietimas. \"... Kidney diseases\" (CARMEN2026)",
+    "description": "[EP PerMed Joint Transnational Call (JTC) 2026 - European Partnership for Personalised Medicine - EP PerMed](https://www.eppermed.eu/funding-projects/calls/jtc2026/)",
+    "priority": 1,
+    "indent": 1,
+    "section": "EXPLORE",
+    "author": "Arvydas (43613934)",
+    "responsible": "Arvydas (43613934)",
+    "date": "2026-01-04",
+    "deadline": "2025-12-02",
+    "deadline_lang": "en",
+    "notes": [
+      {
+        "content": "2025 m. lapkričio 25 d. atsidarys Europos partnerystės personalizuotai medicinai *EP PerMed* kvietimas „[Personalised Medicine for CARdiovascular, MEtabolic, and kidNey diseases” (CARMEN2026](https://www.eppermed.eu/funding-projects/calls/jtc2026/ \"https://www.eppermed.eu/funding-projects/calls/jtc2026/\"))“\n\nŠiuo tarptautiniu kvietimu finansuojami moksliniai tyrimai siūlantys inovatyvias personalizuotos medicinos strategijas pacientams, sergantiems širdies ir kraujagyslių, medžiagų apykaitos ar inkstų ligomis. Tyrimų projektai gali būti orientuoti į vieną konkrečią ligą arba nagrinėti šias būkles kartu.\n\nParaiškose turėtų būti atsižvelgiama į vieną ar kelis iš šių aspektų:\n\n- inovatyvūs personalizuoti terapiniai metodai;\n- gydymo atsako stebėsena siekiant pritaikyti individualius gydymo kelius;\n- ankstyvas ligos rizikos prognozavimas ir ligos progresavimo ar gretutinių ligų prevencija.\n\nKvietime dalyvaujančios šalys: Kvietime dalyvaujančios šalys: Austrija*, Belgija, Čekija, Danija, Estija, Suomija, Prancūzija, Vokietija*, Graikija, Vengrija, Islandija, Airija, Izraelis, Italija*, Latvija*, Lietuva, Liuksemburgas, Norvegija, Lenkija, Portugalija*, Rumunija, Slovakija, Pietų Afrika, Ispanija, Švedija, Nyderlandai ir Turkija*.\n\n**sprendimas dėl dalyvavimo dar nepatvirtintas.*\n\nKvietimas įgyvendinamas dviem stadijom – **iki 2026 vasario 10** teikiama trumpoji paraiška, o patekus į antrą etapą iki 2026 birželio 6 teikiama ilgoji paraiška.\n\n2025 gruodžio 16 dieną organizuojama **informacinė diena** pristatyti kvietimui ir jo sąlygoms. Registracija į info dieną: [https://registration.dlr-pt.de/en/ep-permed-jtc2026-information-day/registration](https://registration.dlr-pt.de/en/ep-permed-jtc2026-information-day/registration \"https://registration.dlr-pt.de/en/ep-permed-jtc2026-information-day/registration\")\n\nDetalesnis kvietimo temų ir sąlygų aprašas pateikiamas čia: [https://www.eppermed.eu/funding-projects/calls/jtc2026/](https://www.eppermed.eu/funding-projects/calls/jtc2026/ \"https://www.eppermed.eu/funding-projects/calls/jtc2026/\")",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-03T14:45:12.121000Z"
+      },
+      {
+        "content": "Kvietimas, kuriuo domimės bus paskelbtas lapkričio 25 dieną: [EP PerMed Joint Transnational Call (JTC) 2026 - European Partnership for Personalised Medicine - EP PerMed](https://www.eppermed.eu/funding-projects/calls/jtc2026/)",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-17T14:05:48.603000Z"
+      },
+      {
+        "content": "Info lietuvių kalba: [https://lmt.lrv.lt/lt/naujienos/planuojamas-ep-permed-programos-kvietimas-personalizuotos-medicinos-sirdies-ir-kraujagysliu-metaboliniu-ir-inkstu-ligu-tyrimu-projektams-fJ4/](https://lmt.lrv.lt/lt/naujienos/planuojamas-ep-permed-programos-kvietimas-personalizuotos-medicinos-sirdies-ir-kraujagysliu-metaboliniu-ir-inkstu-ligu-tyrimu-projektams-fJ4/)",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-17T14:07:22.311000Z"
+      },
+      {
+        "content": "1) Prie kveitimo jau yra pateikta detalesnė info. Gali dalyvauti tiek vokiečiai, tiek olandai, tiek ispanai. Finansavimas skirstomas pagal tos šalies regionus, todėl svarbu tiksliai įvardinti įmones, kad būtų galima tiksliau pasakyti į kokias lėšas pretenduoja potencialus partneris. 2) Lietuvos įmonės turėtų atsiskaityti LMT 3) Lietuvos vykdančiosios institucijos tarptautinio mokslo projekto vykdytojams **skiriama iki 150 tūkst. eurų**, išskyrus šiuos atvejus:\n\n- kai vykdančioji institucija koordinuoja projektą – skiriama iki 200 tūkst. eurų;\n- kai projekte dalyvauja dvi vykdančiosios institucijos – skiriama iki 200 tūkst. eurų;\n- kai projekte dalyvauja dvi vykdančiosios institucijos, iš kurių viena koordinuoja projektą – tuomet skiriama iki 250 tūkst. eurų.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-26T07:36:29.830000Z"
+      },
+      {
+        "content": "gb nauja imone?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-11-26T07:59:33.569000Z"
+      },
+      {
+        "content": "1) Taip, g.b. nauja įmonė. 2) Aptartas šis kvietimas su Erika (VU). Šiuo kvietimu taip pat domisi Dovilė Karčiauskaitė (interesų kryptis – širdies ir kraujagyslių metabolinės ligos). Apjungti? 3) Vertingas būtų aptarimas su LMT atstove Živile Ružele, galiu paorganizuoti, jei rimtai galvotume, ypač, jei galvotume traukti VU+VULSK. 4) Svarbu apgalvoti koncepciją.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-03T07:25:16.251000Z"
+      },
+      {
+        "content": "parašiau [.j.roelofs@amsterdamumc.nl](mailto:.j.roelofs@amsterdamumc.nl)\nWould you be interested to discuss? We could focus on the pathomics and multimodal integrations. In Lithuania, we have opportunities to integrate with the National Data Agency phenotypes (see unpublished slides 13-14 attached).",
+        "author": "Arvydas (43613934)",
+        "date": "2025-12-08T07:18:49.225000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 3,
+    "content": "Tematinės grupės - Rare Disease Phenotype Data-Driven Screening",
+    "description": "**Pradedama 1-a atranka tematinėms grupėms steigti**. Tematinė grupė vienija skirtingų disciplinų Fakulteto, kitų Universiteto padalinių ir (ar) išorės institucijų mokslininkus, kurie kryptingai ir nuosekliai vykdo mokslinę veiklą pasirinkta tema. Numatoma, kad tematinės grupės Fakultete veiks kaip  funkciniai vienetai.",
+    "priority": 2,
+    "indent": 1,
+    "section": "EXPLORE",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": "2026-01-04",
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Info pateikimo terminas - lapkričio 22 d. 18 val. Užpildžiau failą, jis patalpintas direktoriaus korekcijoms čia: [\\\\\\filesrv\\Projects\\Projektai\\1_TEIKIAM PARAISKAS\\118_VU tematinės grupės_Rare disease_Rimante Cerkauskiene](file://filesrv/Projects/Projektai/1_TEIKIAM%20PARAISKAS/118_VU%20tematinės%20grupės_Rare%20disease_Rimante%20Cerkauskiene)",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-21T09:37:34.893000Z"
+      },
+      {
+        "content": "pateikta VU MF",
+        "author": "Arvydas (43613934)",
+        "date": "2025-11-26T08:00:23.945000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 4,
+    "content": "LT_TAIWAN Multimodal Learning",
+    "description": "March 29",
+    "priority": 1,
+    "indent": 1,
+    "section": "EXPLORE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Ar gavote oficialų ekspertų paraiškos įvertinimą su pastabomis?",
+        "author": "Danutė (43831156)",
+        "date": "2024-10-01T13:00:09.271000Z"
+      },
+      {
+        "content": "1) 2025 m. pradžioje bus skelbiamas toks pats LT-TW kvietimas. 2) Taivanas pateikė LMT pasiūlymus kokiems vertinimo kriterijams turėtų būti suteikiamas didesnis svoris. Tematika derinama, bet tikėtina, kad išliks biomedicina ir lazeriai. 3) VU centriniai rūmai gavo LMT kvietimą siūlyti savo kandidatus vykti į Taivanyje organizuojamą biomedicinos konferenciją ir pateikė savo atstovus (datos, kada delegacijos vyko į Prancūziją ir Taivaną labai artimos arba galėjo persidengti). 4) Ekspertų vertinimai t.b. sistemoje ([Lmtpais: išorinis portalas](https://projektai.lmt.lt/#login)).",
+        "author": "Danutė (43831156)",
+        "date": "2024-10-01T13:30:28.849000Z"
+      },
+      {
+        "content": "aciu",
+        "author": "Arvydas (43613934)",
+        "date": "2024-10-09T05:18:59.897000Z"
+      },
+      {
+        "content": "Artimiausiu metu bus skelbiamas naujas LT-TV kvietimas. Reikai apsispręsti ar bandom koreguoti seną paraišką ir ją pakartotinai teikti.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-03T08:58:38.804000Z"
+      },
+      {
+        "content": "**2026 m. sausio 5 d.** LMT **planuoja** skelbti [**Lietuvos–Taivano kvietimą**](https://lmt.lrv.lt/lt/naujienos/planuojamas-kvietimas-teikti-paraiskas-bendriems-lietuvostaivano-moksliniu-tyrimu-projektams-vykdyti-cDY/?fbclid=IwY2xjawObjMBleHRuA2FlbQIxMABicmlkETB4b1dNY2tITHRWOVlnUkgyc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHkqlLagPEJXTUB2xC8bUI3YxIO5UD382WSIrzVVL3Krheh3pS3ENda_Bg5M4_aem_tw8NqRLxCX9hUsNgbUebzg \"https://lmt.lrv.lt/lt/naujienos/planuojamas-kvietimas-teikti-paraiskas-bendriems-lietuvostaivano-moksliniu-tyrimu-projektams-vykdyti-cDY/?fbclid=IwY2xjawObjMBleHRuA2FlbQIxMABicmlkETB4b1dNY2tITHRWOVlnUkgyc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHkqlLagPEJXTUB2xC8bUI3YxIO5UD382WSIrzVVL3Krheh3pS3ENda_Bg5M4_aem_tw8NqRLxCX9hUsNgbUebzg\") bendriems mokslinių tyrimų projektams vykdyti.\n\n**Kvietimo temos:**\n\nBiomedicinos technologijos (genomo redagavimo įrankiai, vėžio moksliniai tyrimai, įskaitant diagnostiką, gydymą, prevenciją ir sveikatos priežiūrą; kompiuterinė medicina (angl. computational medicine).\n\n**Projektų** **trukmė**: 24 mėnesiai.\n\n**Biudžetas**: iki 200 tūkst. Eur. Lietuvos vykdytojams",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-15T12:42:00.808000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 5,
+    "content": "Pateikta paraiška TSTI dėl planuojamos doktorantūros (Hugui)",
+    "description": "",
+    "priority": 4,
+    "indent": 1,
+    "section": "EXPLORE",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Pateikta paraiška yra čia: \\\\\\filesrv\\Projects\\Projektai\\1_TEIKIAM PARAISKAS\\119_Hugo doktorantūra",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-30T15:14:19.592000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 6,
+    "content": "Juodraštinė Europos Horizonto 2026-2027 m. darbo programa",
+    "description": "The European Commission has published the **draft Horizon Europe Work Programmes for 2026‑2027**. These drafts give advance insight into upcoming calls and priorities — not yet final, but very useful for planning ahead!\n\nAvailable draft Work programmes:\n\n **Cluster 1 - Health:** [https://ec.europa.eu/transparency/comitology-register/screen/documents/107970/3/consult?lang=en](https://ec.europa.eu/transparency/comitology-register/screen/documents/107970/3/consult?lang=en \"https://ec.europa.eu/transparency/comitology-register/screen/documents/107970/3/consult?lang=en\")\n\n**Cluster 4 - Digital Industy and Space:** [https://ec.europa.eu/transparency/comitology-register/screen/documents/107987/3/consult?lang=en](https://ec.europa.eu/transparency/comitology-register/screen/documents/107987/3/consult?lang=en \"https://ec.europa.eu/transparency/comitology-register/screen/documents/107987/3/consult?lang=en\")\n\n**EU Missions:** [https://ec.europa.eu/transparency/comitology-register/screen/documents/107712/3/consult?lang=en](https://ec.europa.eu/transparency/comitology-register/screen/documents/107712/3/consult?lang=en \"https://ec.europa.eu/transparency/comitology-register/screen/documents/107712/3/consult?lang=en\")\n\n **Widening participation and strengthening the European Research Area (WIDERA):** [https://ec.europa.eu/transparency/comitology-register/screen/documents/107927/3/consult?lang=en](https://ec.europa.eu/transparency/comitology-register/screen/documents/107927/3/consult?lang=en \"https://ec.europa.eu/transparency/comitology-register/screen/documents/107927/3/consult?lang=en\")\n\n **Joint Research Centre - 2025–2027 work programme has already been published:** [https://publications.jrc.ec.europa.eu/repository/handle/JRC140049](https://publications.jrc.ec.europa.eu/repository/handle/JRC140049 \"https://publications.jrc.ec.europa.eu/repository/handle/jrc140049\")\n\n **European Innovation Council (EIC) and European Innovation Ecosystems (EIE):** [https://ec.europa.eu/transparency/comitology-register/screen/meetings/CMTD%282025%291015/consult?la…](https://ec.europa.eu/transparency/comitology-register/screen/meetings/CMTD%282025%291015/consult?lang=en \"https://ec.europa.eu/transparency/comitology-register/screen/meetings/cmtd%282025%291015/consult?lang=en\")\n\n **Research Infrastructures:** [https://ec.europa.eu/transparency/comitology-register/screen/documents/109463/1/consult?lang=en](https://ec.europa.eu/transparency/comitology-register/screen/documents/109463/1/consult?lang=en \"https://ec.europa.eu/transparency/comitology-register/screen/documents/109463/1/consult?lang=en\")\n\n **European Research Council (ERC) - 2026 work programme has already been published:** [https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026/wp_hori…](https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026/wp_horizon-erc-2026_en.pdf \"https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026/wp_horizon-erc-2026_en.pdf\")\n\n Please note that these drafts are provisional and may be subject to change. The topics, their descriptions or scope, as well as the budgets or call opening and closing dates, may be adjusted before final approval.",
+    "priority": 4,
+    "indent": 1,
+    "section": "PENDING",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 7,
+    "content": "Įvertinti \"HORIZON-MISS-2027-02-CANCER-01: Leveraging functional genomics to reveal novel targets for cancer treatment\"",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "PENDING",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Planuojamas kvietimas apie navikų heterogeniškumą [Microsoft Word - HORIZON-MISS-2026-2027_07_04_2025.TC](https://sciencebusiness.net/sites/default/files/inline-files/HORIZON-MISS-2026-2027_04_07_2025.pdf?utm_source=chatgpt.com)\n\nExpected Outcome: Proposals under this topic should aim to deliver results that are directed and tailored towards and contribute to all of the following expected outcomes: 1) Researchers and health professionals have an increased understanding on the functional effects of tumour heterogeneity during the initiation and evolution of the disease. 2) Researchers, health professionals and innovators have access to improved knowledge and tools for the discovery and development of the next generation of genomically informed cancer treatments. 3) Researchers, innovators, and professionals from different disciplines and sectors support and contribute to the UNCAN.eu research data platform by ensuring interoperability of data, access to new digital tools and models.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-22T11:46:08.109000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 8,
+    "content": "Rotomskio iniciatyva",
+    "description": "Skambino Mantas Grigalavicius 064444494\n\nVU 20% inasas",
+    "priority": 4,
+    "indent": 1,
+    "section": "PENDING",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "panasu kad neliko.",
+        "author": "Arvydas (43613934)",
+        "date": "2025-07-30T06:30:19.424000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 9,
+    "content": "**Kvietimas „Stiprinti inovacijų ekosistemas mokslo centruose“**",
+    "description": "**Kvietimas „Stiprinti inovacijų ekosistemas mokslo centruose“** \n\nPFSA dar nepatvirtintas:  [https://e-seimas.lrs.lt/portal/legalAct/lt/TAP/2a57cf9172aa11f09f35d7a7964762ee](https://e-seimas.lrs.lt/portal/legalAct/lt/TAP/2a57cf9172aa11f09f35d7a7964762ee \"https://e-seimas.lrs.lt/portal/legalAct/lt/TAP/2a57cf9172aa11f09f35d7a7964762ee\")",
+    "priority": 4,
+    "indent": 1,
+    "section": "PENDING",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Kvietimas turėtų pasirodyti greičiausiai šią savaitę.\n\nIT palaikymo išlaidos nėra tinkamos išlaidos, bet  tinkamos g.b. “16.3.2. turimo ilgalaikio turto atnaujinimo ir (arba) modifikavimo išlaidos“, t.y. būtų galima pirkti HALO AP atnaujinimo (naujos versijos) paslaugas. Didžiausia projektui galima skirti finansavimo lėšų suma – iki 300 000,00 Eur EGADP lėšų. Pareiškėjo prašoma finansuoti išlaidų suma (be PVM) negali būti didesnė nei pagal susietojo projekto paraišką planuota gauti EK dotacija. Trūkumas - paraiška t.b. susieta su programų „Europos horizontas“ ar „Euratomas“ projektų moksliniais tyrimais ir eksperimentine plėtra.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-23T06:03:11.361000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 10,
+    "content": "Kvietimas \"Europos Personalizuotos medicinos partnerystė (EP PerMed)\"",
+    "description": "Kvietimas susijęs su inovatyviais mokslo tiriamaisiais projektais personalizuotos medicinos srityje\n\n- Finansuojami projektai, kuriuose fokusuojamasi į multimodalinių duomenų panaudojimą pateikiant efektyvesnes ir labiau personalizuotas polimorbidinių pacientų gydymo strategijas (turi būti įtrauktos ir analizuojamos bent 2 lėtinės ligos).\n- Yra privaloma, kad tarp daugiašalio konsorciumo partnerių būtų bent vienas klinikinis partneris ir bent viena smulki-vidutinė įmonė (SME) arba industrijos partneris.\n- Kiti projekto tikslai ir aspektai nurodyti išankstiniame skelbime apie priemonę:  [Multimodal Data Approaches for Personalised Medicine (MultiPMData2026)](https://www.eppermed.eu/funding-projects/calls/ritc2026/).\n- Dalyvaujančių šalių sąrašas ( *pažymėtos šalys dar nepateikusios galutinio apsisprendimo dalyvauti): Belgium, Czech Republic, Finland, France, Ireland*, Israel, Italy, Latvia, Lithuania, Portugal, Romania*, Slovak Republic, South Africa*, Spain, Sweden and Turkiye.\n- Kvietimą paskelbs 2025 spalio 1 d.\n- Kvietimas įgyvendinamas dviem stadijom – iki 2026 sausio 12 teikiama trumpoji paraiška, o patekus į antrą etapą iki 2026 balandžio 27 teikiama ilgoji paraiška. 2025 spalio 28 dieną organizuojama **info diena** pristatyti kvietimui ir jo sąlygoms. Registracija į info dieną [šioje nuorodoje](https://registration.dlr-pt.de/en/ep-permed-ritc2026-information-day/registration).\n- Turi dalyvauti partneriai iš bent 3 skirtingų kvietime dalyvaujančių šalių. Finansavimas Lietuvos įmonėms t.b. didesnis nei įprastai skiria LMT.",
+    "priority": 4,
+    "indent": 1,
+    "section": "PENDING",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Spalio 1 d. paskelbs kvietimą apie multimodalinių duomenų panaudojimą testuojant inovatyvius sprendimus realioje aplinkoje gydant bent 2 lėtines ligas. Reikia įtraukti mažą ar vidutinę verslo įmonę.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-23T07:03:03.797000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 11,
+    "content": "EIC Pathfinder Challenges (genAI in Cancer)",
+    "description": "[EIC Pathfinder Challenges (genAI in Cancer)](onenote:https://ltvpc-my.sharepoint.com/personal/lauar_ltvpc_onmicrosoft_com/Documents/Portfolio/PROPOSAL.one#EIC%20Pathfinder%20Challenges%20(genAI%20in%20Cancer)&section-id={2EF55473-2D4D-4E1C-88B5-C1BA09FFB437}&page-id={B60D4129-7A8A-4399-942E-A38393219233}&end)  ([Web view](https://ltvpc-my.sharepoint.com/personal/lauar_ltvpc_onmicrosoft_com/_layouts/OneNote.aspx?id=%2Fpersonal%2Flauar_ltvpc_onmicrosoft_com%2FDocuments%2FPortfolio&wd=target%28PROPOSAL.one%7C2EF55473-2D4D-4E1C-88B5-C1BA09FFB437%2FEIC%20Pathfinder%20Challenges%20%28genAI%20in%20Cancer%5C%29%7CB60D4129-7A8A-4399-942E-A38393219233%2F%29))",
+    "priority": 2,
+    "indent": 1,
+    "section": "PENDING",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": "2025-04-30",
+    "deadline_lang": "en",
+    "notes": [
+      {
+        "content": "EIC 2026 m. darbo programos juodraštinė versija: [Microsoft Word - EIC Work Programme 2026_second_draft_version04062025 clean](https://sciencebusiness.net/sites/default/files/inline-files/EIC%20Work%20Programme%202026_second_draft_version04062025.pdf)",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-23T10:33:24.259000Z"
+      },
+      {
+        "content": "EIC Pathfinder (EIC Open) deadline 06/05/2026\n\nEIC Pathfinder (EIC Challenges) deadline 28/10/2026",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-23T10:56:06.563000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 12,
+    "content": "PPM LMT 2024-2027 @PROJECT",
+    "description": "[Network • Co-Intell / F2 • Kumu](https://kumu.io/arvylau/network#co-intell/ppm4ml)\n\n[PPMTest](onenote:https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/Documents/PPMTest/)  ([Web view](https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/_layouts/Doc.aspx?sourcedoc=%7bD4A4E6AC-452D-48B8-8204-0C9136D5A48F%7d&end=\\(\\)&end))\n\n**The Aim** of the study is to assess the potential of PPM imaging for ML-based tissue pathology biomarkers.\n\n**Objective 1**. Explore and optimize tissue processing/data extraction approaches by PPM imaging for informative ML algorithms.\n\n**Objective 2**. Explore diagnostic and clinical utility of PPM-based computational biomarkers in tissue pathology.\n\nThe expected outputs of the study will contribute to the rapidly advancing domain of computational pathology with affordable and unique modality of polarized microscopy which enables vectorial data on collagen microarchitecture to supplement clinical models of tissue microenvironment.\n\n**Objective 1**. \n\nMultiple combinations of tissue processing, imaging and analytical techniques will be explored to establish most informative and robust data extraction and processing pathways. Formalin fixed paraffin embedded (FFPE) tissue techniques, routinely used in pathology labs, will form the basis of the experiments to ensure broad applicability of the techniques to be developed. Along with unstained (label-free) FFPE sections, various histochemistry screening methods will be tested for the informative value and signal-to-noise ratio of the tissue components be represented. Further, the PPM-extracted data will be verified by immunofluorescence (IF) and/or immunohistochemistry (IHC) labeling techniques as well as combined brightfield/PPM/fluorescence protocols will be tested for specific tissue component assessment tasks. Performance of PPM imaging with reference to SHG microscopy will be assessed (in collaboration with prof. Virginijus Barzda). Both single PPM-extracted signals and combined (multimodal) imaging data will be tested by image processing and ML algorithms to generate informative and reproducible computational signatures of tissue components, with primary focus on normal, fibrotic, neoplastic, and peri-neoplastic collagen architecture. In addition, pathologic substances like amyloid, hyaline, will be explored.  The image-generated data will be processed with multivariate/spatial analysis methods, DL neural networks and other ML methods.\n\n**Activity 1.1 Months 1-24.**\n\nCalibrate PPM imaging equipment to further streamline and automate experimental tissue and image processing workflow.\n\nVarious regimes of PPM imaging settings will be tested to optimize signal-to-noise ratio and reproducibility, also taking into account the impact of tissue specimen preparation variance such as section thickness, slide cover-slipping, etc.\n\nNext, a series of experiments testing various tissue staining techniques and their combinations will be tested for their interactions with the PPM imaging to explore light absorbance and other possible effects.\n\nBenefits and drawbacks of combining PPM imaging with IF and IHC will be assessed.\n\nWhere needed, IF and/or IHC will be used as a reference method to verify the PPM-generated signals, also producing labels for ML algorithms.\n\nOn the other hand, potential synergies of the PPM and other staining/imaging techniques will be sought for innovative research and clinical applications.\n\n**Objective 2.**\n\nSelected PPM-based biomarker candidates will be assessed for their diagnostic and clinical value in retrospective patient cohorts with renal cell carcinoma and non-neoplastic kidney pathology. This will allow to cover a broad spectrum of microarchitectural collagen patterns in the context of diverse pathologic conditions and their interfaces.\n\n**Activity 2.1 Months 25-36.**\n\nSelected tissue processing/PPM protocols will be used to generate digital data from microscopy sections from patients (at least 250) with neoplastic and non-neoplastic kidney pathology. Primary focus will be on tumor-associated collagen signatures, especially in the tumor-host interface area, as well as fibrotic transformations in the non-neoplastic renal tissue. Segmentation of kidney structures will be applied for specific sampling of the PPM data. Potential diagnostic and predictive value of the novel indicators will be assessed in the context of clinical and pathology data available.\n\nIn addition, the annexes include the project implementation plan (Annex 1), the project risk and risk management plan (Annex 2), and a description of the project's main equipment and data resources (Annex 3).\n\n **Objective 1**.  **Activity 1.1 Months 1-24.**\n\nOUTPUT 1.1.1. An expert document representing a procedure manual for optimized PPM-imaging settings applied for various tissue processing and staining techniques, their expected imaging and data processing results. This output is important for quality assurance and reproducibility of the applications.\n\nOUTPUT 1.1.2 Digitized research object (a sample dataset of at least 40 FFPE samples processed with PPM technology). This will include a library of experimental digital signatures of various tissue components including visual representation and description of the analysis results. The output will focus on candidate methods for research and clinical applications.\n\nOUTPUT 1.1.3. Two peer-reviewed research articles in Clarivate Analytics Web of Science (CA WOS) journals accepted for publication (experimental methods and potential applications based on PPM). The results will represent novel opportunities of PPM imaging for tissue pathology assessment.\n\nOUTPUT 1. 1.4 Two oral or poster presentations in international meetings.\n\n**Objective 2. Activity 2.1 Months 25-36.**\n\nOUTPUT 2.1.1 One peer-reviewed research article in CA WOS journals accepted for publication (PPM-biomarkers for kidney pathology).\n\nOUTPUT 2.1.2 Two oral or poster presentations in international meetings.",
+    "priority": 1,
+    "indent": 1,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "Arvydas (43613934)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "LMT **pratęsė paraiškų teikimo terminą** iki sausio 31 d. 24 val.\n\nNauji pateikimo vidiniam derinimui ir tvirtinimui VU terminai:\n\n- paraiškas pirminei peržiūrai ir biudžeto suderinimui atsiųsti iki **sausio 19 d.**\n- paraiškas tvirtinimui pateikti iki **sausio 29 d.** imtinai.",
+        "author": "Danutė (43831156)",
+        "date": "2024-01-03T07:58:38.843000Z"
+      },
+      {
+        "content": "Paraiška pateikta",
+        "author": "Danutė (43831156)",
+        "date": "2024-02-13T15:24:34.199000Z"
+      },
+      {
+        "content": "Paraiška \"praėjo\" administracinę patikrą",
+        "author": "Danutė (43831156)",
+        "date": "2024-04-03T06:31:46.263000Z"
+      },
+      {
+        "content": "1. Paraiška gavo finansavimą.\n2. 2024 m. biudžetas patvirtintas\n3. Paraiška išversta į LT kalbą ir pateikta LMT administruojančiam asmeniui Rasai Rrimeišytei",
+        "author": "Danutė (43831156)",
+        "date": "2024-08-21T06:33:22.181000Z"
+      },
+      {
+        "content": "LMT atsiųs sutartį pasirašyti el. parašu iki rugsėjo 1 d. (kol kas greitai siųsti dar neplanuoja). Be sutarties pradėti darbinimo procedūras būtų negerai, bet galima darbinti ne nuo rugsėjo 1 d., o keliomis dienomis vėliau.",
+        "author": "Danutė (43831156)",
+        "date": "2024-08-21T13:31:25.503000Z"
+      },
+      {
+        "content": "1)     2024-09-02 d. pasirašyta projekto finansavimo sutartis Nr. S-MIP-24-64\n\n2)     Pradėti darbuotojų darbinimai.\n\n3)     Reikia apgalvoti koks asmuo galėtų dirbti vietoj Simono",
+        "author": "Danutė (43831156)",
+        "date": "2024-09-04T06:13:50.233000Z"
+      },
+      {
+        "content": "1\\.      Įdarbinti: Arvydas, Aida ir Riauka.\n\n2\\.      Michael 2024 m. darbinsim tik 2 mėnesiams (lapkritį/gruodį), nes jo DU kiekvieną mėnesį būtų mažesnis nei patvirtinta MMA ir tektų mokėti didesnius mokesčius Sodrai.\n\n3\\.      Benoit. VU finansų skyriui pateikiau Sodros išaiškinimus, kad jį kaip pensininką galima būtų darbinti kiekvieną mėnesį ir neturėtų kilti problemų dėl Sodros mokesčių. VU teigia: \"Jeigu atsirastų Sodros grindys, jas tektų padengti, nes projekte tam nėra numatyta lėšų.\" Gal darbinti Benoit nuo lapkričio ir tuo pačiu paprašyti, kad Benoit atsiųstų laisvos formos informaciją, kad jis gauna senatvės pensiją Prancūzijoje. Tai leistų pasiruošti 2025 metams ir patikrinti kaip Sodra vertina šią info, o papildomų Sodros mokesčių mokėti vis tiek nereiktų.\n\n4\\.      Emilija keičiama Vilhelmu. Bus daromas sutarties keitimas, siunčiami raštai, paprašyta Vilhelmo pateikti reikiamus dokumentus.\n\n5\\.      Simonas. Pagal reikalavimus, reiks gauti jo raštišką sutikimą, kad jis atsisako dalyvauti projekte. Turit kontaktus? Atlikti sutarties keitimus. Įdarbinti naują žmogų ir lėšas panaudoti šiai metais lėšas. Laiko nedaug. Reikia aptarti galimas kandidatūras.",
+        "author": "Danutė (43831156)",
+        "date": "2024-09-18T08:44:36.052000Z"
+      },
+      {
+        "content": "1. Parengti dokumentai finansavimo sutarties keitimui, gauti atsistatydinimo prašymai. 2. Gautas LMT pritarimas, finansavimo sutartis pakeista. 3. Simono lėšos perkeltos Riaukai, Emilijos lėšos - Vilhelmui. 4. Pasirašytos darbo sutartys su Benoit, Vilhelmu, baiginėjama pasirašyti susitarimo keitimą su Riauka dėl krūvio padidinimo. 5. Shribak įdarbinimo dokumentai per Avilio sistemą pateikti ir VU Personalo skyriaus sustabdyti, nes Personalo skyriui nepakanka pateiktos ID kortelės/vairuotojų teisių. Shribak nesutinka pateikti savo paso. Į komunikaciją įtrauktas VU personalo skyrius, Arvydas.",
+        "author": "Danutė (43831156)",
+        "date": "2024-12-04T07:35:14.785000Z"
+      },
+      {
+        "content": "Įdarbintas Shribak. Atliktos kalibravimo taikinio viešojo pirkimo procedūros, prekė iš užsienio pristatyta.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-14T14:20:58.347000Z"
+      },
+      {
+        "content": "lesu pirkiniams siemet nebeliko?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-11-19T06:52:26.783000Z"
+      },
+      {
+        "content": "Inicijuoti paskutiniai įdarbinimai ir reagentų pirkimai (CD20)",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-26T07:38:18.332000Z"
+      },
+      {
+        "content": "Įvykdytas paskutinis pirkimas (gauta sąskaita).",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-03T07:26:06.773000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 13,
+    "content": "OUTPUT 1.1.1. An expert document",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": "2026-08-31",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 14,
+    "content": "OUTPUT 1.1.2 Digitized research object (a sample dataset of at least 40 FFPE samples processed with PPM technology)",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": "2026-01-04",
+    "deadline": "2026-08-31",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 15,
+    "content": "OUTPUT 1.1.3. Two peer-reviewed research articles in Clarivate Analytics",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": "2026-02-05",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 16,
+    "content": "Martynas et al PPM pipepine",
+    "description": "",
+    "priority": 4,
+    "indent": 3,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 17,
+    "content": "Mantas et al RCC PPM TACS",
+    "description": "",
+    "priority": 4,
+    "indent": 3,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": "2026-02-26",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 18,
+    "content": "OUTPUT 1. 1.4 Two oral or poster presentations in international meetings.",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": "2026-08-31",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 19,
+    "content": "OUTPUT 2.1.1 One peer-reviewed research article in CA WOS journals accepted for publication (PPM-biomarkers for kidney pathology).",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": "2027-08-31",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 20,
+    "content": "OUTPUT 2.1.2 Two oral or poster presentations in international meetings.",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": "2026-09-01",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 21,
+    "content": "LMT PhD Melanoma Vygante",
+    "description": "",
+    "priority": 4,
+    "indent": 1,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "Arvydas (43613934)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 22,
+    "content": "SMEC Kidnex @PROJECT",
+    "description": "Skaitmeninės medicinos ekselencijos centras\n\nUniversitetų ekscelencijos iniciatyva",
+    "priority": 1,
+    "indent": 1,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "Arvydas (43613934)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Informuojame, kad atliktas ekspertinis Jūsų pateiktos paraiškos „**Duomenų centras mašininio mokymo ir dirbtinio intelekto taikymams gyvybės mokslų ir biomodeliavimo srityse**“ vertinimas. Atsižvelgdami į paraiškos turinį bei į ekspertų išsakytas rekomendacijas, o taip pat į VU vadovų sprendimus, teikiame siūlymą FINANSUOTI Jūsų pateikto ekscelencijos centro idėją su sąlyga: apjungiant Jūsų teikta paraišką su paraiška  „Skaitmeninės medicinos ekscelencijos centras“ ir integruojant žemiau nurodytų paraiškų dalis, susijusias su centro veiklos tematika:\n\n- paraiškos „Debesų kompiuterija paremto integruoto HPC ir kvantinių skaičiavimų duomenų centro sukūrimas: skaičiavimo infrastruktūros evoliucija“ dalis\n\n- paraiškos “Tvarios medžiagos – tvariai aplinkai“ dalis, susijusias su dirbtinio intelekto taikymais.\n\nŠio ekscelencijos centro (įskaitant ir siūlomus įjungti centrus) biudžetas 2023 – 2027 metams būtų iki 2,5 mln Eur. Įrangai – iki 1 mln. Eur be PVM. Dalis lėšų turi būti panaudotos 2023 m.\n\nMinėtų paraiškų kontaktiniai asmenys:\n\n- Skaitmeninės medicinos ekscelencijos centras – [danute.uzusieniene@mf.vu.lt](mailto:danute.uzusieniene@mf.vu.lt) (vadovas – prof. Arvydas Laurinavičius)\n\n- Debesų kompiuterija <...>  ekscelencijos centras – [paulius.drungilas@mif.vu.lt](mailto:paulius.drungikas@mif.vu.lt) (vadovas – prof. Povilas Treigys)\n\n-  Centras Tvarios medžiagos – tvariai aplinkai – [lina.mikoliunaite@chf.vu.lt](mailto:lina.mikoliunaite@chf.vu.lt) (vadovas – prof. Aivaras Kareiva)\n\nSvarbi informacija: LR ŠMSM pakoregavo Ekscelencijos centrų aprašą ir patikslino sąvokas atitinkamai:\n\n1. Pritrauktos tarptautinės lėšos – lėšos gautos iš projektų pateiktų po pažangos priemonės (ekscelencijos centrų – pastaba mano) patvirtinimo arba verslo užsakymų, sudarytų ne ankščiau nei pažangos priemonės patvirtinimo  dieną (t.y. ekscelencijos centre vystomomis temomis, o ne bendrai toje MSI)\n2. Nauji tyrėjai – bent 2 metus iki projekto pradėjimo Lietuvos MSI nedirbę tyrėjai.",
+        "author": "Arvydas (43613934)",
+        "date": "2023-08-21T09:59:11.321744Z"
+      },
+      {
+        "content": "VU personalas patvirtino, kad Jarvis įdarbintas",
+        "author": "Danutė (43831156)",
+        "date": "2024-05-15T06:50:54.706000Z"
+      },
+      {
+        "content": "kita sav projekto susitikimas",
+        "author": "Arvydas (43613934)",
+        "date": "2024-06-19T11:48:56.651000Z"
+      },
+      {
+        "content": "Įdarbintas Alok, suteikta prieiga prie VU e-paslaugų, Renaldas pasirūpins dėl prieigos prie VU GPU serverio.",
+        "author": "Danutė (43831156)",
+        "date": "2024-08-21T06:31:26.289000Z"
+      },
+      {
+        "content": "Supildyti prašymai/susitarimai dėl SMEC projekto dalyvių (Arvydo, Allano, Renaldo, Alok, Jarvio) perkėlimo į TSTI Skaitmeninės medicinos centrą.",
+        "author": "Danutė (43831156)",
+        "date": "2024-10-01T12:58:29.558000Z"
+      },
+      {
+        "content": "Ataskaita apie atliktus darbus pateikta MIF.",
+        "author": "Danutė (43831156)",
+        "date": "2024-10-29T06:46:04.386000Z"
+      },
+      {
+        "content": "Alok kuriam laikui nedirbo ir į laiškus neatsakinėjo. Po tam tikrų parašytų laiškų Alok atrašė. Išsiaiškinta teisinė situacija, jei nuspręstume gruodžio mėnesį jam nebemokėti darbo užmokesčio. Reikia sprendimo kaip elgsimės.",
+        "author": "Danutė (43831156)",
+        "date": "2024-12-04T07:26:16.960000Z"
+      },
+      {
+        "content": "Balandžio 29 d. vyks Ekscelencijos centrų priežiūros grupės susitikimas. Pateikta ataskaita kas nuveikta",
+        "author": "Danutė (43831156)",
+        "date": "2025-04-28T08:14:15.626000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 23,
+    "content": "VPC-VU-SK skaitmenine platforma - ADMIN",
+    "description": "",
+    "priority": 1,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "kolkas jokiu naujienu negavau, manua vertetu jau parasyti",
+        "author": "Renaldas (43750921)",
+        "date": "2024-01-02T19:02:42.614000Z"
+      },
+      {
+        "content": "parasykit, cia apie VU GPU instaliacija?",
+        "author": "Arvydas (43613934)",
+        "date": "2024-01-02T19:43:09.166000Z"
+      },
+      {
+        "content": "VU - laba diena, ir jus su šventėm. Pirmom dienom po metų kiek buvo užklupė kiti darbai - bet šiandien grįžome prie klausimo, ir tyrėtume kitą savaitę pateikti kokius rezultatus",
+        "author": "Renaldas (43750921)",
+        "date": "2024-01-04T13:45:22.400000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 24,
+    "content": "SMEC ADMIN",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 25,
+    "content": "Parengti turinį įkėlimui į SMEC tinklapį",
+    "description": "",
+    "priority": 4,
+    "indent": 3,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 26,
+    "content": "PLAN",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 27,
+    "content": "HALO intaliacija VU MF GPU",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 28,
+    "content": "1 publication",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": "2026-01-04",
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Planuota šiais metais išspausdinti 1 publikaciją. Renaldas užsiminė, kad jo rankraštis koreguojamas iš esmės. Gal Jarvio publikacija jau pribrendo?",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-03T07:30:31.659000Z"
+      },
+      {
+        "content": "Jarvis brandina RCC, siemet gal bus ka submittinti.",
+        "author": "Arvydas (43613934)",
+        "date": "2025-12-10T07:45:52.861000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 29,
+    "content": "3 publication",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 30,
+    "content": "2 publication",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 31,
+    "content": "PROBASE",
+    "description": "\\bbsrv\\Research\\2023_PROBASE_lauar_Smailyte\n\n\\filesrv\\Projects\\Bioetika\\12_Agne Krilaviciute_prostata\n\nhttps://aperio.vpc.lt/EditRecord.php?TableName=Project&Ids%5B%5D=190",
+    "priority": 2,
+    "indent": 1,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Pakoreguoti visi bioetikos dokumentai, Agnė Krilavičiūtė pritarė visoms korekcijoms, dokumentai pateikti 1) VRBTEK ir 2) VULSK KT",
+        "author": "Danutė (43831156)",
+        "date": "2024-07-22T11:12:51.500000Z"
+      },
+      {
+        "content": "1-3 done",
+        "author": "Arvydas (43613934)",
+        "date": "2024-08-26T11:17:53.313000Z"
+      },
+      {
+        "content": "Gauta viena pastaba iš Vilniaus bioetikos, prašoma detalizuoti kaip duomenys ir skaitmeniniai vaizdai bus pseudonimizuojami, pasitelkiant HALO AP. Atsakymo projektas parengtas, pateiktas Renaldui peržiūrai.",
+        "author": "Danutė (43831156)",
+        "date": "2024-08-29T07:37:30.651000Z"
+      },
+      {
+        "content": "1. Gautas bioetikos leidimas. 2. Agnė prašo peržiūrėti jai pateiktos duonbazės klaidas ir jas pataisyti. Renaldai, galėtum? 3. Prašo iš anksto, dar neatlikus darbų išrašyti sąskaitą apmokėjimui (jiems svarbu panaudoti lėšas 2024 metais). Ar yra prieštaraujančių?",
+        "author": "Danutė (43831156)",
+        "date": "2024-09-18T08:14:41.774000Z"
+      },
+      {
+        "content": "OK",
+        "author": "Arvydas (43613934)",
+        "date": "2024-09-18T09:59:29.562000Z"
+      },
+      {
+        "content": "Renaldai, issiuntem pataisytus duomenis?",
+        "author": "Arvydas (43613934)",
+        "date": "2024-10-02T05:18:22.260000Z"
+      },
+      {
+        "content": "[Renaldas](todoist-mention://43750921)",
+        "author": "Arvydas (43613934)",
+        "date": "2024-10-07T04:45:16.603000Z"
+      },
+      {
+        "content": "Agnei Krilavičiūtei pateikėme:\n\n1)     Skaičiuoklę-komercinį pasiūlymą, parengtą pagal bioetikoje minimus skaičius\n\n2)     Perdavimo priėmimo aktą LT/EN;\n\n3)     Specialią užpildytą formą apie tiekėją ir jo sąskaitą",
+        "author": "Danutė (43831156)",
+        "date": "2024-10-16T13:02:50.242000Z"
+      },
+      {
+        "content": "Renaldai, Ar Agnei pateikėm pataisytus duomenis (minėjai, kad diskutavot su direktoriumi)",
+        "author": "Danutė (43831156)",
+        "date": "2024-10-16T13:05:13.097000Z"
+      },
+      {
+        "content": "pateikiau ir paklausiau ar dabar gerai",
+        "author": "Renaldas (43750921)",
+        "date": "2024-10-18T09:32:20.048000Z"
+      },
+      {
+        "content": "Puikiai",
+        "author": "Danutė (43831156)",
+        "date": "2024-10-18T09:53:01.050000Z"
+      },
+      {
+        "content": "Duomenys atkoduoti - [nuoroda](file://Images/imagecollections/_Collections_/5_Probase_2024/anonymization/ID_1st_Batch_digitize_augren.txt).",
+        "author": "Renaldas (43750921)",
+        "date": "2025-07-30T06:33:37.360000Z"
+      },
+      {
+        "content": "*ATRANKA. Įvardinti visų prostatos biopsijos tiriamųjų atvejų numerius - planuojama skanuoti ir HE, ir IHC. (D. Dasevičius)*\n\n*SKENAVIMAS. DEMO. Iš Bx sąrašo užsakyti ir skanuoti kaip diagnostinius 10 atvejų. Nuskanavus „uždėti tagą HaloAP“ (L.Juknienė)*\n\n*PROCESO DOKUMENTAVIMAS. Paruošti proceso scenarijų (Renaldas ir Tadeušas)*\n\n*ATRANKA. Iš visų prostatektomijos atvejų atrinkti po 1 daugiausiai navikinės tiriamosios medžiagos turintį mikropreparatą (D. Dasevičius)*",
+        "author": "Danutė (43831156)",
+        "date": "2025-08-06T06:38:36.607000Z"
+      },
+      {
+        "content": "kadangi HaloAP kolkas nera pasiekiama iš išorės, sukurtas projektas per aperio [https://aperio.vpc.lt/EditRecord.php?TableName=Project&Ids%5B%5D=190](https://aperio.vpc.lt/EditRecord.php?TableName=Project&Ids%5B%5D=190)\n\ntaip pat sukurtas vartotojas Agnei krilag",
+        "author": "Renaldas (43750921)",
+        "date": "2025-08-18T12:53:18.589000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 32,
+    "content": "6\\. Select Ox - Darius",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 33,
+    "content": "7\\. Scan Ox - Aida.",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 34,
+    "content": "**MEL-AI bioetika**",
+    "description": "",
+    "priority": 4,
+    "indent": 1,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "jolita.jaskoniene (48808321)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Papildytas protokolas \"Pirminės odos melanomos prognostinis modeliavimas skaitmeninės patologijos ir DI metodais\" etapais, Jolita pateikė derinimui.",
+        "author": "Danutė (43831156)",
+        "date": "2025-04-15T14:38:36.026000Z"
+      },
+      {
+        "content": "Dokumentai derinami su VULSK. Šiuo metu peržiūrimi teisininko.",
+        "author": "jolita.jaskoniene (48808321)",
+        "date": "2025-04-29T06:10:25.012000Z"
+      },
+      {
+        "content": "Kokioje stadijoje?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-07-30T06:28:33.713000Z"
+      },
+      {
+        "content": "Vakar gavom atsakymą iš VULSK. Pateikta derinti VU. Kartu peržiūrimas preliminarus susitarimas ir derinama bendradarbiavimo sutartis.",
+        "author": "jolita.jaskoniene (48808321)",
+        "date": "2025-07-30T06:54:11.965000Z"
+      },
+      {
+        "content": "2025-09-12 d. Dokumentai pateikti VRBTEK.",
+        "author": "jolita.jaskoniene (48808321)",
+        "date": "2025-09-19T07:16:50.000000Z"
+      },
+      {
+        "content": "Neaišku, kada pateikti dokumentai bus vertinami. Šiais metais suplanuotų posėdžių nebėra ir laikinai yra sustabdytas naujų tyrimų dokumentų vertinimas.\n\nVRBTEK atsakymas po dokumentų pateikimo:\nLaba diena, \n\n informuojame, kad Komitetas jau yra įvertinęs visas paraiškas, kurių skaičius buvo numatytas trišalėje Biomedicininių tyrimų etinio vertinimo ir priežiūros regioniniu lygiu įgyvendinimo sutartyje.\nŠiuo metu Komitetas vykdo veiklą, susijusią su anksčiau atidėtų paraiškų svarstymu, kurių nagrinėjimas buvo laikinai pristabdytas tyrėjų iniciatyva.\nAtsižvelgiant į tai, **naujų biomedicininių tyrimų paraiškų registracija šiuo metu nevykdoma.**\nLaukiamas oficialus atsakingų institucijų atsakymas dėl galimo sutarties keitimo.\nRekomenduojame sekti informaciją Komiteto interneto svetainėje, skiltyje „Artimiausi posėdžiai“, kur bus skelbiami visi atnaujinimai dėl paraiškų svarstymo tvarkos ir terminų.\n\n Gražios dienos!\n\n **Renata Klevienė**\nTyrimų specialistė\n\n Mokslo ir inovacijų skyrius\n\n[Vilniaus regioninis biomedicininių tyrimų etikos komitetas (VRBTEK)](https://www.mf.vu.lt/mokslas/vilniaus-regioninis-biomedicininiu-tyrimu-etikos-komitetas)\nM.K.Čiurlionio g. 21, LT- 03101 Vilnius\nMob. tel. +370 614 26126\n\nTel. +370 5 268 6998\n\n El. paštas: [rbtek@mf.vu.lt](mailto:rbtek@mf.vu.lt); [renata.kleviene@mf.vu.lt](mailto:renata.kleviene@mf.vu.lt)",
+        "author": "jolita.jaskoniene (48808321)",
+        "date": "2025-09-19T07:20:11.070000Z"
+      },
+      {
+        "content": "Pateiktas atsakymas į 2025-11-07 gautas pastabas.",
+        "author": "jolita.jaskoniene (48808321)",
+        "date": "2025-11-17T11:35:47.028000Z"
+      },
+      {
+        "content": "Leidimas gautas",
+        "author": "jolita.jaskoniene (48808321)",
+        "date": "2025-12-05T07:05:16.708000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 35,
+    "content": "PROBASE bioetikos papildymas",
+    "description": "",
+    "priority": 4,
+    "indent": 1,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "Danutė (43831156)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "1. Siekiama Probase bioetiką papildyti Giedrės Smailytės (NVI) bioetika. 2. Agnei Krilavičiūtei pateiktos pastabos. 3. Agnė pateikė komentarus, tikslinga apsitarti. Kokius tyrėjus planuojama traukti į bioetiką.",
+        "author": "Danutė (43831156)",
+        "date": "2025-04-15T14:55:28.065000Z"
+      },
+      {
+        "content": "Užklausta ([giedre.smailyte@nvi.lt](mailto:giedre.smailyte@nvi.lt)) koks asmuo galėtų traukti info iš VULSK NVC ELI + kt. klausimai",
+        "author": "Danutė (43831156)",
+        "date": "2025-04-28T11:54:57.028000Z"
+      },
+      {
+        "content": "Yra papaildytas bioetikos protokolas, pakoreguotos schemos ir etapai. Jei būtų sprendimas, praplėsti bioetiką - galima būtų dokumentaciją teikti.",
+        "author": "Danutė (43831156)",
+        "date": "2025-07-30T05:49:53.281000Z"
+      },
+      {
+        "content": "reiktu uzmesti aki i duomenu rinkini. Gavus papildyma, PI kreipsis del ELI duomenu istraukimo?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-07-30T06:21:40.805000Z"
+      },
+      {
+        "content": "ar istraukti asmens kodus ir eli sintimo numeri?",
+        "author": "Renaldas (43750921)",
+        "date": "2025-07-30T06:31:54.200000Z"
+      },
+      {
+        "content": "Iki šiol buvo sprendimas neteikti dokumentų bioetikos papildymui. Teikti būtų galima. Reikia žinoti galutinį sprendimą.",
+        "author": "Danutė (43831156)",
+        "date": "2025-07-30T07:01:28.329000Z"
+      },
+      {
+        "content": "Parengti ir pateikti dokumentai VRBTEK dėl bioetikos papildymo. Dokumentams VRBTEK pritarė. Pateikti dokumentai derinami su VULSK Klinikinių tyrimų skyriumi.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-14T14:27:09.464000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 36,
+    "content": "Bioetikų suvestinė",
+    "description": "\\\\\\filesrv\\Projects\\Projektai\\PORTFOLIO",
+    "priority": 4,
+    "indent": 1,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "Danutė (43831156)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Bioetikų suvestinė yra čia: \\\\\\filesrv\\Projects\\Projektai\\PORTFOLIO Trys bioetikos baigiasi šiais metais, aktualu aptarti kurias jų tikslinga pratęsti. Pratęsti galima tik tas bioetikos, kurių galiojimas nepasibaigęs",
+        "author": "Danutė (43831156)",
+        "date": "2025-08-06T06:41:03.437000Z"
+      },
+      {
+        "content": "1\\. Suvestinėje prie bioetikų nurodomi straipsniai, kai bus pilnai užbaigta - informuosime. 2. Artimiausiu metu baigs galioti šios bioetikos: 1) Jankevičiaus 2) Marijos iš Rygos 3) Aidos/Dovilės.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-19T06:41:27.245000Z"
+      },
+      {
+        "content": "Parengti visi dokumentai ir išsiųsti Jankevčiui ir kt. peržiūrai dėl bioetikos pratęsimo. Laukiu komentarų.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-19T06:42:48.403000Z"
+      },
+      {
+        "content": "Ankstesnio posėdžio metu sutarta, kad Dovilė pasirūpins dėl Aidos/Dovilės bioetikos pratęsimo.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-19T06:43:31.203000Z"
+      },
+      {
+        "content": "Bioetikų suvestinė baigta pildyti. Prie atitinkamų leidimų įtraukti straipsniai, kuriuose minima viena ar kita bioetika. Ne visada straipsniuose nurodytos korektiškos bioetikos. (yra čia: \\\\\\filesrv\\Projects\\Projektai\\PORTFOLIO",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-19T07:18:00.350000Z"
+      },
+      {
+        "content": "aciu paziuresiu",
+        "author": "Arvydas (43613934)",
+        "date": "2025-09-19T07:21:22.977000Z"
+      },
+      {
+        "content": "1. Parengti \"Jankevičiaus\" bioetikos dokumentai pratęsimui, įtraukta info, kad bus ne tik renkami prospektyvios imties duomenys, bet bus renkama ir pati imtis (gauti 75 pacientų sutikimai, galima rinkti iki 150). Pakoreguoti protokolo 7,8,11,18 punktai, kt. dok., pakoreguota PRADA. 2. Su VRBTEK suderinta, reikia teikti pasirašytus dokumentus. 3. Dokumentai nusiųsti VULSK Klinikiniams tyrimams galutiniams derinimui. 4. Bioetika baigia galioti iki 2025-10-31 d., iki tos dienos pasirašyti dok. turi pasiekti VRBTEK.",
+        "author": "Danutė (43831156)",
+        "date": "2025-10-13T08:11:00.186000Z"
+      },
+      {
+        "content": "Ačiū, Danute, ūls įspūdingas. \\\\\\filesrv\\Projects\\Projektai\\PORTFOLIO",
+        "author": "Arvydas (43613934)",
+        "date": "2025-10-14T07:56:54.940000Z"
+      },
+      {
+        "content": "1) Gautas \"Jankevičiaus\" bioetikos pratęsimas 2 metams (Danutė). Planuojama su VULSK ir VU teisininkais grįžti prie DI akto taikymo iki 2026-01-30 d. 2) Gautas \"Aidos\"/ \"Dovilės\" bioetikos pratęsimas (Dovilė)",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-14T14:13:48.227000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 37,
+    "content": "ONCOINTEGRA @PROJECT",
+    "description": "",
+    "priority": 1,
+    "indent": 1,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "Arvydas (43613934)",
+    "date": "2026-01-04",
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Priminta Gagilui, kad jau dabar būtų rašomi raštai dėl projekto pratęsimo - tai leistų panaudoti suplanuotas lėšas VULSK rezidentams, kurių ne visas darbas yra gretinamas.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-16T15:20:11.967000Z"
+      },
+      {
+        "content": "VULSK turi daug problemų vykdant suminę darbo laiko apskaitą (yra atvejų, kai VULSK klinicistai/slaugytojos dirba daugiau nei 24 valandas, budi 3 paras iš eilės, o tarp tų trijų parų nėra jokio privalomo poilsio arba jis yra mažesnis nei privaloma ir yra dienų, kada per savaitę dirbama daugiau nei 60 dienų).\nKadangi IA/CPVA akcentavo, kad tomis, dienomis, kada bus pastebėti VULSK darbo laiko apskaitos pažeidimai, projekto išlaidos bus netinkamos ir gali plėsti patikros mastą, todėl imtasi šių rizikos valdymo priemonių:\n1) buvo atkreiptas ŽIS vadovės dėmesys, įtraukti asmenys iš projektų, buhalterijos skyrių. Pasirodo tai sena ir žinoma problema, ne visi žino DK darbo laiko reikalavimus, kuriuos turi tenkinti, anot vadovės „taip buvo, yra ir bus“.\n2) nėra programos, kuri leistų VULSK vesti suminę darbo laiko apskaitą, apimant visas pareigas (Medka, Rivilė to neatlieka, Eroje funkcionalumas nepilnas ir tik daliai darbuotojų). Planuojama vykdyti naujos sistemos pirkimą, bet ji geriausiu atveju bus nupirkta pasibaigus projektui.\n\n3) prieš teikiant mokėjimo prašymą agentūroms už 9, 10, 11 mėnesius buvo atlikti labai laikui imlūs perskaičiavimai xls ir kur buvo galima perstumdytos valandos taip, kad asmuo nedirbtų projekte tada, kada stebime darbo laiko apskaitos pažeidimai\n4) tuo pačiu principu perstumdytos valandos už 2025-12., įtraukiant visus kriterijus, duomenys pateikti buhalterijai.\n\n5) bus siekiama pratęsti projekto trukmę (Gagilas jau pritaria, kad būtų pratęsiama 2 mėn.), kad, jei bus netinkamų išlaidų už ankstesnį periodą + jei kas nespės išnaudoti lėšų dėl dabartinio didelio darbo krūvio, lėšas dar būtų galima panaudoti.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-30T15:37:52.646000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 38,
+    "content": "Onco panelės pirkimas",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "1) Pirkimas inicijuotas, 2) Ecocost nukreipė pirkimą Algimantui, kuris nebedirba, vykdymui. 3) Priminta Alicijai ir komandai 3-ią kartą, įtraukiant direktorių.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-19T06:54:11.700000Z"
+      },
+      {
+        "content": "Po 4-o priminimo 2025-09-19 d. Alicja paskyrė VP specialistę Rasą Stackevičienę vykdyti pirkimą. Pradžioj jai pavesta 1) užbaigti ir paskelbti rinkos konsultacijos dokumentus 2) pirkimą laikyti prioritetiniu; Birutės prašoma atkreipti dėmesį, jei pasikartotų situacija, kai Algimantas paraiškoje nenurodomas kaip vykdytojas, bet jis sistemoje lieka.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-23T09:03:10.847000Z"
+      },
+      {
+        "content": "2025-09-23 d. Rasa Stackevičienė pateikė atsakymą atlikus rinkos konsultaciją: [European Dynamics - Rinkos konsultacijos dokumentai](https://viesiejipirkimai.lt/epps/pmc/listPmcContractDocuments.do?resourceId=3622647#)",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-23T09:04:41.537000Z"
+      },
+      {
+        "content": "Rasa Stackevičienė pateikė klausimus:\n\n1)     Ar bus nustatomi per dideli įkainiai? Ar tik pasiūlymo vertinamoji kaina, t. y. pagal pirkimui skirtų lėšų sumą?\n\n2)     Sutarties reikalavimai: 6-8 punktai: Nurodyti, jog garantinis terminas nustatytas TS.  \n\n3)     Pateikti įkainių perskaičiavimo sąlygas (kai sutartis ilgesnė nei 6 mėn.).\n\n4)     Peržiūrėti TS dėl patikslinimų (pridedama). \n\n2025-09-24 d. su Gedmante sutarta, kad ji peržiūrės TS ir įvertins siūlomus patikslinimus ar jie nepakeičia esmės, Danutė atsakys į kitus klausimus.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-24T06:48:07.617000Z"
+      },
+      {
+        "content": "VP specialistei pateikti Danutės ir Gedmantės atsakymai dėl pirkimo vykdymo",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-26T09:31:10.504000Z"
+      },
+      {
+        "content": "manau pertekline diskusija su VP specialiste",
+        "author": "Arvydas (43613934)",
+        "date": "2025-10-01T06:18:45.830000Z"
+      },
+      {
+        "content": "Posėdžio metu aptarėm, kad minimalūs tiekėjo kvalifikaciniai reikalavimai gali būti labai lakoniški, Aida pakalbės su Gedmante.",
+        "author": "Danutė (43831156)",
+        "date": "2025-10-01T09:43:40.747000Z"
+      },
+      {
+        "content": "1) Gedmantė pateikė minimalius tiekėjo kvalifikacinius reikalavimus, ačiū. Info pateikta VP specialistei. 2) VP specialistė \"pataisė\" specifikaciją taip, kad didžioji dalis pirkimo dalių greičiausiai būtų atmestos 3) Pateikta VP specialistei iš naujo pakoreguota specifikacija. Gedmantė jai pritarė. 4) Atnaujinti duomenys pateikti per Ecocost.",
+        "author": "Danutė (43831156)",
+        "date": "2025-10-08T06:47:12.725000Z"
+      },
+      {
+        "content": "Pirkimas inicijavimo fazę praėjo (suderinta su VP specialiste, Alicja G), dabar pirkimo vykdymo stadija (rengiami dokumentai)",
+        "author": "Danutė (43831156)",
+        "date": "2025-10-13T05:56:05.182000Z"
+      },
+      {
+        "content": "**From:** Rasa Stackevičienė <Rasa.Stackeviciene@santa.lt>\n**Sent:** 2025 m. spalio 20 d., pirmadienis 06:09\n**To:** [Danute.Uzuseniene@santa.lt](mailto:Danute.Uzuseniene@santa.lt); **Cc:** Arvydas.Laurinavicius@santa.lt; Aida.Laurinaviciene@santa.lt; Gedmante.Radziuviene@santa.lt\nLabas rytas, numatomas tarptautinio atviro konkurso pasiūlymų susipažinimas 2025-11-21. Atskiru pranešimu informuosiu atsiunčiant nuorodą į pirkimą. \n\n**From:** Danutė Užusenienė\n**Sent:** 2025 m. spalio 17 d., penktadienis 12:16\n**To:** [Rasa.Stackeviciene@santa.lt](mailto:Rasa.Stackeviciene@santa.lt); Arvydas.Laurinavicius@santa.lt; Aida.Laurinaviciene@santa.lt; Gedmante.Radziuviene@santa.lt\nSveiki, Rasa, Ar galite pasidalinti kaip juda pirkimo 10118 “ Reagentai pažangiems patologijos tyrimams” dokumentacijos rengimo/skelbimo procesas. Minėjote, kad šį pirkimą laikysite prioritetiniu. Šiuo metu neįleidžia manęs sistema į Ecocost, tai nematau kaip juda procesas. Laboratorija norėtų planuotis NKS tyrimų vykdymą, įsivertinti terminus ir personalą, nes šie tyrimai būtų nauji. Tad jūsų info būtų labai aktuali. Ačiū",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-06T13:09:08.967000Z"
+      },
+      {
+        "content": "Rasai Stackevičienei yra pateikti atsakymai į jos klausimus: 1) kuris projektas yra skėtinis, kuris MTEP projektas, 2) sutarties vykdymo terminai. Priminta apie skubą, kad laukiame nuorodos į skelbimą.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-06T13:18:20.633000Z"
+      },
+      {
+        "content": "Kokia cia proceso eiga (klausimai iki pirkimo skelbimo?) ir kada juos Rasa pateike?",
+        "author": "Aida (43629179)",
+        "date": "2025-11-07T06:29:58.193000Z"
+      },
+      {
+        "content": "1\\.      UŽKLAUSTA NETIESIOGIAI SPALIO 29 D., TĄ PAČIĄ DIENĄ SPALIO 29 DIENĄ ATSAKYTA:\n\n**From:** Ineta Dišytė <[Ineta.Disyte@Santa.Lt](mailto:Ineta.Disyte@Santa.Lt)>\n**Sent:** 2025 m. spalio 29 d., trečiadienis 08:31; **To:** [Danute.Uzuseniene@santa.lt](mailto:Danute.Uzuseniene@santa.lt)\n**Subject:** FW: Dėl pirkimo 10118 duomenų patikslinimo\n\nLabas, Danute, Viešųjų pirkimų skyrius turi klausimų dėl  pirkimo pavadinimo. Labas rytas, Ineta, prašau patikslinki projekto pavadinimą kaip turi būti oficialiai visur nurodomas? Ne vienoje vietoje pirkimo paraiškoje įvairiai nurodoma.  Ar tinkama (?) Reagentai pažangiems patologijos tyrimams 10118\\. Pirkimas vykdomas pagal MTEP projektą „Klinikinės multi-omikos platformos, skirtos onkologinių ligų diagnostikai ir pažangios terapijos sprendimams, kūrimas” (ONCOINTEGRA). Projekto Nr. 09-002-P-0002 ??? Dėkoju, Pagarbiai **Rasa Stackevičienė**\n\n**Nuo:** Danutė Užusenienė <[Danute.Uzuseniene@santa.lt](mailto:Danute.Uzuseniene@santa.lt)>\n**Išsiųsta:** 2025 m. spalio 29 d., trečiadienis 10:32\n**Iki:** Ineta Dišytė <[Ineta.Disyte@Santa.Lt](mailto:Ineta.Disyte@Santa.Lt)>; Rasa Stackevičienė <[Rasa.Stackeviciene@santa.lt](mailto:Rasa.Stackeviciene@santa.lt)>\n**Tema:** RE: Dėl pirkimo 10118 duomenų patikslinimo\n\nSveiki, Yra vienas “skėtinis” projektas „Misijomis grįstų mokslo ir inovacijų programų įgyvendinimas\", po kuriuo „telpa“ 7 MTEP projektai ir vienas iš tų 7 MTEP projektų yra MTEP projektas „Klinikinės multi-omikos platformos, skirtos onkologinių ligų diagnostikai ir pažangios terapijos sprendimams, kūrimas” (ONCOINTEGRA).\n\nJei matysite du skirtingus pavadinimus, jei abu teisingi. **Teisingiausia rašyti:** Pirkimas vykdomas pagal projektą „Misijomis grįstų mokslo ir inovacijų programų įgyvendinimas\" Nr. 02-002-P-0001 ir skirtas paprojekčio „Inovacijos sveikatai“ MTEP projektui „Klinikinės multi-omikos platformos, skirtos onkologinių ligų diagnostikai ir pažangios terapijos sprendimams, kūrimas” (ONCOINTEGRA) įgyvendinti.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-07T07:10:59.445000Z"
+      },
+      {
+        "content": "1\\.      UŽKLAUSTA SPALIO 29 D., ATSAKYTA SPALIO 29 D., IA PATVIRTINO SPALIO 30 D.\n\n**From:** Ineta Dišytė <[Ineta.Disyte@Santa.Lt](mailto:Ineta.Disyte@Santa.Lt)>\n**Sent:** 2025 m. spalio 29 d., trečiadienis 12:03\n**To:** Danutė Užusenienė <[Danute.Uzuseniene@santa.lt](mailto:Danute.Uzuseniene@santa.lt)>; Rasa Stackevičienė <[Rasa.Stackeviciene@santa.lt](mailto:Rasa.Stackeviciene@santa.lt)>\n**Subject:** RE: Dėl pirkimo 10118 duomenų patikslinimo\n\nProjekto pabaiga už 6 mėn. ( 2026-04-30) , o sutarties terminas 13 mėnesių? Nors aš turiu kitą projektą, kur Kauno klinikos yra pasirašę sutarties galiojimą ilgesnį už patį projektą. CPVA tik perklausė ir daugiau nesikabino. Tai gal ir nieko ir šiuo atveju. **Ineta Dišytė**\n\n**From:** Danutė Užusenienė <[Danute.Uzuseniene@santa.lt](mailto:Danute.Uzuseniene@santa.lt)>\n**Sent:** Wednesday, October 29, 2025 12:20 PM\n**To:** Ineta Dišytė <[Ineta.Disyte@Santa.Lt](mailto:Ineta.Disyte@Santa.Lt)>; Rasa Stackevičienė <[Rasa.Stackeviciene@santa.lt](mailto:Rasa.Stackeviciene@santa.lt)>\n**Subject:** RE: Dėl pirkimo 10118 duomenų patikslinimo\n\nSveiki, 1. Pradiniame etape teikiant paraišką norėta sumažinti trukmę (Birutė nepritarė). Tam, kad sumažinti, reikia keisti pirkimo planą. Kad neįsivelti į biurokratinius procesus, trukmę keisti netikslinga, nebent manote kitaip. Pirkimai vykdomi tokiu principu, kad nusiperkame, o paskui kompensuoja. Tiksliai apskaičiuoti trukmę sudėtinga (priklauso nuo techninės specifikacijos rengėjo per kiek laiko paruošia dokumentaciją, per kiek laiko visi suvizuoja, per keik laiko bus paskelbta, ar bus pratęstas projektas, per keik laiko tiekėjas atsiveš prekes... galim keisti, bet pakeisti vėl netiksliai).Sutarties vykdymo trukmė palikta tokia, kokia numatyta pirkimo plane:        Pasirašius sutartį prekes užsakytume iškart. 2. Yra tiekėjų, kurie nesutinka teikti pasiūlymų, jei bus apmokėjimas per 60 dienų, todėl paraiškoje nurodyta 30 dienų. 3. Iš to seka, kad sutarties galiojimas yra 12 mėn.+1 mėn apmokėjimui (30 d.).  \n\n**From:** Danutė Užusenienė <[Danute.Uzuseniene@santa.lt](mailto:Danute.Uzuseniene@santa.lt)>\n**Sent:** Wednesday, October 29, 2025 1:54 PM\n**To:** Rasa Stackevičienė <[Rasa.Stackeviciene@santa.lt](mailto:Rasa.Stackeviciene@santa.lt)>; Ineta Dišytė <[Ineta.Disyte@Santa.Lt](mailto:Ineta.Disyte@Santa.Lt)>\n**Subject:** RE: Dėl pirkimo 10118 duomenų patikslinimo\n\nGalima įterpti tokį sakinuką kur į dokumentaciją:\n\nŠi sutartis galioja 13 (trylika) mėnesių nuo jos pasirašymo dienos. Pažymima, kad projektas, pagal kurį planuojami pirkimai pagal šią sutartį, įgyvendinamas iki 2025 m. balandžio 30 d. Koordinuojančioms agentūroms pritarus, projekto įgyvendinimo laikotarpis gali būti pratęstas. Atsižvelgiant į tai, visi pirkimų vykdymo, prekių tiekimo ir paslaugų teikimo veiksmai turi būti įvykdyti projekto įgyvendinimo laikotarpiu.\n\n**Nuo:** Ineta Dišytė <[Ineta.Disyte@Santa.Lt](mailto:Ineta.Disyte@Santa.Lt)>\n**Išsiųsta:** 2025 m. spalio 30 d., ketvirtadienis 11:17\n**Iki:** Danutė Užusenienė <[Danute.Uzuseniene@santa.lt](mailto:Danute.Uzuseniene@santa.lt)>; Rasa Stackevičienė <[Rasa.Stackeviciene@santa.lt](mailto:Rasa.Stackeviciene@santa.lt)>\n**Tema:** RE: Dėl pirkimo 10118 duomenų patikslinimo Labas, Susisiekiau su Inovacijų Agentūra. Jie neprieštarauja, kad sutartis būtų 12 mėn. Svarbu, kad pateikti užsakymai, gautos prekės ir apmokėta  būtų iki  projekto pabaigos.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-07T07:13:37.045000Z"
+      },
+      {
+        "content": "Pirkimas paskelbtas: [https://www.viesiejipirkimai.org/pirkimas/431655](https://www.viesiejipirkimai.org/pirkimas/431655)",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-07T07:13:53.134000Z"
+      },
+      {
+        "content": "ŽEMIAU NURODYTI ASMENYS BUS ĮTRAUKTI Į CVP IS, KAD GALĖTŲ MATYTI EIGĄ:\n\n1)     Gedmantė Radžiuvienė 2)     Aida Laurinavičienė 3)     Danutė Užusenienė",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-07T07:16:14.460000Z"
+      },
+      {
+        "content": "Suprantu, kad Danute kuruoja si procesa, o mes su Gedmante turesime galimybe stebeti. Del atsakomybiu tikslinu.",
+        "author": "Aida (43629179)",
+        "date": "2025-11-07T12:35:51.103000Z"
+      },
+      {
+        "content": "**From:** Rasa.Stackeviciene@santa.lt; **To:** Danute.Uzuseniene@santa.lt\nLaba diena, priežastys: tinkami pirkimo dokumentų tvirtinimai (tame tarpe užtrukome kelias dienas dėl sutarties trukmės tikslaus išsiaiškinimo) ir terminų laikymasis pagal VPĮ numatytus, kurie negali būti trumpesni nei 35 dienos (jei tai sutampa su savaitgaliu-persikelia į darbo dieną, kas šiuo atveju taip pat yra). Pagarbiai, **Rasa Stackevičienė,** Vyr. specialistė \n\n**Nuo:** [Danute.Uzuseniene@santa.lt](mailto:Danute.Uzuseniene@santa.lt); **Iki:** [Rasa.Stackeviciene@santa.lt](mailto:Rasa.Stackeviciene@santa.lt)\nSveiki, vadovas pranešė visiems projekto partneriams, kad pagal jūsų teiktą info šį penktadienį (2025-11-21) bus vokų plėšimas. Kaip suprantu, pasikeitė terminai. Kokią priežastį turėčiau nurodyti? Danutė\n\n**From:** [Rasa.Stackeviciene@santa.lt](mailto:Rasa.Stackeviciene@santa.lt); **To:** Danutė Užusenienė <[Danute.Uzuseniene@santa.lt](mailto:Danute.Uzuseniene@santa.lt) Laba diena, Danute, siunčiu Jums nuorodas į pirkimą (nes nei Jūsų, nei kitų nurodytų asm. nėra CVP IS sistemoje). Reagentai pažangiems patologijos tyrimams (10118) Pirkimo ID 5183126 [European Dynamics - Peržiūrėti pirkimo informaciją](https://viesiejipirkimai.lt/epps/cft/prepareViewCfTWS.do?resourceId=5183126)",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-19T06:58:39.789000Z"
+      },
+      {
+        "content": "**Pasiūlymų pateikimo terminas 2025-12-08**",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-26T08:01:06.666000Z"
+      },
+      {
+        "content": "2025-12-05 d. visiems tiekėjams priminta pateikti pasiūlymus, akcentuota, kad turi pateikti pasiūlymą su 21 proc. PVM. 2025-12-08 d. anksti ryte patikrinta - visi tiekėjai pasiūlymus pateikė. Vokų plėšimas 9 val. Po plėšimo viešųjų pirkimų specialistė Rasa pateiks pasiūlymus ekspertiniam vertinimui Gedmantei.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-08T06:43:32.789000Z"
+      },
+      {
+        "content": "kaip sekasi?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-12-10T07:34:06.487000Z"
+      },
+      {
+        "content": "Priminimai nuo vokų plėšimo kasdien VP rašomi el paštu + skambučiais. Anot VP specialistės Rasos, suteikė prieigą Gedmantei prie sistemos, kad nereiktų siuntinėti didelių failų, dar parašys jai e-mailu. Sutarta, kad būtų greičiau, Rasa persiųs Iliumina pasiūlymą (kurio labiausiai laukiama) el paštu Gedmantei vertinimui.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-10T07:50:43.686000Z"
+      },
+      {
+        "content": "Pirkimo pasiūlymai įvertinti, pateikti, VP specialistė informuota apie skubą.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-16T08:00:22.633000Z"
+      },
+      {
+        "content": "Aptarta su Gedmante, kad ji peržiūrės ar yra reagentų ir kokie jie yra, kuriuos būtų poreikis įsigyti anksčiau. Tai žinant būtų galimybė kreiptis į tiekėją, kad jis atsivežtų prekes į Lietuvą ir sutrumpėtų logistikos grandinė net iki sutarties pasirašymo. Gedmantė daug reagentų turi, reagentų galiojimas yra ribotas, todėl ji dar įvertins ar reikia skubinti procesą.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-23T07:41:04.926000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 39,
+    "content": "IHC/molekulinių reagentų pirkimas",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "1. Dovilė pateikė siūlomų įsigyti antikūnų sąrašą. 2 Reikia galutinio sprendimo ką siūlote pirkti.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-23T11:42:01.245000Z"
+      },
+      {
+        "content": "Pagal laboratorijos parengtą specifikaciją inicijuotas pirkimas. Vadovų posėdžio metu sutarta, kad šio pirkimo ekspertu bus Loreta (taip nurodyta dokumentacijoje).",
+        "author": "Danutė (43831156)",
+        "date": "2025-10-13T06:00:59.967000Z"
+      },
+      {
+        "content": "Reagentų pirkimas. Inicijavimo procesas baigtas, dabar VP rengia dokumentus paskelbimui.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-14T14:28:10.881000Z"
+      },
+      {
+        "content": "**From:** Jolita.Balandiene@santa.lt; **Sent:** 2025 m. lapkričio 19 d., trečiadienis 10:31\n**To:** Danute.Uzuseniene@santa.lt\n**Subject:** RE: Reagentai molekuliniams tyrimams\n\n Laba diena, Pasistengsiu dokumentus pirkimui parengti kuo skubiau. Jei bus neaiškumų, susisieksiu. **Jolita Balandienė** Vyr. viešųjų pirkimų specialistė",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-19T10:13:10.292000Z"
+      },
+      {
+        "content": "Balandienei periodiškai priminta, kad aktualu paskelbti pirkimą",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-26T07:40:54.247000Z"
+      },
+      {
+        "content": "Plesimas Nov 21?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-11-26T07:56:37.116000Z"
+      },
+      {
+        "content": "Pirkimas suderintas, turi paskelbti VP skyrius (Balandienė)",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-26T08:01:45.141000Z"
+      },
+      {
+        "content": "VULSK teisininkai pirkimo dokumentams yra pritarę, planuojama pirkimą paskelbti dar 2025 metais.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-23T07:41:58.288000Z"
+      },
+      {
+        "content": "Pirkimas paskelbtas 2025-12-23, susipažinimas su pasiūlymais 2026-01-14 10:30.\n\n[https://viesiejipirkimai.lt/epps/cft/prepareViewCfTWS.do?resourceId=5945317](https://viesiejipirkimai.lt/epps/cft/prepareViewCfTWS.do?resourceId=5945317)",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-31T07:27:58.712000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 40,
+    "content": "Nuspręsti koks yra galutinis perkamų antikūnų sąrašas",
+    "description": "",
+    "priority": 4,
+    "indent": 3,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "Arvydas (43613934)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 41,
+    "content": "Parengti specifikaciją pagal anksčiau pirktų reagentų pavyzdį (Aida)",
+    "description": "",
+    "priority": 4,
+    "indent": 3,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "Aida (43629179)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Loretai ir Aidai persiųsti Dovilės atrinkti IHC prašant iš ankstesnių pirkimų surinkti atntikūnų aprašymus/reikalavimus, t.y. parengti specifikaciją",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-19T07:21:02.478000Z"
+      },
+      {
+        "content": "Per vadovų susirinkimą Aida nurodė, kad dokumentacijoje kaip atsakingą specifikacijos rengėją įvardinti Loretą.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-14T14:31:23.332000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 42,
+    "content": "Biudžeto keitimas: 1) pagrindimas 2) finansai 3) IA ir CPVA pritarimas",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "Danutė (43831156)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Siunčiamo rašto projektas parengtas, pateiktas direktoriui derinimui (Vietoj slaugytojos būtų darbinami: Rytis, Jarvis, Dovilė). Laukiame atsakymo ar Rytis planuoja įsitraukti.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-07T12:42:50.650000Z"
+      },
+      {
+        "content": "Ryčiui atsakius ieškoma kitų kandidatų (Arvydas, Danutė)",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-14T14:23:03.855000Z"
+      },
+      {
+        "content": "Paulius M, Trinkunas J.",
+        "author": "Arvydas (43613934)",
+        "date": "2025-11-19T06:32:41.110000Z"
+      },
+      {
+        "content": "Ar aiškios Pauliaus ir Justo DU proporcijos? Po lygiai?",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-19T07:41:23.896000Z"
+      },
+      {
+        "content": "1) parengtas galutinis rašto projektas suderintas su IA (Keršiene), 2) pateiktas derinimui VULSK atsakingiems asmenims 3) siunčiamas oficialus raštas vizuojamas EROJE",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-26T07:39:58.245000Z"
+      },
+      {
+        "content": "Oficialus pasirašytas raštas dėl Oncointegra lėšų perskistymo ir naujų darbuotojų įdarbinimo (Jarvis, Justas T) + daliai darbo krūvio padidinimo pateiktas IA.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-03T06:26:22.616000Z"
+      },
+      {
+        "content": "Inovacijų agentūrai priminta, kad laukiame atsakymo dėl darbuotojų darbinimo (įtrauktas vadovas Karolis)",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-16T15:18:51.751000Z"
+      },
+      {
+        "content": "IA ir CPVA pritarė mūsų raštui. Vietoj slaugytojos nuo 2025-01-02 d. bus darbinamas Trinkūnas, Jarvis ir nedideliu krūviu padidinamas Dovilės krūvis projekte.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-17T07:59:15.847000Z"
+      },
+      {
+        "content": "aciu!",
+        "author": "Arvydas (43613934)",
+        "date": "2025-12-17T08:00:20.771000Z"
+      },
+      {
+        "content": "1) Jarvio, Justo, Dovilės prašymai dėl įsidarbinimo vizuojami. Jarvio ir Justo prašymus direktorė valdymui jau pavizavo; su Jarvio trimis prašymais susipažino GD.\n2) Papildomai parašytas laiškas kitiems vizuotojams (Grigentienei, Pocevičiui) dėl DU apmokėjimo į vieną iš Jarvio pasirinktų sąskaitų.",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-30T14:57:58.158000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 43,
+    "content": "Darbuotojų darbinimai",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "Danutė (43831156)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "1. Mantui ir Kristinai neleidžia gretinti projekto valandų su gydytojo rezidento pareigybe - sudėtinga panaudoti suplanuotas projekto valandas 2) Aistės įsidarbinimo prašymas atmestas - reikia pagrįsti jos funkcijas projekte 3) Kitų asmenų prašymai suvizuoti, žmonės darbinami.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-19T06:59:29.443000Z"
+      },
+      {
+        "content": "Visi suplanuoti darbuotojai įdarbinti. Nepaskirstytas slaugytojos Malinauskienės DU.",
+        "author": "Danutė (43831156)",
+        "date": "2025-11-07T12:44:38.149000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 44,
+    "content": "Ataskaitos",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Prašė Julius Gagilas pateikti 07-08 mėn. ataskaitas agentūroms, bus aptariama 2025-09-30 d. 14 val. Projektą pateikiau 2025-09-29 d. AL, KS, DŽ, laukiu pritarimo/korekcijų: [2_ONCOINTEGRA_2025_07_08_monthly_report.pptx - Google Slides](https://docs.google.com/presentation/d/1offd7yw9Jxqjlf2C-pd1a7-GmDO7qIEG/edit?slide=id.p4#slide=id.p4)",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-30T06:41:23.818000Z"
+      },
+      {
+        "content": "Papildyta neekonominės veiklos ataskaita: nebeminimas Vugene pavadinimas ir akcentuojama, kad duomenis įkelsime į Midas duomenų bazę ir visi galės naudotis rezultatais (tarp jų bus ir Vugene). Tiesiai Vugene nieko nepateiksime.\n\nLauksiu pritarimo arba korekcijų su „track changes“.",
+        "author": "Danutė (43831156)",
+        "date": "2025-10-13T06:03:11.514000Z"
+      },
+      {
+        "content": "Atsakymų į klausimus projektas (Martynai/Nugarui) persiųstas tolimesniam redagavimui",
+        "author": "Danutė (43831156)",
+        "date": "2025-10-13T06:15:03.521000Z"
+      },
+      {
+        "content": "Parasiau jiems email siandien.",
+        "author": "Arvydas (43613934)",
+        "date": "2025-10-13T18:54:37.289000Z"
+      },
+      {
+        "content": "Parengta ir pateikta Oncointegra projekto 2025 m. 10 ir 11 mėn. ataskaita",
+        "author": "Danutė (43831156)",
+        "date": "2025-12-03T06:27:36.370000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 45,
+    "content": "The Hub",
+    "description": "",
+    "priority": 2,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 46,
+    "content": "Hex4Path IT paraiška",
+    "description": "[Network • Co-Intell / F2 • Kumu](https://kumu.io/arvylau/network#co-intell/hex4path)\n\nKvietimas: “Informacinės technologijos mokslo ir žinių visuomenės plėtrai”\n\nProjektas: Technology Platform for Hexagonal Grid Analytics in Pathology (Hex4Path)\n\nKomanda:\n\n1. Allan Rasmusson\n2. Arvydas Laurinavičius\n3. Aida Laurinavičienė\n4. Vincas Urbonas\n5. Dovilė Žilėnaitė-Petrulaitienė\n6. Paulius Milmantas\n7. Vygantė Maskoliūnaitė\n8. Martynas Riauka\n9. Sören Marx\n10. Vilhelmas Konstantinas Landsbergis\n11. Edgaras Zaboras\n12. Student (IT Specialist)\n13. Student (Data Analyst)\n14. Student (Data Analyst)",
+    "priority": 2,
+    "indent": 1,
+    "section": "ACTIVE",
+    "author": "Danutė (43831156)",
+    "responsible": "jolita.jaskoniene (48808321)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "2025 gegužės pabaigoje turėtų pasirodyti pirminiai paraiškų vertinimai",
+        "author": "Danutė (43831156)",
+        "date": "2025-05-09T08:01:08.679000Z"
+      },
+      {
+        "content": "Pakeistas terminas. Planuojama, kad paraiškų rezultatai bus iki birželio 20 dienos.",
+        "author": "Danutė (43831156)",
+        "date": "2025-05-28T12:24:35.019000Z"
+      },
+      {
+        "content": "pradzia Sept 1",
+        "author": "Arvydas (43613934)",
+        "date": "2025-06-24T15:25:34.263000Z"
+      },
+      {
+        "content": "Teikta paraiška laimėjo. Pasirašyta finansavimo sutartis.",
+        "author": "Danutė (43831156)",
+        "date": "2025-07-30T07:02:35.905000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 47,
+    "content": "PATHFINDER PARAISKA MACIULAITIS",
+    "description": "Per VU, kovo 7\n\n\\filesrv\\Projects\\Projektai",
+    "priority": 2,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "Danutė (43831156)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "applied wit VU",
+        "author": "Arvydas (43613934)",
+        "date": "2024-03-20T06:20:11.875000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 48,
+    "content": "Startiniai galimybių paketai",
+    "description": "Erika:\nDanutei balandžio pradžioje persiunčiau  šabloną ir kitą informaciją, susijusią su CPVA paraiškos rengimu. Atkreipiu dėmesį, kad papildytas PFSA šia informacija: didžiausia galima tinkamų finansuoti išlaidų suma veiklai „startiniai galimybių projektai” - iki 30 000 Eur (projekto trukmė iki 12 mėn.), **jeigu projektas įgyvendinamas programos „Europos horizontas“ misijų srityse – iki 60 000 Eur.**\n\nParaiškai parengti man reikės iš jūsų trumpo projekto idėjos aprašymo, t.y. trumpai apibūdinti, kokį projektą planuojama teikti HE kvietimui, kokia MTEP veikla bus vykdoma šio projekto metu, kokie projekto tikslai, kokios problemos sprendžiamos ir pan. Ši informacija reikalinga pagrįsti, kad jums reikalingos pvz. komandiruotės (viena iš jų bus į Paryžių), kad susirastumėte projekto partnerių šiai idėjai įgyvendinti, nes planuojate teikti HE paraišką XXX kvietimui. Tuomet galėsime paieškoti, kuri HE priemonė tiktų pagrindimui (Marie Curie (Personalo mainai), Vėžio misijos ar kt.)\n\nCPVA paraiškoje nusimatysite konkrečias išlaidas (kelionės, DU ir/ar paslaugos), kurių reikia, kad galėtumėte pateikti HE paraišką (kokiuose reginiuose reikia sudalyvauti, kad susirastumėte partnerių, ką reikėtų patikrinti, kas dabar nėra aišku dėl tos idėjos, kokių duomenų reikia, kaip turėtų vykti MTEP idėjos patikrinimas).\n\nNuo kito antradienio iki gegužės 10 d. atostogausiu, tai jei per tą laiką paruošite šią info, grįžusi iš atostogų galėsiu Jums padėti užpildyti paraišką.",
+    "priority": 1,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Parengtas pagrindimo projektas, kad paraiška galėtų gauti 60 tūkst. Eur. (\\filesrv\\Projects\\Projektai\\1_TEIKIAM PARAISKAS\\95_Startinių galimybių projektai_kelionė į Paryžių\\1_Paraiska)",
+        "author": "Danutė (43831156)",
+        "date": "2024-07-17T06:42:17.413000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 49,
+    "content": "ESDP Vilnius 2024",
+    "description": "[European Society of Digital and Integrative Pathology | ECDP2024 | 20th European Congress on Digital Pathology 2024](https://www.ecdp2024.org/)\n\n[ECDP 2024 (gediminasgrazys.lt)](https://galerijos.gediminasgrazys.lt/-ecdp2024/gallery)",
+    "priority": 1,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 50,
+    "content": "Kvietimas tapti MSCA podoktorantūros stažuotojų vadovu - papildoma informacija",
+    "description": "[MSCA POSTDOCTORAL FELLOWSHIPS AT VU FACULTY OF MEDICINE, INSTITUTE OF BIOMEDICAL SCIENCES, DEPARTMENT OF PATHOLOGY AND FORENSIC MEDICINE (nephropathology; tumor microenvironment; computational biomarkers; pathology informatics; artificial intelligence) | EURAXESS (europa.eu)](https://euraxess.ec.europa.eu/jobs/hosting/msca-postdoctoral-fellowships-vu-faculty-medicine-institute-biomedical-sciences-0)",
+    "priority": 1,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 51,
+    "content": "Jarvis",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 52,
+    "content": "Norman",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 53,
+    "content": "Nasir",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 54,
+    "content": "Podoktorantūros stažuotės kvietimas",
+    "description": "**Paraiškos pateikimo terminas -** 2025-06-06 16:00\n\n**Kvietimas**: https://lmt.lrv.lt/lt/kvietimai/kvietimas-teikti-paraiskas-podoktoranturos-stazuociu-projektams/\n\n**LMT kvietimas. Nuotoliniai mokymai: gegužės 23 d.** – 10 val. mokymai vyks Lt kalba, o 14 val. – EN kalba.  Mokymų nuoroda: [čia](https://teams.microsoft.com/l/meetup-join/19%3ameeting_YTY1YjkyNGItODMyMC00N2U5LThkMzEtMjNiZjhhOTQ0ZmYy%40thread.v2/0?context=%7b%22Tid%22%3a%2263e70ace-aacd-421b-a838-80b7616cf184%22%2c%22Oid%22%3a%22848e3c0e-635c-4484-8faf-54e67ecc6dad%22%7d).  Išankstinė registracija nereikalinga.\n\n**Kvietimui** numatoma skirti **8 mln. Eur.**\n\n**Projekto trukmė** - 24 mėn., o **projekto vertė** iki 130 000 Eur, kurioje netiesioginės išlaidos gali sudaryti iki 10 proc. projekto išlaidų sąmatoje numatytų tiesioginių išlaidų sumos. **Stažuotės vadovo darbo užmokesčio išlaidos į projekto išlaidų sąmatą neįtraukiamos.**\n\n**Paraiškų pateikimo terminas** - iki 2025-06-06 16 val. **Stažuotojas** Lietuvos mokslo tarybos paraiškų ir ataskaitų elektroninėje teikimo **sistemoje** [https://junkis.lmt.lt](https://junkis.lmt.lt/) **turi pateikti paraišką ir šiuos priedus:** vykdančiosios institucijos raštą dėl projekto vykdymo užtikrinimo (lietuvių kalba), dokumentų dėl stažuotojo nėštumo ir gimdymo atostogų, tėvystės atostogų ar vaiko priežiūros atostogų suteikimo  ar vaiko (-ų) gimimo liudijimo (-ų) kopijas (jei taikoma), duomenų valdymo plano esmines nuostatas (anglų kalba, jei taikoma), įgaliojimą Mokslo ir inovacijų departamento direktorei (lietuvių kalba).\n\n**Stažuotojas ir stažuotės vadovas** **gali būti nurodyti** tik vienoje to paties kvietimo paraiškoje. **Asmuo (stažuotojas arba stažuotės vadovas) gali būti nurodyti paraiškoje, jei** paskutinę kvietimo teikti paraiškas dieną jam **nėra taikomi** Lietuvos mokslo tarybos mokslo ir sklaidos [projektų konkursinio finansavimo bendrųjų taisyklių 7.7, 76–80 punktuose](https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/9f1a51a257da11e9a461a9899f91e827/asr) nurodyti **apribojimai svarstyti paraiškas.**\n\n**Vykdančioji institucija turi būti** Lietuvos mokslo ir studijų institucija. **Vykdančioji institucija turi būti kita nei ta, kurioje stažuotojas parengė daktaro** **disertaciją**. Instituciją, kurioje disertacija parengta, galima pasitikrinti čia: [Lietuvos mokslo taryba - Duomenų peržiūra » Disertacijų gynimų duomenų bazė » Disertacijų gynimų duomenų bazė](https://db.lmt.lt/lt/perziura/disertacijos/d-db.html).\n\n**Stažuotojas suprantamas** **kaip tyrėjas,** turintis Lietuvos arba užsienio mokslo ir studijų institucijos suteiktą mokslo (meno) daktaro laipsnį, ir kuriam **nuo mokslo (meno) daktaro disertacijos apgynimo dienos** iki kvietime nurodyto paraiškų pateikimo termino dienos **yra praėję ne daugiau kaip 7 metai** (šis laikotarpis pratęsiamas 18 mėnesių (motinos nėštumo ir gimdymo, vaiko priežiūros atostogų atveju) už kiekvieną vaiką, gimusį iki ar po daktaro laipsnio įgijimo dienos, pateikus vaiko (-ų) gimimo liudijimus, arba konkrečiu faktiniu laikotarpiu, pateikus dokumentus, pagrindžiančius nėštumo ir gimdymo, tėvystės atostogų ar atostogų vaikui (-ams) prižiūrėti suteikimo laikotarpį (-ius)) bei vykdantis projekte numatytą mokslo (meno) tiriamąjį darbą.\n\n**Bendra stažuotojo darbo laiko norma** projekto įgyvendinimo metu turi būti **40 valandų per savaitę (1 etatas),** įskaičiuojant mokslo ir studijų institucijų mokslo darbuotojams suteikiamas kasmetines atostogas. **Projekto įgyvendinimo metu stažuotojas turi išvykti stažuotis** į užsienio mokslo ir studijų instituciją ar mokslinių tyrimų centrą, laboratoriją, įmonę, įstaigą, biblioteką, archyvą, ekspediciją ir kt. **Minimali išvykos trukmė – 30 kalendorinių dienų.** Išvykos laikotarpis gali būti skaidomas į dalis, kurių viena turi būti ne trumpesnė kaip 15 dienų.\n\n**Stažuotės vadovas suprantamas** **kaip** vykdančiojoje institucijoje **dirbantis** **mokslininkas ar menininkas**, kuris projekto įgyvendinimo metu vadovauja stažuotojo vykdomam mokslo (meno) tiriamajam darbui. **Podoktorantūros stažuotei neturi vadovauti stažuotojo daktaro disertacijos vadovas.**\n\n**Ekspertiniam vertinimui teikiamos tik administracinės patikros reikalavimus atitikusios paraiškos.** Jei paraiška neatitiks 1–3 punktuose nurodytų administracinės patikros kriterijų, jų pataisyti nebus galima. Paraiškų ekspertinis vertinimas bus atliekamas vadovaujantis LMT pirmininko patvirtintu Projektų ir jų ataskaitų ekspertinio vertinimo tvarkos aprašu ir ekspertinio vertinimo formomis skirtomis HS, GTMŽ ir CV srities paraiškoms. Paraiškas vertina vadovaujantis LMT ekspertų ir jų veiklos bendrosiomis taisyklėmis sudarytos užsienio ekspertų komisijos.\n\n**Paraišką derinti su:**\n\nVilma Rutkauskaitė, tel. (+370 5) 219 3201, el.p. [vilma.rutkauskaite@cr.vu.lt](mailto:vilma.rutkauskaite@cr.vu.lt) (konsultuojami padaliniai: FF, KF, MF, TF)",
+    "priority": 1,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "Danutė (43831156)",
+    "date": null,
+    "deadline": "2025-08-20",
+    "deadline_lang": "en",
+    "notes": [
+      {
+        "content": "Neteikiama",
+        "author": "Danutė (43831156)",
+        "date": "2025-08-06T06:21:03.555000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 55,
+    "content": "Paraiška. Studentų tyrimai semestrų metu.",
+    "description": "STUDENTŲ tyrimas semestro metu.\n\n**Studento tyrimų projektas -** tai rudens ir pavasario semestrais laisvu nuo studijų metu studento pagal individualią programą **atliekamas mokslo (meno) tiriamasis darbas**, **vadovaujant tyrimo vadovui.**\n\n**Tyrimo vadovas – vykdančiojoje institucijoje dirbantis asmuo, kuris turi atitikti šiuos reikalavimus** paskutinę kvietime nurodytą paraiškų pateikimo termino dieną: 1) būti mokslininkas, meno daktaras arba pripažintas menininkas, 2) neturėti Lietuvos mokslo tarybos mokslo ir sklaidos projektų [konkursinio finansavimo bendrųjų taisyklių 76–80 punktuose](https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/9f1a51a257da11e9a461a9899f91e827/asr) nurodytų apribojimų svarstant jo teikiamą paraišką.\n\n**Studentas - Lietuvos aukštojoje mokykloje studijuojantis asmuo, kuris turi atitikti šiuos reikalavimus** paskutinę kvietime nurodytą paraiškų pateikimo termino dieną: 1) būti pirmosios pakopos ir (ar) vientisųjų studijų pirmo ar antro kurso studentas, 2) turėti paskutinio semestro visų studijuotų dalykų įvertinimų svertinį vidurkį ne mažesnį kaip 8,0.\n\n**Projektai vykdomi** **7 mėnesius** 2025 m. rudens – 2026 m. pavasario semestrais (**2025 m. spalio – 2026 m. balandžio mėn.).** Projekto biudžetas **-** **4800 Eur**. Studento veikla bus remiama  **400 EUR per mėnesį stipendija.**\n\n**Paraiškų pateikimo terminas** - iki 2025 m. gegužės 16 d. 16:00 val. **Tyrimo vadovas** kartu su vykdančiąja institucija Lietuvos mokslo tarybos paraiškų ir ataskaitų teikimo elektroninėje **sistemoje** [https://junkis.lmt.lt](https://junkis.lmt.lt/) **turi pateikti paraišką lietuvių kalba** **su privalomais priedais:** 1) vykdančiosios institucijos raštą dėl projekto vykdymo užtikrinimo (lietuvių kalba), 2) pažymą apie studento studijų rezultatus (lietuvių kalba), 3) įgaliojimas Studijų prorektoriui (lietuvių kalba). Tyrimo vadovas ir studentas gali būti nurodyti **tik vienoje kvietimo paraiškoje.**\n\n**Ekspertiniam vertinimui teikiamos tik administracinės patikros reikalavimus atitikusios paraiškos.** Paraiškų ekspertinis vertinimas atliekamas vadovaujantis Lietuvos mokslo tarybos pirmininko patvirtintu Projektų ir jų ataskaitų ekspertinio vertinimo tvarkos aprašu ir ekspertinio vertinimo formomis skirtomis HSCV bei GTMŽ sričių paraiškoms. Paraiškas vertina Lietuvos ekspertų komisijos, sudarytos vadovaujantis Lietuvos mokslo tarybos ekspertų ir jų veiklos bendrosiomis taisyklėmis.\n\n**Metodinę medžiagą ir dokumentų formas galite parsisiųsti** paspaudę nuorodą pavadinimu „[Dokumentai pareiškėjams (STSM2025)](https://filesender.vu.lt/filesender/?s=download&token=07baa469-db59-44b1-863a-c8e7ed1e6fc2)”. Kvietimo informaciją galite rasti Lietuvos mokslo tarybos puslapyje čia >>>\n\nPradėjus rengti projekto paraišką pirmiausia informuokite padalinio paskirtus darbuotojus apie tokios projekto paraiškos rengimą. Paskirtų darbuotojų padaliniuose sąrašą rasite dokumentų pakete pavadinimu „Dokumentai pareiškėjams (STSM2025)”.\n\n**Išsamesnę informaciją Vilniaus universitete teikia Plėtros departamento darbuotojos:**\n\nVilma Rutkauskaitė, tel. (+370 5) 219 3201, el.p. [vilma.rutkauskaite@cr.vu.lt](mailto:vilma.rutkauskaite@cr.vu.lt) (konsultuojami padaliniai: FF, KF, MF, TF)",
+    "priority": 4,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Aptarta su direktoriumi, Vygante, neteiksime.",
+        "author": "Danutė (43831156)",
+        "date": "2025-05-13T12:06:19.493000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 56,
+    "content": "LT-TW paraiška 2025",
+    "description": "Kvietimas: Lietuvos-Taivano mokslo projektai\n\nParaiškos Nr.: P-LT-TW-25-25\n\nVykdančioji institucija: VU\n\nPavadinimas ***“Artificial Intelligence Models to Predict Clinical Endpoints in Urological Cancers***”\n\nAkronimas “***AI4UroCa***”\n\n**LT komanda**:\n\n1. Arvydas Laurinavičius - vadovas\n2. Aida Laurinavičienė\n3. Feliksas Jankevičius\n4. Julius Drachneris\n5. Lin Yu-Chien\n6. Mantas Fabijonavičius",
+    "priority": 4,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Laimėtas LT-TW paraiškas planuoja skelbti šią savaitę (iki 2025-08-14 d.)",
+        "author": "Danutė (43831156)",
+        "date": "2025-08-11T06:27:25.632000Z"
+      },
+      {
+        "content": "Paraiška įvertinta gerai, bet negavo finansavimo.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-23T06:05:07.297000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 57,
+    "content": "MSCA podoktorantūros stipendijų kvietimas",
+    "description": "[MSCA POSTDOCTORAL FELLOWSHIPS AT VU FACULTY OF MEDICINE, TRANSLATIONAL… | Arvydas Laurinavicius](https://www.linkedin.com/posts/arvydas-laurinavicius-7710837_msca-postdoctoral-fellowships-at-vu-faculty-activity-7324713829081178112-uqWN?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAFBkIUBv09Tc3aLhA6mYZYg99Ta8nsJbWo)\n\nMarie Skłodowska-Curie veiksmų (MSCA) 2025 m. podoktorantūros stipendijų kvietimas (HORIZON-MSCA-2025-PF-01-01) skirtas skatinti mokslininkų kūrybinį ir inovacinį potencialą, suteikiant galimybę įgyti naujų įgūdžių per pažangų mokymąsi, tarptautinį, tarpdisciplininį ir tarpsektorinį mobilumą. ​[CORDIS+2marie-sklodowska-curie-actions.ec.europa.eu+2European Research Executive Agency+2](https://marie-sklodowska-curie-actions.ec.europa.eu/calls/msca-postdoctoral-fellowships-2025?utm_source=chatgpt.com)\n\n**Pagrindiniai kvietimo etapai**\n\n- **2025 m. gegužės 8 d.** – kvietimo paskelbimas\n- **2025 m. rugsėjo 10 d.** – pasiūlymų pateikimo terminas\n- **2026 m. vasaris** – rezultatų paskelbimas pareiškėjams (numatoma)\n- **2026 m. balandis** – sutarties pasirašymas ir projektų pradžia (numatoma)​\n\n**Stipendijų rūšys**\n\n- **Europos podoktorantūros stipendijos**: skirtos mokslininkams, norintiems vykdyti mokslinius tyrimus ES valstybėse narėse arba Horizon Europe asocijuotose šalyse. Trukmė: 12–24 mėnesiai.\n- **Globalios podoktorantūros stipendijos**: skirtos ES arba asocijuotų šalių piliečiams ar ilgalaikiams gyventojams, norintiems vykdyti tyrimus trečiosiose šalyse (neasocijuotose su Horizon Europe). Reikalinga išvykimo fazė (12–24 mėn.) ir privaloma 12 mėn. grįžimo fazė į ES ar asocijuotą šalį.​[marie-sklodowska-curie-actions.ec.europa.eu](https://marie-sklodowska-curie-actions.ec.europa.eu/calls/msca-postdoctoral-fellowships-2025?utm_source=chatgpt.com)\n\n**Tinkamumo kriterijai**\n\n- Doktorantūros laipsnis turi būti įgytas iki kvietimo termino pabaigos.\n- Ne daugiau kaip 8 metai mokslinių tyrimų patirties po doktorantūros laipsnio įgijimo (tam tikros pertraukos, pvz., motinystės atostogos, neįskaičiuojamos).\n- Mobilumo taisyklės: pareiškėjas neturi būti gyvenęs ar vykdęs pagrindinės veiklos (darbo, studijų ir pan.) priimančioje šalyje ilgiau nei 12 mėnesių per paskutinius 36 mėnesius iki kvietimo termino.​",
+    "priority": 2,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "Arvydas (43613934)",
+    "date": null,
+    "deadline": "2026-02-01",
+    "deadline_lang": "en",
+    "notes": [
+      {
+        "content": "Dr. Kotryna Vaidziulytė (Paryžius) Lietuvoje bus iki 2025-05-05 d. Tikėtina, kad ji turės priimti sprendimą kur įsidarbinti LT anksčiau nei 2026 m. balandį (kada bus gauti kvietimo rezultatai). Pagal MSCA kvietimą ji negali gyventi Lietuvoje ilgiau nei 12 mėnesių.",
+        "author": "Danutė (43831156)",
+        "date": "2025-04-23T05:59:06.858000Z"
+      },
+      {
+        "content": "**From:** Diana Bašinskaitė <diana.basinskaite@mf.vu.lt>\nJūsų skelbimas paskelbtas Euraxess platformoje: [MSCA POSTDOCTORAL FELLOWSHIPS AT VU FACULTY OF MEDICINE, TRANSLATIONAL HEALTH RESEARCH INSTITUTE, CENTRE FOR DIGITAL MEDICINE (nephropathology; tumour microenvironment; pathology informatics; multimodal predictive models; artificial intelligence) | EURAXESS](https://euraxess.ec.europa.eu/jobs/hosting/msca-postdoctoral-fellowships-vu-faculty-medicine-translational-health-research-0)\n\n Jei atsirastų susidomėjusių PhD studentų, prašysiu atsiųsti kandidato aktualų CV ir publikacijų sąrašą įvertinimui.",
+        "author": "Danutė (43831156)",
+        "date": "2025-04-29T10:16:22.703000Z"
+      },
+      {
+        "content": "Idejau info i linkedin: [https://www.linkedin.com/posts/arvydas-laurinavicius-7710837_msca-postdoctoral-fellowships-at-vu-faculty-activity-7324713829081178112-uqWN?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAFBkIUBv09Tc3aLhA6mYZYg99Ta8nsJbWo](https://www.linkedin.com/posts/arvydas-laurinavicius-7710837_msca-postdoctoral-fellowships-at-vu-faculty-activity-7324713829081178112-uqWN?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAFBkIUBv09Tc3aLhA6mYZYg99Ta8nsJbWo)",
+        "author": "Arvydas (43613934)",
+        "date": "2025-05-04T09:28:08.188000Z"
+      },
+      {
+        "content": "Turim kandidate Ana Frei, PhD Univ Bern",
+        "author": "Arvydas (43613934)",
+        "date": "2025-07-29T12:43:48.007000Z"
+      },
+      {
+        "content": "**From:** Arvydas Laurinavičius <Arvydas.Laurinavicius@santa.lt>\n**Subject:** RE: MCSA PF kandidatė - patvirtinimo laiškas\n\nSveiki, Šiandien pakalbėjome su Ana, ji už 2 savaičių kraustosi į kitą šalį, naują darbą. Dar turi nebaigtų darbų. Sutarėm, kad jau nebespėsim paruošti kokybiškos paraiškos. Planuojame kitais metais. Arvydas",
+        "author": "Danutė (43831156)",
+        "date": "2025-08-06T06:16:07.198000Z"
+      },
+      {
+        "content": "Kitas metais - Ana Frei?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-08-17T09:40:46.366000Z"
+      },
+      {
+        "content": "Priminimas kalendoriuj nusiųstas, kad 2026 kovo pradžioj perklausti Anos Frei ar norės dalyvauti MSA PF.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-03T05:58:44.453000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 58,
+    "content": "Eureka paraiška. LT-TW",
+    "description": "Kvietimas [Globalstars call with Taiwan - Eureka](https://eurekanetwork.org/opencalls/globalstars-taiwan-2025/)\n\nParaiškos pateikimo terminas: 2025-08-29**; 17:00 CEST**\n\nMokymai 2025-05-14 d.\n\nKvietimo [Globalstars call with Taiwan - Eureka](https://eurekanetwork.org/opencalls/globalstars-taiwan-2025/) terminas: 2025 rugpjūčio 29 d. (17:00 CEST)\n\nPagrindiniai nacionaliniai EUREKA „Globalstars“ su Taivanu projekto reikalavimai ir sąlygos:\n\n• Projekto trukmė – iki 36 mėnesių.\n\n• Finansavimas – dotacija, ne daugiau kaip 300 000 eurų vienam projektui (tai yra, Lietuvos daliai).\n\n• Pagrindinis partneris / pagrindinis pareiškėjas turi būti Lietuvos universitetas, aukštojo mokslo įstaiga (kolegija) arba mokslinių tyrimų centras.\n\n• Projekto partneris yra MVĮ, bendradarbiaujanti su mokslinių tyrimų įstaiga, siekiant sukurti naują produktą, procesą ar paslaugą, turinčią rinkos potencialą.\n\n• Privalomas tarptautinis partneris – įmonė iš Taivano.\n\n• Projektas turi prasidėti nuo ne žemesnio technologinio pasirengimo (TRL) 5 lygio (ir įrodyti, kad TRL 4 yra pasiektas) ir iki projekto pabaigos pasiekti bent TRL 7, pageidautina – TRL 9.\n\n• Biudžetas turi būti paskirstytas taip, kad nė vienas subjektas ar šalis negalėtų turėti daugiau nei 70 % projekto biudžeto.\n\n• Projekto rezultatas turi būti skirtas civiliniam naudojimui (ne kariniam), o projekto MTEP veikla turi atitikti nacionalinius išmaniosios specializacijos / strategijos prioritetus. \n\n• Finansavimas teikiamas iš ESF, projektai turi atitikti valstybės pagalbos taisykles:\n\n• Universitetai, mokslinių tyrimų ir studijų institucijos (neekonominei veiklai): gali būti finansuojamos 100 % tinkamų finansuoti išlaidų\n\n• MVĮ: tinkamos finansuoti išlaidos gali būti finansuojamos / padengiamos iki 80 %, priklausomai nuo jų dydžio ir tyrimų etapo (taikomųjų tyrimų ar eksperimentinės plėtros).\n\nŠis kvietimas teikia prioritetą mokslinių tyrimų ir eksperimentinės plėtros (MTEP) projektams šiose srityse:\n\n1. Aukštosios technologijos, tokios kaip (bet neapsiribojant):\n2. Puslaidininkiai ir fotonika (integriniai grandynai)\n3. Telekomunikacijos (5G, 6G)\n4. Pažangioji gamyba\n5. Skaitmeninė sveikata / biotechnologijos\n6. Tvarumas, toks kaip (bet neapsiribojant):\n7. Žiedinė ekonomika, įskaitant anglies apytakos ciklą ir pramoninių procesų uždarą ciklą\n8. Judumas",
+    "priority": 4,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Danutė (43831156)",
+    "responsible": "Arvydas (43613934)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Rytoj (2025-05-14 d. nuo ryto) yra šio kvietimo renginys. Prasminga dalyvauti, jei rimtai planuojame teikti paraišką.",
+        "author": "Danutė (43831156)",
+        "date": "2025-05-13T12:15:28.797000Z"
+      },
+      {
+        "content": "**From:** Martynas Riauka <martynas.riauka@ff.vu.lt>\n**Sent:** 2025 m. gegužės 11 d., sekmadienis 15:43\n**To:** Arvydas Laurinavičius <Arvydas.Laurinavicius@santa.lt>; Danutė Užusenienė <Danute.Uzuseniene@santa.lt>\n**Cc:** Aida Laurinavičienė <Aida.Laurinaviciene@santa.lt>\n**Subject:** Re: GlobalStars?\n\nSveiki,\n\n Iš to, ką matau dabar, yra dvi kryptys - light sheet ir laser scanning 3D. Kalbant apie light sheet, viena problema yra šviesos šaltinis, kita - visiškai neturim patirties ir \"know-how\" su tokiomis sistemomis. Iš laser scanning pusės turime patirtį. Kas būtų galimai reikalinga, tai gilesnio infraredo lazeris geresniam įsiskverbimui į audinį (LightCon tuo klausimu manau galėtų pagelbėti). Bet kokiu atveju, iki paraiškos teikimo reiktų pademonstruoti, kad su tokia sistema, kokią turime dabar, galime vaizdinti visą biopsiją be tissue clearingo. Jei būtų galima gauti daugiau 600 mikrometrų skersmens biopsijų stulpelių, pabandytume išgryninti optimalius vaizdinimo parametrus 1030 nm bangos ilgio sistemoje. Metodo pranašumai light sheet atžvilgiu būtų tissue clearingo ir specifinio fluorescencinio dažymo eliminavimas ir papildomas label-free kolageno kontrastas (SHG). Tiesinį light sheet taiko ir kitos grupės, tai nežinau, ką naujo galėtume pasiūlyti iš light sheet pusės. Martynas",
+        "author": "Danutė (43831156)",
+        "date": "2025-05-13T12:15:56.026000Z"
+      },
+      {
+        "content": "1) 2025 m. gegužę buvo priimtas sprendimas paraiškų neteikti. 2) Likus labai nedaug laiko iki paraiškų pateikimo paraišką planavo teikti Samuilis, vėliau persigalvojo, likus dienai iki paraiškų pateikimo perdavė vadovauti projektą kolegei Jūratei 3) Pirma paraiškos dalis pateikta, antrą paraiškos dalį naujoji vadovė nusprendė nebeteikti. Doc. Jūratė Dementavičienė: \"Šiuo metu ir esant labai ribotam terminui galimybių tęsti darbą neturime. Dėkingi už Jūsų pastangas ir supratimą\".",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-19T07:32:30.849000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 59,
+    "content": "ONCOINTEGRA with VUGENE @PROJECT",
+    "description": "",
+    "priority": 2,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "Danutė (43831156)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "BIOMAPA pakeite Cureline",
+        "author": "Arvydas (43613934)",
+        "date": "2023-12-27T07:37:10.957000Z"
+      },
+      {
+        "content": "Pateikti agentūrai planuojami lėšų srautai",
+        "author": "Danutė (43831156)",
+        "date": "2024-05-08T07:00:40.813000Z"
+      },
+      {
+        "content": "PROJEKTO IMTIS: 1) 50 atvejų – storžarnės. 2) 50 atvejų – inkstų 3) 100 atvejų – prostatos.\n\nIMTIS BIOETIKOS PROTOKOLE: 1) 100 pacientų su patvirtinta storosios žarnos onkologine liga; 2) 100 pacientų su patvirtinta inkstų onkologine liga. 3) 200 pacientų su patvirtinta prostatos onkologine liga. 4) 100 pacientų su patvirtinta plaučių onkologine liga.",
+        "author": "Danutė (43831156)",
+        "date": "2024-07-17T06:57:52.067000Z"
+      },
+      {
+        "content": "**KLAUSIMAI:**\n\n1\\.      Pacientu imtys nedideles, laiko nedaug, reikia sufokusuoti partneriu tyrimus naviku profiliavimui. Projekto remuose rinksim CRC, RCC, PCa. Ar siems veziams yra imunoterapijos perspektyvos Lietuvoje? Standartizuoti gydymo protokolai?\n\n2\\.      Kokie clinical endpoints šioms imtims realūs per projekto laikotarpį.\n\n3\\.      Navikų profiliavimas NKS – kas ir kokiais metodais? Kokia imtis.\n\n4\\.      Navikų profiliavimas single cell transcriptomics/genomics – prof. Mažutis, kokie žymenys? Kokia imtis.\n\n5\\.      Navikų profiliavimas, structured reports? computational path, IHC, spatial proteomics/transcriptomics – VPC? Kokia imtis.\n\n6\\.      Bioinformatika – VUGENE – metodai, galimybės, duomenys, integracijos, imtys.\n\n7\\.      VULSK BB infrastrukturos naudojimas, platus pacientu sutikimas, nuasmeninimas.\n\n8\\.      Kas rinks krauja?",
+        "author": "Arvydas (43613934)",
+        "date": "2024-07-17T06:59:05.745000Z"
+      },
+      {
+        "content": "1. Bioetikos dok. pateikti VULSK Klinikinių tyrimų skyriaus peržiūrai. Peržiūrėjo protokolą, pastabų nebuvo. Kitų dokumentų neperžiūrėjo.\n2. UAB \"Cureline\" pateikta info, kad bioetikai trūksta paraiškų, IASF, detalizuotų metodikų su tiriamosios medžiagos kiekiais.",
+        "author": "Danutė (43831156)",
+        "date": "2024-08-21T06:58:35.796000Z"
+      },
+      {
+        "content": "Pradėtos pagrindinių darbuotojų (Arvydas, Aida, Dovilė, Renaldas, K. Strupas) darbinimo procedūros VULSK. Su gydytojais kalbėsime rugsėjį, jiems grįžus iš atostogų.",
+        "author": "Danutė (43831156)",
+        "date": "2024-08-21T07:00:15.826000Z"
+      },
+      {
+        "content": "Priminta, kad Klinikiniai tyrimai peržiūrėtų bendradarbiavimo sutartį (teisininkė jau grįžus iš atostogų)",
+        "author": "Danutė (43831156)",
+        "date": "2024-08-29T07:41:39.300000Z"
+      },
+      {
+        "content": "1) BIOETIKA. Gautos Klinikinių tyrimų skyriaus pastabos sutarčiai 2) 2024-09-03 posėdžio metu aptartas tyrimo vykdymo protokolas 3) aktualu išdiskutuoti su Albertu Čekausku. Susitikimas?",
+        "author": "Danutė (43831156)",
+        "date": "2024-09-04T06:17:15.190000Z"
+      },
+      {
+        "content": "Aptarta su Aida, Gedmante, Loreta ir Danute.  \n\n1\\.      VPC įvykdytame pirkime „Reagentų ir darbo priemonių, skirtų onkogenetiniams tyrimams naujos kartos sekoskaita pirkimą“ (Sutarties data ir Nr.: 2025-03-25; 25-C-971) prekėms pritaikytas 5 proc. PVM. Pagal PVM įstatymą reagentai, kuriems taikomas 5 proc. PVM, turi būti naudojami ne mokslui, o diagnostikai. Tam, kad būtų galima prekes priskirti Oncointegra projektui, reikia įsigyti prekes su 21 proc. PVM.\n\n2\\.      Sutarta, kad vykdysime naują pirkimą „Reagentai pažangiems patologijos tyrimams“ (atviras konkursas (tarptautinis) už 81339,74 Eur. be PVM (arba 98421,09 Eur. su PVM). Galėsime nupirkti tiek reagentus, būtinus NGS atlikimui (klinikinė panelė), tiek kitus reagentus, kurių įsigijimas labai reikalingas + stikliukus „spatial biology“ vykdymui. Gedmantė parengs specifikaciją ir pateiks iškart, kai tik gaus iš tiekėjo atsakymus dėl kai kurių pozicijų.",
+        "author": "Danutė (43831156)",
+        "date": "2025-04-15T15:45:42.674000Z"
+      },
+      {
+        "content": "uztruks diegimas?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-04-16T04:51:31.599000Z"
+      },
+      {
+        "content": "Diegimas vyks kaip planuota, reagentus diegimui dengia kompanija. Pirmaji rinkini isigysime reakcijoms testi is VPC ivykusios diagnostiniu tyrimu sutarties.",
+        "author": "Aida (43629179)",
+        "date": "2025-04-16T05:16:46.125000Z"
+      },
+      {
+        "content": "Trumpa info VULSK komandai.\n\n 1.      Pagrindiniu projekto koordinatoriumi paskirtas daug patirties turintis Julius Gagilas (Arvydo Lubio pavaduotojas). Už jo koordinavimą mokės iš VU netiesioginių lėšų\n\n2\\.      Audinių disociaciją atliks Mantas (iš HOTC), jis bus įdarbintas į VU GMC 3 mėnesiams nuo gegužės mėn, galės naudotis įranga + jam skirs reagentus.\n\n3\\.      Bendradarbiavimo sutartis dėl bioetikos tarp šalių nepasirašyta. UAB „Cureline“ nebedirba nei vienas žmogus, nėra su kuo pasirašyti šią sutartį. Bioetikos dokumentacijoje buvo nurodyta, kad bioetika galioja, jei bus pasirašyta bendradarbiavimo sutartis. Planuojama koreguoti bioetiką ir teikti bioetikos papildymą. Atsakingas asmuo - Julius Gagilas.\n\n4\\.      Julius Gagilas kreipsis į Dovilę Žilėnaitę-Petrulaitienę (praeitą savaitę Dovilė atostogavo), derinsis aspektus ką tikslingą koreguoti dokumentacijoje. Prof. Laurinavičius prašė Manto peržiūrėti kur galima supaprastinti anketas, atsisakyti vertės nekuriančių punktų, kad jums būtų lengviau dirbti. Šis klausimas galioja visiems. Jei matote galimybę kažkur supaprastinti klinikinių duomenų rinkimo anketas, siūlykit.\n\n5\\.      Buvo prašymas per posėdžius pasidalinti kiek surinkta mėginių. Prof. Strupas minėjo, kad pasiruoš šiam klausimui. Šis klausimas ypač aktualus Vugene, nes jie turės kurti programinę įrangą. Klaus ir kitų. Jiems kyla klausimų ar yra būdų kaip pagreitinti rinkimo procesą.\n\n6\\.      UAB “Inovacijų agentūra” nežada, kad lėšų, suplanuotų UAB “Cureline” perskirstymas UAB “Vugene” bus greitas.",
+        "author": "Danutė (43831156)",
+        "date": "2025-04-29T06:05:54.023000Z"
+      },
+      {
+        "content": "1. 2025-07-28 d. pateikta projekto VULSK dalies neekonominės veiklos ataskaita ir atkreiptas dėmesys, kad nesutampa rodikliai tarp VU teikiamų ataskaitų Inovacijų agentūrai ir rodiklių, kuriais vadovaujasi Inovacijų agentūra.\n2. 2025-07-29 d. Gagilas išsiaiškino su Curelaine, kad Curelaine pakoregavo dokumentus, bet jų nesuderino su Inovacijų agentūra. Pagrindinė problema vietoj planuotos 200 pacientų imties reikia surinkti 500 pacientų imtį. Inovacijų agentūra pradėjo kalbėti apie projekto eskpertizę ir pakartotinį finansavimo įvertinimą, jei imtis sumažėtų 5 kartus. Gagilas informavo IA, kad surinkti didesnės tiriamųjų imties projekto dalyviai nesugebės. Pasiūlėme įtraukti retrospektyvią imtį.",
+        "author": "Danutė (43831156)",
+        "date": "2025-07-30T06:00:27.896000Z"
+      },
+      {
+        "content": "Dėl likusių darbuotojų įdarbinimo. Po tiesioginių skambučių su IA projektų vadovu Karoliu Balaišiu, jis inicijavo susitikimą su CPVA. IA patvirtino, kad mūsų siųstus raštus parodė CPVA (iki šiol IA šių raštų nebuvo išsiuntusi CPVA). CPVA pateiktos info pakako, sakė, kad xls failas jiems yra labai informatyvus bei žadėjo pakeitimams pritarti greitai, jei tie pakeitimai nesusiję su Cureline pasitraukimu ir papildomų veiklų įtraukimu ar nauju veiklų pasiskirstymu tarp partnerių. Iš raštų eliminuotas tik pilno genomo sekvenavimas bei duomenų mokslininkas, įtraukta nauja rezidentė. NGS klinikinė panelė įvardinta kaip molekulinis profiliavimas ir histopatologijos dalis. Raštas teikiamas VULSK drabuotojų vizavimui per Erą ir Nugaro pasirašymui.",
+        "author": "Danutė (43831156)",
+        "date": "2025-07-30T06:09:28.538000Z"
+      },
+      {
+        "content": "man reiks vizuoti?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-07-30T06:19:39.156000Z"
+      },
+      {
+        "content": "Taip, EROJE",
+        "author": "Danutė (43831156)",
+        "date": "2025-07-30T06:53:30.408000Z"
+      },
+      {
+        "content": "2025-07-30 d. atnaujinta neekonominės veiklos ataskaita pateikta",
+        "author": "Danutė (43831156)",
+        "date": "2025-07-30T06:53:57.207000Z"
+      },
+      {
+        "content": "Sukurta kita užduotis \"ONCOINTEGRA\", ši archyvuojama",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-19T07:33:37.136000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 60,
+    "content": "Bioethics / Study design",
+    "description": "",
+    "priority": 4,
+    "indent": 2,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 61,
+    "content": "NefBx bioetika",
+    "description": "",
+    "priority": 4,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Danutė (43831156)",
+    "responsible": "Danutė (43831156)",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Gautas VRBTEK pritarimas papildyti bioetiką „Natyvinių ir transplantuotų inkstų biopsijų analizė <...>“ (NefBx). Į tyrimą įtrauktas gydytojas rezidentas Rytis Stankevičius, bioinformatikas Hugas Tauras Jasinskas ir studentės:  Izabelė Gervelytė, Marija Gudynaitė, Kamilė Čeponytė. Papildytas protokolas. Parengta PRADA. Artimiausiu metu pateiks oficialų atsakymą.",
+        "author": "Danutė (43831156)",
+        "date": "2025-04-15T14:28:17.361000Z"
+      },
+      {
+        "content": "Bioetika gauta",
+        "author": "Danutė (43831156)",
+        "date": "2025-08-06T06:17:02.793000Z"
+      },
+      {
+        "content": "aptarsim 11 val.",
+        "author": "Arvydas (43613934)",
+        "date": "2025-08-06T06:43:24.016000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 62,
+    "content": "Paraiška. **Studentų vasaros praktika**",
+    "description": "Studentų vasaros praktika.\n\nLietuvos mokslo taryba **yra pradėjusi studentų vasaros praktikos konkursą**, kuris vyks 3 etapais.\n\nPasibaigus konkurso I etapo studentų vasaros praktikos temų atrankai, **paskelbtas kvietimas** **šio konkurso** **II etapui** – **studentų paraiškų teikimui.** Dalyvauti konkurse kviečiami studentai.\n\n**Studentų vasaros praktikos** – vasaros atostogų metu studento pagal individualią programą atliekamas tiriamasis darbas, vadovaujant praktikos vadovui. **Praktika atliekama** studentų vasaros atostogų metu, t. y., **2025 m. liepos–rugpjūčio mėn. Studentas** vasaros metu **negali turėti jokių kitų darbo santykių** su vykdančiąja institucija, išskyrus darbo santykius dėl pačios vasaros praktikos atlikimo.\n\nĮ vasaros praktikos vietą **gali pretenduoti** **Lietuvos ar užsienio aukštosios mokyklos studentas.** Prašymus į studentų vasaros praktikos vietas gali teikti **pirmos (bakalauro) pakopos, antros (magistro) pakopos ir vientisųjų studijų studentai, išskyrus:** 1) paskutinę kvietime nurodyto paraiškų pateikimo termino dieną yra paskutiniųjų kursų studentai, 2) gavusius finansavimą šiai programai 2022 m. ar vėlesniais metais, 3) doktorantus arba jau įgijusius daktaro laipsnį. Studento paskutinio semestro visų studijuotų dalykų įvertinimų **svertinis vidurkis turi būti lygus 8,0 arba didesnis**. Tais atvejais, **kai į vasaros praktikos vietą pretenduoja studentas iš užsienio mokslo ir studijų institucijos,** paskutinio semestro visų studijuotų dalykų įvertinimų **svertinis vidurkis turi atitikti bent 80 proc.** maksimalaus toje užsienio mokslo ir studijų institucijoje taikomo įverčių svertinio vidurkio.\n\nPraktikos vietos finansavimo suma: **4000 Eur** arba **4900 Eur** (jeigu studentas vykdys vasaros praktiką atvykęs iš užsienio mokslo ir studijų institucijos arba jeigu studentas studijas vykdo kitoje Lietuvos mokslo ir studijų institucijoje, esančioje kitame mieste negu numatoma vasaros praktikos vieta vykdančiojoje institucijoje).\n\n**Studentų paraiškų pateikimo terminas -** iki 2025-05-08 16 val. **Studentas** Lietuvos mokslo tarybos paraiškų ir ataskaitų teikimo elektroninėje **sistemoje** adresu [Lmtpais: išorinis portalas](https://projektai.lmt.lt/#login) **turi pateikti ne daugiau kaip du prašymus į vasaros praktikos vietas kartu su šiais dokumentais**: gyvenimo aprašymu, pažyma apie studijų rezultatus ([pažymų apie studijų rezultatus formos lietuvių ir anglų kalbomis](https://lmt.lrv.lt/public/canonical/1738044406/4024/SVP%20Apra%C5%A1o%204%20priedas.pdf)) ir motyvaciniu laišku. Lietuvos mokslo tarybos parengtą studentų vasaros praktikos **temų pasirinkimo** **pildymo instrukciją lietuvių kalba rasite** [**čia >>>**](https://lmt.lrv.lt/public/canonical/1744108076/4481/2Pildymo%20instrukcija%20SV%20studentams.pdf)**, o anglų kalba rasite** [**čia >>>**](https://lmt.lrv.lt/public/canonical/1744108090/4482/2EN%20Pildymo%20instrukcija%20SV%20studentams.pdf)**.**\n\n**Studentų atranka į praktikos vietas vyks tokiais etapais:**\n\n1. Studentų prašymų administracinė patikra bus atliekama pagal [studento atitikties konkurso reikalavimams patikros pažymą](https://lmt.lrv.lt/public/canonical/1737973808/4019/SVP%20Apra%C5%A1o%205%20priedas%20(studento%20atikit.%20AP).pdf).\n2. Praktikos vadovai bus informuojami apie studentus, atitikusius administracinės patikros reikalavimus.\n3. Praktikos vadovai vertins kiekvieną studentą, pretendavusį į jų pasiūlytas temas ir atitikusį administracinės patikros reikalavimus, pagal [studento tinkamumo vasaros praktikos temai vertinimo anketą](https://lmt.lrv.lt/public/canonical/1737973837/4020/SVP%20Apra%C5%A1o%206%20priedas.pdf), vadovaudamiesi skaidrumo, nešališkumo ir sąžiningumo principais, atsižvelgdami į pretenduojančio studento motyvaciją, pasiekimus, ir užtikrindami, jog praktikai nebus pasirinkti su jais santuokos, giminystės ar svainystės ryšiais susiję studentai.\n\nLietuvos mokslo tarybos **paskelbtą kvietimą** **II etapui** rasite [čia >>>](https://lmt.lrv.lt/lt/kvietimai/kvietimas-teikti-paraiskas-studentu-vasaros-praktikai-ii-etapas/), o **Studentų vasaros praktikos finansavimo sąlygų aprašą ir kitus dokumentus** rasite dalyje „Informacija pareiškėjams ir projekto vykdytojams“ [čia >>>](https://lmt.lrv.lt/lt/veiklos-sritys/mokslo-finansavimas/karjeros-mobilumo-sklaidai-skatinimo-priemones/studentu-tyrimai-vasaros-metu/).\n\n**Išsamesnę informaciją Plėtros departamente teikia šie darbuotojai:**\n\nDalia Papievienė, tel. [(+370 5) 236 6034](mailto:(+370%205)%20236%206034), el. p. [dalia.papieviene@cr.vu.lt](mailto:dalia.papieviene@cr.vu.lt) (konsultuojami padaliniai: CHGF, EVAF, FSF, MF, TF)",
+    "priority": 4,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Veiksmai:\n\n**1)**     Konkurso I etapas. Praktikos vadovas iki 2025-02-28 d. tinklalapyje ([https://projektai.lmt.lt/#login](https://projektai.lmt.lt/#login)) pateikia 1 studentų vasaros praktikos temos pasiūlymą.\n\nLMT patvirtino  2025 m. studentų vasaros praktikos temą (P-SV3-25-612): „Multimodalinės mikroskopijos duomenų panaudojimas mašininiam mokymui apjungiant optinės, poliarizacinės ir fluorescencinės mikroskopijos duomenis“ (From: [ilona.monstaviciene@lmt.lt)](mailto:ilona.monstaviciene@lmt.lt))\n\n**2)**     Studentų paraiškų pateikimo terminas - iki 2025-05-08 16 val. Studentas  adresu [https://projektai.lmt.lt/#login](https://projektai.lmt.lt/#login) turi pateikti ne daugiau kaip du prašymus į vasaros praktikos vietas kartu su šiais dokumentais: gyvenimo aprašymu, pažyma apie studijų rezultatus ([pažymų apie studijų rezultatus formos lietuvių ir anglų kalbomis](https://lmt.lrv.lt/public/canonical/1738044406/4024/SVP%20Apra%C5%A1o%204%20priedas.pdf)) ir motyvaciniu laišku.\n\nEdgaras Zaboras paraišką LMT vasaros praktikai sėkmingai pateikė. Jos būsena - „Vertinama“.",
+        "author": "Danutė (43831156)",
+        "date": "2025-05-12T08:41:43.465000Z"
+      },
+      {
+        "content": "5 stiprus kandidatai - 2 uzsienieciai.",
+        "author": "Arvydas (43613934)",
+        "date": "2025-05-28T06:58:40.743000Z"
+      },
+      {
+        "content": "Vykstaš Del Hirali nuotolinio dalyvavimo preliminariai suderinta su LMT. Laukiam.",
+        "author": "Arvydas (43613934)",
+        "date": "2025-07-30T06:29:31.195000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 63,
+    "content": "**Kvietimas. Dėl lėšų paskelbti mokslinius straipsnius kompensavimo. Mantui?**",
+    "description": "[2025 m. kvietimas teikti paraiškas dėl lėšų paskelbti mokslinius straipsnius kompensavimo - Lietuvos mokslo taryba](https://lmt.lrv.lt/lt/kvietimai/2025-m-kvietimas-teikti-paraiskas-del-lesu-paskelbti-mokslinius-straipsnius-kompensavimo/)",
+    "priority": 4,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Paraiška teikiama lietuvių kalba el. sistemoje adresu [https://junkis.lmt.lt](https://junkis.lmt.lt/)  **iki 2025 m. spalio 30 d**. **16 val.**",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-23T07:30:57.834000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 64,
+    "content": "Kvietimas. Technologinės plėtros projektas",
+    "description": "[Technologinės plėtros priemonės III-iasis kvietimas teikti paraiškas įgyvendinti projektus 2026-2027 m. - Lietuvos mokslo taryba](https://lmt.lrv.lt/lt/kvietimai/technologines-pletros-priemones-iii-iasis-kvietimas-teikti-paraiskas-igyvendinti-projektus-2026-2027-m/)",
+    "priority": 4,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Danutė (43831156)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [
+      {
+        "content": "Buvom teikę paraišką pagal technologinės plėtros projektų kvietimą su UAB \"Corner Case Technologies\" (IT kompanija). Paskelbtas naujas kvietimas. Pateikimo terminas - iki 2025 m. lapkričio 7 d. 15 val. Didžiausia galima projektui skirti finansavimo lėšų suma ne daugiau kaip 150 tūkst. Eur.",
+        "author": "Danutė (43831156)",
+        "date": "2025-09-26T08:06:35.860000Z"
+      },
+      {
+        "content": "gal synoptic report?",
+        "author": "Arvydas (43613934)",
+        "date": "2025-10-01T06:19:31.036000Z"
+      },
+      {
+        "content": "From: Allan Rasmusson\nHi, Danute. Apologies for a very late reply, but I don't think we will submit again.... or I should say: we got the opportunity for an Immunogradient prototype in the Hex4Path project, so I don't think it's relevant again. I cannot say if other projects would benefit from this call. /Allan",
+        "author": "Danutė (43831156)",
+        "date": "2025-10-07T10:11:30.734000Z"
+      }
+    ],
+    "children": []
+  },
+  {
+    "id": 65,
+    "content": "EMPAIA",
+    "description": "[What is EMPAIA? | EMPAIA Konsortium](https://www.empaia.org/en)\n\n\\filesrv\\users\\lauar\\PROJECTS_2023_EMPAIA",
+    "priority": 1,
+    "indent": 1,
+    "section": "ARCHIVED",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": null,
+    "deadline_lang": "",
+    "notes": [],
+    "children": []
+  }
+];
+        const priorityColors = {"4": "#d1453b", "3": "#eb8909", "2": "#246fe0", "1": "#808080"};
+        const priorityLabels = {"4": "P1 (Highest)", "3": "P2 (High)", "2": "P3 (Medium)", "1": "P4 (Low)"};
+        let currentView = 'list';
+
+        function buildHierarchy(tasks) {
+            const taskMap = {};
+            tasks.forEach(t => {
+                taskMap[t.id] = { ...t, children: [] };
+            });
+
+            const roots = [];
+            const sortedTasks = [...tasks].sort((a, b) => a.id - b.id);
+
+            let lastAtLevel = {};
+            sortedTasks.forEach(task => {
+                const t = taskMap[task.id];
+                if (task.indent === 1) {
+                    roots.push(t);
+                    lastAtLevel[1] = t;
+                } else {
+                    const parent = lastAtLevel[task.indent - 1];
+                    if (parent) {
+                        parent.children.push(t);
+                    } else {
+                        roots.push(t);
+                    }
+                    lastAtLevel[task.indent] = t;
+                }
+            });
+
+            return roots;
+        }
+
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            if (view === 'list') {
+                document.getElementById('list-view').style.display = 'block';
+                document.getElementById('timeline-view').style.display = 'none';
+            } else {
+                document.getElementById('list-view').style.display = 'none';
+                document.getElementById('timeline-view').style.display = 'block';
+                renderTimeline(getFilteredTasks());
+            }
+        }
+
+        function renderListView(tasks) {
+            const container = document.getElementById('list-view');
+
+            if (tasks.length === 0) {
+                container.innerHTML = '<div class="no-results">No tasks match the current filters</div>';
+                return;
+            }
+
+            const tasksBySection = {};
+            tasks.forEach(task => {
+                if (!tasksBySection[task.section]) {
+                    tasksBySection[task.section] = [];
+                }
+                tasksBySection[task.section].push(task);
+            });
+
+            let html = '';
+            Object.keys(tasksBySection).sort().forEach(section => {
+                const sectionTasks = tasksBySection[section];
+                const hierarchy = buildHierarchy(sectionTasks);
+
+                html += `
+                    <div class="section-group">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <span class="section-toggle">▼</span>
+                            <span>${section}</span>
+                            <span class="section-count">${sectionTasks.length}</span>
+                        </div>
+                        <div class="tasks-container" style="max-height: 10000px;">
+                            ${hierarchy.map(task => renderTaskHierarchy(task)).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            document.getElementById('visible-tasks').textContent = tasks.length;
+        }
+
+        function renderTaskHierarchy(task, level = 0) {
+            const priorityColor = priorityColors[task.priority] || '#808080';
+            const priorityLabel = priorityLabels[task.priority] || `P${task.priority}`;
+            const hasChildren = task.children && task.children.length > 0;
+            const hasDescription = task.description && task.description.trim().length > 0;
+            const hasNotes = task.notes && task.notes.length > 0;
+
+            let metaItems = [];
+            if (task.deadline) {
+                metaItems.push(`<span class="meta-item deadline">⏰ ${task.deadline}</span>`);
+            }
+            if (task.date && task.date !== task.deadline) {
+                metaItems.push(`<span class="meta-item">📅 ${task.date}</span>`);
+            }
+            if (task.responsible) {
+                metaItems.push(`<span class="meta-item">👤 ${task.responsible.split('(')[0].trim()}</span>`);
+            }
+            if (hasNotes) {
+                metaItems.push(`<span class="meta-item">💬 ${task.notes.length} note(s)</span>`);
+            }
+
+            let html = `
+                <div class="task-card" data-task-id="${task.id}">
+                    <div class="task-header" onclick="toggleTaskChildren(${task.id})">
+                        <span class="task-expand-btn ${!hasChildren ? 'no-children' : ''}" id="expand-${task.id}">▼</span>
+                        <span class="priority-badge" style="background: ${priorityColor}">${priorityLabel}</span>
+                        <div class="task-content">${task.content}</div>
+                    </div>
+                    ${metaItems.length > 0 ? `<div class="task-meta">${metaItems.join('')}</div>` : ''}
+                    ${hasDescription ? `
+                        <span class="description-toggle" onclick="event.stopPropagation(); toggleDescription(${task.id})">
+                            📝 Show Description
+                        </span>
+                        <div class="task-description" id="desc-${task.id}">${task.description}</div>
+                    ` : ''}
+                    ${hasNotes ? `
+                        <span class="description-toggle" onclick="event.stopPropagation(); toggleNotes(${task.id})" style="margin-left: 15px;">
+                            💬 Show Notes (${task.notes.length})
+                        </span>
+                        <div class="task-notes" id="notes-${task.id}">
+                            ${task.notes.map(note => `
+                                <div class="note-item">
+                                    <div class="note-content">${note.content}</div>
+                                    <div class="note-meta">${note.author.split('(')[0].trim()} • ${note.date ? new Date(note.date).toLocaleDateString() : ''}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    ${hasChildren ? `
+                        <div class="subtasks-container" id="subtasks-${task.id}">
+                            ${task.children.map(child => renderTaskHierarchy(child, level + 1)).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            return html;
+        }
+
+        function toggleSection(header) {
+            const container = header.nextElementSibling;
+            const toggle = header.querySelector('.section-toggle');
+
+            if (container.classList.contains('collapsed')) {
+                container.classList.remove('collapsed');
+                container.style.maxHeight = '10000px';
+                toggle.classList.remove('collapsed');
+            } else {
+                container.classList.add('collapsed');
+                container.style.maxHeight = '0';
+                toggle.classList.add('collapsed');
+            }
+        }
+
+        function toggleTaskChildren(taskId) {
+            const subtasks = document.getElementById(`subtasks-${taskId}`);
+            const expandBtn = document.getElementById(`expand-${taskId}`);
+
+            if (!subtasks) return;
+
+            if (subtasks.classList.contains('expanded')) {
+                subtasks.classList.remove('expanded');
+                expandBtn.classList.add('collapsed');
+            } else {
+                subtasks.classList.add('expanded');
+                expandBtn.classList.remove('collapsed');
+            }
+        }
+
+        function toggleDescription(taskId) {
+            const desc = document.getElementById(`desc-${taskId}`);
+            const toggle = desc.previousElementSibling;
+            desc.classList.toggle('expanded');
+            toggle.textContent = desc.classList.contains('expanded') ? '📝 Hide Description' : '📝 Show Description';
+        }
+
+        function toggleNotes(taskId) {
+            const notes = document.getElementById(`notes-${taskId}`);
+            const toggle = notes.previousElementSibling;
+            notes.classList.toggle('expanded');
+            const count = allTasks.find(t => t.id === taskId).notes.length;
+            toggle.textContent = notes.classList.contains('expanded') ? `💬 Hide Notes (${count})` : `💬 Show Notes (${count})`;
+        }
+
+        function renderTimeline(tasks) {
+            const container = document.getElementById('timeline-view');
+
+            // Filter tasks with dates
+            const tasksWithDates = tasks.filter(t => t.date || t.deadline);
+
+            if (tasksWithDates.length === 0) {
+                container.innerHTML = '<div class="no-results">No tasks with dates to display in timeline view</div>';
+                return;
+            }
+
+            // Find date range
+            const dates = tasksWithDates.flatMap(t => [t.date, t.deadline]).filter(Boolean);
+            const minDate = new Date(Math.min(...dates.map(d => new Date(d))));
+            const maxDate = new Date(Math.max(...dates.map(d => new Date(d))));
+
+            // Add padding
+            minDate.setMonth(minDate.getMonth() - 1);
+            maxDate.setMonth(maxDate.getMonth() + 1);
+
+            const totalDays = (maxDate - minDate) / (1000 * 60 * 60 * 24);
+
+            // Generate timeline header
+            const months = [];
+            let current = new Date(minDate);
+            while (current <= maxDate) {
+                months.push(current.toLocaleString('default', { month: 'short', year: 'numeric' }));
+                current.setMonth(current.getMonth() + 1);
+            }
+
+            let html = `
+                <div class="gantt-container">
+                    <div class="gantt-header">
+                        <h3>Project Timeline (${tasksWithDates.length} tasks)</h3>
+                    </div>
+                    <div class="gantt-chart">
+                        <div class="gantt-timeline">
+                            ${months.map(m => `<div class="gantt-month">${m}</div>`).join('')}
+                        </div>
+                        ${tasksWithDates.map(task => {
+                            const start = task.date ? new Date(task.date) : new Date(task.deadline);
+                            const end = task.deadline ? new Date(task.deadline) : new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+                            const startOffset = ((start - minDate) / (1000 * 60 * 60 * 24)) / totalDays * 100;
+                            const duration = ((end - start) / (1000 * 60 * 60 * 24)) / totalDays * 100;
+
+                            return `
+                                <div class="gantt-row">
+                                    <div class="gantt-task-label">${task.content}</div>
+                                    <div class="gantt-task-bar" style="left: calc(300px + ${startOffset}%); width: ${Math.max(duration, 2)}%);">
+                                        ${task.deadline ? '⏰ ' + task.deadline : ''}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function getFilteredTasks() {
+            const sectionFilter = document.getElementById('filter-section').value;
+            const priorityFilter = document.getElementById('filter-priority').value;
+            const searchQuery = document.getElementById('filter-search').value.toLowerCase();
+
+            return allTasks.filter(task => {
+                if (sectionFilter !== 'all' && task.section !== sectionFilter) return false;
+                if (priorityFilter !== 'all' && task.priority !== parseInt(priorityFilter)) return false;
+                if (searchQuery && !task.content.toLowerCase().includes(searchQuery) &&
+                    !task.description.toLowerCase().includes(searchQuery)) return false;
+                return true;
+            });
+        }
+
+        function applyFilters() {
+            const filtered = getFilteredTasks();
+            if (currentView === 'list') {
+                renderListView(filtered);
+            } else {
+                renderTimeline(filtered);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('filter-section').addEventListener('change', applyFilters);
+        document.getElementById('filter-priority').addEventListener('change', applyFilters);
+        document.getElementById('filter-search').addEventListener('input', applyFilters);
+
+        // Initial render
+        renderListView(allTasks);
+    </script>
+</body>
+</html>
