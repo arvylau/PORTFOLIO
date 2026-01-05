@@ -177,6 +177,54 @@
             background: #667eea;
             color: white;
         }
+
+        select {
+            padding: 10px 15px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            background: white;
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .person-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+            border: 2px solid #e0e0e0;
+            vertical-align: middle;
+        }
+
+        .person-chip {
+            display: inline-flex;
+            align-items: center;
+            margin: 2px;
+            padding: 4px 8px;
+            background: #f5f5f5;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+
+        .todoist-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #e44232;
+            color: white;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -184,12 +232,12 @@
         <div class="header">
             <h1>🎯 Project Task Matrix</h1>
             <div class="subtitle">Integrated view of Kumu Network and Todoist Portfolio</div>
-            <div class="subtitle">Generated: 2026-01-04 21:39</div>
+            <div class="subtitle">Generated: 2026-01-04 22:20</div>
         </div>
 
         <div class="stats">
             <div class="stat-card">
-                <div class="number">28</div>
+                <div class="number">29</div>
                 <div class="label">Total Tasks</div>
             </div>
             <div class="stat-card">
@@ -226,7 +274,7 @@
 
                     <tr>
                         <td><strong>PPM4ML</strong></td>
-                        <td><span class="team-size">7</span></td>
+                        <td><span class="team-size">8</span></td>
                         <td class="people-list">Kidney Allograft CD8/C4d PPM IFTA; Machine learning algorithms based on polychromatic polarization microscopy data for tissue pathology evaluation; HCC CD8 PPM TACS; Breast Cancer PPM TACS; Melanoma CD8 PPM TACS...</td>
                     </tr>
 
@@ -255,10 +303,26 @@
         <div class="section">
             <h2>📋 Task Matrix</h2>
             <div class="filters">
-                <button class="filter-btn active" onclick="filterTasks('all')">All Tasks</button>
-                <button class="filter-btn" onclick="filterTasks('ACTIVE')">Active</button>
-                <button class="filter-btn" onclick="filterTasks('IDEA')">Ideas</button>
-                <button class="filter-btn" onclick="filterTasks('DONE')">Done</button>
+                <button class="filter-btn active" onclick="filterByStatus('all')">All Tasks</button>
+                <button class="filter-btn" onclick="filterByStatus('ACTIVE')">Active</button>
+                <button class="filter-btn" onclick="filterByStatus('IDEA')">Ideas</button>
+                <button class="filter-btn" onclick="filterByStatus('DONE')">Done</button>
+            </div>
+            <div class="filters">
+                <select id="todoistFilter" onchange="applyFilters()">
+                    <option value="all">All Tasks</option>
+                    <option value="in-todoist">In Todoist</option>
+                    <option value="not-in-todoist">Not in Todoist</option>
+                </select>
+
+                <select id="tagsFilter" onchange="applyFilters()">
+                    <option value="all">All Tags</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="DONE">DONE</option>
+                    <option value="IDEA">IDEA</option>
+                    <option value="MS study">MS study</option>
+                    <option value="PhD study">PhD study</option>
+                </select>
             </div>
             <table id="taskTable">
                 <thead>
@@ -272,228 +336,236 @@
                 </thead>
                 <tbody>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE|PhD study">
                         <td class="task-name">Analysis and Prediction of Outcomes in Intensive Care Patients Receiving Mechanical Ventilation</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Raimundas Stasiunaitis</td>
+                        <td><span class="person-chip">Raimundas Stasiunaitis</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE|MS study">
                         <td class="task-name">Assessment of tumour infiltrating lymphocytes by machine learning methods</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>Hex4Path</td>
                         <td><span class="team-size">2</span></td>
-                        <td class="people-list">Justina Rozukaite, Sören Marx</td>
+                        <td><span class="person-chip">Justina Rozukaite</span><span class="person-chip">Sören Marx</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE|MS study">
                         <td class="task-name">Dirbtinio intelekto sistemų kūrimas, validavimas ir diegimas patologijos diagnostikoje</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>Hex4Path</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Edgaras Zaboras</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/d0cc6c14-4dfe-45c8-9eaa-aac7a8368b1b.jpeg" class="person-avatar" alt="Edgaras Zaboras">Edgaras Zaboras</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE">
                         <td class="task-name">IHC-driven Lymphocyte ML</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">2</span></td>
-                        <td class="people-list">Aistė, Sören Marx</td>
+                        <td><span class="person-chip">Aistė</span><span class="person-chip">Sören Marx</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE">
                         <td class="task-name">Kidney Allograft CD8/C4d PPM IFTA</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>PPM4ML</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE">
                         <td class="task-name">Kidney Allograft VDA</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>NEPHROSCAN.LT</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE|PhD study">
                         <td class="task-name">Kidney multi-morphometrics</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Renaldas Augulis</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/b0715111-1b16-4344-8666-56d5bf70372c.jpg" class="person-avatar" alt="Renaldas Augulis">Renaldas Augulis</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE|PhD study">
                         <td class="task-name">Machine Learning-Driven Assessment of Renal Cancer Microenvironment for Prognostic Modeling</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>ONCOINTEGRA</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Mantas Fabijonavicius</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/5ee8e761-c597-4b07-9d8e-f9b317ee6591.jpg" class="person-avatar" alt="Mantas Fabijonavicius">Mantas Fabijonavicius</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE|MS study">
                         <td class="task-name">Machine learning algorithms based on polychromatic polarization microscopy data for tissue pathology evaluation</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>PPM4ML</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Vilhelmas Landsbergis</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/74bb4503-8c3a-4e51-8090-314ecc94f4e1.jpg" class="person-avatar" alt="Vilhelmas Landsbergis">Vilhelmas Landsbergis</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE">
                         <td class="task-name">Melanoma IHC Hex models</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>Hex4Path</td>
                         <td><span class="team-size">2</span></td>
-                        <td class="people-list">Vygante Maskoliunaite, Dovile Zilenaite-Petrulaitiene</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/24ee2c86-12fb-4e6e-a7d3-e07728de8e37.jpg" class="person-avatar" alt="Vygante Maskoliunaite">Vygante Maskoliunaite</span><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/3192a36d-d888-4a39-9c20-bec3b467696b.jpg" class="person-avatar" alt="Dovile Zilenaite-Petrulaitiene">Dovile Zilenaite-Petrulaitiene</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE|PhD study">
                         <td class="task-name">Modeling of Urothelial Bladder Carcinoma Microenvironment by Digital Pathology and Artificial Intellingence Methods</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>VU SMEC Kidnex</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Julius Drachneris</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/a79a7bee-9a0b-4b63-a94a-d728fc500e9b.jpg" class="person-avatar" alt="Julius Drachneris">Julius Drachneris</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE|MS study">
                         <td class="task-name">Multi-PPM segmentation</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Vaiva Valaityte</td>
+                        <td><span class="person-chip">Vaiva Valaityte</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE">
                         <td class="task-name">NEPHROSCAN.LT</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>VU SMEC Kidnex</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE|PhD study">
                         <td class="task-name">Prognostic Modeling of Primary Cutaneous Melanoma by Digital Pathology and Machine Learning Methods</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Vygante Maskoliunaite</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/24ee2c86-12fb-4e6e-a7d3-e07728de8e37.jpg" class="person-avatar" alt="Vygante Maskoliunaite">Vygante Maskoliunaite</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE">
                         <td class="task-name">RCC CD8 Immunogradient</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>ONCOINTEGRA</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Mantas Fabijonavicius</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/5ee8e761-c597-4b07-9d8e-f9b317ee6591.jpg" class="person-avatar" alt="Mantas Fabijonavicius">Mantas Fabijonavicius</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE">
                         <td class="task-name">RCC CD8 PPM TACS</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>PPM4ML</td>
                         <td><span class="team-size">4</span></td>
-                        <td class="people-list">Hirali Sangani, Martynas Riauka, Ana Frei</td>
+                        <td><span class="person-chip">Hirali Sangani</span><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/591458c1-c0f0-41ef-bbc3-bc5812754108.jpg" class="person-avatar" alt="Martynas Riauka">Martynas Riauka</span><span class="person-chip">Ana Frei</span><span class="person-chip">+1 more</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="ACTIVE">
+                    <tr class="task-row" data-status="ACTIVE" data-todoist="false" data-tags="ACTIVE">
                         <td class="task-name">VU MIF BC: Įvadas skaitmeninė medicina</td>
                         <td><span class="status-badge" style="background: #4CAF50;">ACTIVE</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Justas Trinkūnas</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/387156f2-1e0d-42bf-a884-ff510f6fed1d.jpeg" class="person-avatar" alt="Justas Trinkūnas">Justas Trinkūnas</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="DONE">
+                    <tr class="task-row" data-status="DONE" data-todoist="false" data-tags="DONE|PhD study">
                         <td class="task-name">Prognostic Modeling of Liver Tumour Pathology by Artificial Intelligence Tools</td>
                         <td><span class="status-badge" style="background: #9E9E9E;">DONE</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Rokas Stulpinas</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/293425e0-082d-44fc-89f8-7def3dd5aaa5.jpg" class="person-avatar" alt="Rokas Stulpinas">Rokas Stulpinas</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="IDEA">
+                    <tr class="task-row" data-status="IDEA" data-todoist="false" data-tags="IDEA">
                         <td class="task-name">Alport Screen VDA</td>
                         <td><span class="status-badge" style="background: #2196F3;">IDEA</span></td>
                         <td>NEPHROSCAN.LT</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="IDEA">
+                    <tr class="task-row" data-status="IDEA" data-todoist="false" data-tags="IDEA">
                         <td class="task-name">Breast Cancer PPM TACS</td>
                         <td><span class="status-badge" style="background: #2196F3;">IDEA</span></td>
                         <td>PPM4ML, PPM4ML</td>
                         <td><span class="team-size">2</span></td>
-                        <td class="people-list">Vilhelmas Landsbergis, Aistė</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/74bb4503-8c3a-4e51-8090-314ecc94f4e1.jpg" class="person-avatar" alt="Vilhelmas Landsbergis">Vilhelmas Landsbergis</span><span class="person-chip">Aistė</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="IDEA">
+                    <tr class="task-row" data-status="IDEA" data-todoist="false" data-tags="IDEA">
                         <td class="task-name">CRC Multimodal</td>
                         <td><span class="status-badge" style="background: #2196F3;">IDEA</span></td>
                         <td>ONCOINTEGRA</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="IDEA">
+                    <tr class="task-row" data-status="IDEA" data-todoist="false" data-tags="IDEA">
                         <td class="task-name">Glom Phenotypes</td>
                         <td><span class="status-badge" style="background: #2196F3;">IDEA</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="IDEA">
+                    <tr class="task-row" data-status="IDEA" data-todoist="false" data-tags="IDEA">
                         <td class="task-name">HCC CD8 PPM TACS</td>
                         <td><span class="status-badge" style="background: #2196F3;">IDEA</span></td>
                         <td>PPM4ML</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="IDEA">
+                    <tr class="task-row" data-status="IDEA" data-todoist="false" data-tags="IDEA">
                         <td class="task-name">IgA nephropathy VDA</td>
                         <td><span class="status-badge" style="background: #2196F3;">IDEA</span></td>
                         <td>NEPHROSCAN.LT</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="IDEA">
+                    <tr class="task-row" data-status="IDEA" data-todoist="false" data-tags="IDEA">
                         <td class="task-name">Melanoma CD8 PPM TACS</td>
                         <td><span class="status-badge" style="background: #2196F3;">IDEA</span></td>
                         <td>PPM4ML</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="Unknown">
+                    <tr class="task-row" data-status="Unknown" data-todoist="false" data-tags="">
+                        <td class="task-name">Mantas et al RCC CD8 PPM TACS</td>
+                        <td><span class="status-badge" style="background: #FFC107;">Unknown</span></td>
+                        <td>PPM4ML</td>
+                        <td><span class="team-size">0</span></td>
+                        <td><span class="people-list">Unassigned</span></td>
+                    </tr>
+
+                    <tr class="task-row" data-status="Unknown" data-todoist="false" data-tags="">
                         <td class="task-name">Multimodal Path Hub</td>
                         <td><span class="status-badge" style="background: #FFC107;">Unknown</span></td>
                         <td>ONCOINTEGRA</td>
                         <td><span class="team-size">1</span></td>
-                        <td class="people-list">Justas Trinkūnas</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/387156f2-1e0d-42bf-a884-ff510f6fed1d.jpeg" class="person-avatar" alt="Justas Trinkūnas">Justas Trinkūnas</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="Unknown">
+                    <tr class="task-row" data-status="Unknown" data-todoist="false" data-tags="">
                         <td class="task-name">Naviko imuninio atsako įvertinimas skaitmeninės analizės metodais</td>
                         <td><span class="status-badge" style="background: #FFC107;">Unknown</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">0</span></td>
-                        <td class="people-list">Unassigned</td>
+                        <td><span class="people-list">Unassigned</span></td>
                     </tr>
 
-                    <tr class="task-row" data-status="Unknown">
+                    <tr class="task-row" data-status="Unknown" data-todoist="false" data-tags="">
                         <td class="task-name">Omero Hub</td>
                         <td><span class="status-badge" style="background: #FFC107;">Unknown</span></td>
                         <td>Independent</td>
                         <td><span class="team-size">2</span></td>
-                        <td class="people-list">Dovile Zilenaite-Petrulaitiene, Renaldas Augulis</td>
+                        <td><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/3192a36d-d888-4a39-9c20-bec3b467696b.jpg" class="person-avatar" alt="Dovile Zilenaite-Petrulaitiene">Dovile Zilenaite-Petrulaitiene</span><span class="person-chip"><img src="https://s3.amazonaws.com/cloud.kumu.io/accounts/497020/976855/b0715111-1b16-4344-8666-56d5bf70372c.jpg" class="person-avatar" alt="Renaldas Augulis">Renaldas Augulis</span></td>
                     </tr>
 
                 </tbody>
@@ -502,20 +574,51 @@
     </div>
 
     <script>
-        function filterTasks(status) {
-            const rows = document.querySelectorAll('.task-row');
-            const buttons = document.querySelectorAll('.filter-btn');
+        let currentStatusFilter = 'all';
 
+        function filterByStatus(status) {
+            currentStatusFilter = status;
+            const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const todoistFilter = document.getElementById('todoistFilter').value;
+            const tagsFilter = document.getElementById('tagsFilter').value;
+            const rows = document.querySelectorAll('.task-row');
 
             rows.forEach(row => {
-                if (status === 'all' || row.dataset.status === status) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+                let show = true;
+
+                // Status filter
+                if (currentStatusFilter !== 'all' && row.dataset.status !== currentStatusFilter) {
+                    show = false;
                 }
+
+                // Todoist filter
+                if (todoistFilter === 'in-todoist' && row.dataset.todoist !== 'true') {
+                    show = false;
+                }
+                if (todoistFilter === 'not-in-todoist' && row.dataset.todoist === 'true') {
+                    show = false;
+                }
+
+                // Tags filter
+                if (tagsFilter !== 'all') {
+                    const rowTags = row.dataset.tags || '';
+                    if (!rowTags.includes(tagsFilter)) {
+                        show = false;
+                    }
+                }
+
+                row.style.display = show ? '' : 'none';
             });
+
+            // Update visible count
+            const visibleCount = document.querySelectorAll('.task-row:not([style*="display: none"])').length;
+            console.log(`Showing ${visibleCount} tasks`);
         }
     </script>
 </body>

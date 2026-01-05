@@ -130,6 +130,16 @@ def generate_html(sections, tasks):
     section_names = sorted(set(task['section'] for task in tasks))
     priorities = sorted(set(task['priority'] for task in tasks), reverse=True)
 
+    # Extract unique responsible persons (clean up names)
+    persons = set()
+    for task in tasks:
+        resp = task.get('responsible', '').strip()
+        if resp:
+            # Extract name without ID (e.g., "Arvydas (43613934)" -> "Arvydas")
+            person_name = resp.split('(')[0].strip() if '(' in resp else resp
+            persons.add(person_name)
+    persons = sorted(persons)
+
     priority_labels = {
         1: 'P1 (Highest)',
         2: 'P2 (High)',
@@ -641,6 +651,14 @@ def generate_html(sections, tasks):
             </div>
 
             <div class="filter-group">
+                <label for="filter-person">Person</label>
+                <select id="filter-person">
+                    <option value="all">All People</option>
+                    {generate_person_options(persons)}
+                </select>
+            </div>
+
+            <div class="filter-group">
                 <label for="filter-search">Search</label>
                 <input type="text" id="filter-search" placeholder="Search tasks...">
             </div>
@@ -1013,6 +1031,11 @@ def generate_html(sections, tasks):
 
             let barHtml = '';
             let dateTooltip = '';
+
+            // Extract person info (available for all rendering modes)
+            const personName = task.responsible ? task.responsible.split('(')[0].trim() : '';
+            const personDisplay = personName ? `👤 ${{personName}}` : '';
+
             if (showBars && hasDate) {{
                 const start = task.date ? new Date(task.date) : new Date(task.deadline);
                 const end = task.deadline ? new Date(task.deadline) : new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -1025,19 +1048,35 @@ def generate_html(sections, tasks):
                     ? `${{startStr}} → ${{endStr}}`
                     : (startStr || endStr);
 
-                barHtml = `
-                    <div style="position: absolute; left: ${{startOffset}}%; width: ${{Math.max(duration, 0.5)}}%; height: 28px; background: ${{priorityColor}}; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" title="${{dateTooltip}}"></div>
-                    <div style="position: absolute; left: ${{startOffset + Math.max(duration, 0.5) + 0.5}}%; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-                        <span style="background: ${{priorityColor}}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;">${{priorityLabel}}</span>
-                        <span style="font-size: 12px; font-weight: ${{isMainTask ? '700' : '500'}}; color: #333;">${{task.content}}</span>
-                        <span style="font-size: 11px; color: #666;">(${{dateTooltip}})</span>
-                    </div>
-                `;
+                // For master tasks with long enough bars, put text inside the bar
+                const isLongBar = duration >= 15; // Bar is at least 15% of timeline
+                const putTextInside = isMainTask && isLongBar;
+
+                if (putTextInside) {{
+                    barHtml = `
+                        <div style="position: absolute; left: ${{startOffset}}%; width: ${{Math.max(duration, 0.5)}}%; height: 28px; background: ${{priorityColor}}; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; padding: 0 10px; overflow: hidden;" title="${{dateTooltip}}">
+                            <span style="color: white; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${{task.content}}</span>
+                            ${{personDisplay ? `<span style="color: rgba(255,255,255,0.85); font-size: 10px; margin-left: 10px; white-space: nowrap;">${{personDisplay}}</span>` : ''}}
+                            <span style="color: rgba(255,255,255,0.9); font-size: 10px; margin-left: 8px; white-space: nowrap;">(${{dateTooltip}})</span>
+                        </div>
+                    `;
+                }} else {{
+                    barHtml = `
+                        <div style="position: absolute; left: ${{startOffset}}%; width: ${{Math.max(duration, 0.5)}}%; height: 28px; background: ${{priorityColor}}; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" title="${{dateTooltip}}"></div>
+                        <div style="position: absolute; left: ${{startOffset + Math.max(duration, 0.5) + 0.5}}%; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                            <span style="background: ${{priorityColor}}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;">${{priorityLabel}}</span>
+                            <span style="font-size: 12px; font-weight: ${{isMainTask ? '700' : '500'}}; color: #333;">${{task.content}}</span>
+                            ${{personDisplay ? `<span style="font-size: 10px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${{personDisplay}}</span>` : ''}}
+                            <span style="font-size: 11px; color: #666;">(${{dateTooltip}})</span>
+                        </div>
+                    `;
+                }}
             }} else if (!showBars) {{
                 barHtml = `
                     <div style="width: 100%; display: flex; align-items: center; gap: 8px; padding: 4px 8px;">
                         <span style="background: ${{priorityColor}}; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600;">${{priorityLabel}}</span>
                         <span style="font-weight: ${{isMainTask ? '700' : '400'}};">${{task.content}}</span>
+                        ${{personDisplay ? `<span style="font-size: 10px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${{personDisplay}}</span>` : ''}}
                         <span style="color: #999; font-size: 12px; margin-left: 10px;">(no date)</span>
                     </div>
                 `;
@@ -1047,6 +1086,7 @@ def generate_html(sections, tasks):
                     <div style="display: flex; align-items: center; gap: 8px; padding: 4px 8px;">
                         <span style="background: ${{priorityColor}}; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600;">${{priorityLabel}}</span>
                         <span style="font-weight: ${{isMainTask ? '700' : '400'}}; color: #666;">${{task.content}}</span>
+                        ${{personDisplay ? `<span style="font-size: 10px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${{personDisplay}}</span>` : ''}}
                         <span style="color: #999; font-size: 11px;">(no date)</span>
                     </div>
                 `;
@@ -1060,7 +1100,7 @@ def generate_html(sections, tasks):
                 padding: 6px 0;
                 border-bottom: 1px solid #f5f5f5;
                 position: relative;
-                background: ${{isMainTask ? '#f8f8f8' : 'transparent'}};
+                background: ${{isMainTask ? '#d8d8d8' : 'transparent'}};
             `;
 
             let html = `
@@ -1139,6 +1179,7 @@ def generate_html(sections, tasks):
             const statusFilter = document.getElementById('filter-status').value;
             const sectionFilter = document.getElementById('filter-section').value;
             const priorityFilter = document.getElementById('filter-priority').value;
+            const personFilter = document.getElementById('filter-person').value;
             const searchQuery = document.getElementById('filter-search').value.toLowerCase();
 
             return allTasks.filter(task => {{
@@ -1148,6 +1189,13 @@ def generate_html(sections, tasks):
 
                 if (sectionFilter !== 'all' && task.section !== sectionFilter) return false;
                 if (priorityFilter !== 'all' && task.priority !== parseInt(priorityFilter)) return false;
+
+                // Person filter
+                if (personFilter !== 'all') {{
+                    const taskPerson = task.responsible ? task.responsible.split('(')[0].trim() : '';
+                    if (taskPerson !== personFilter) return false;
+                }}
+
                 if (searchQuery && !task.content.toLowerCase().includes(searchQuery) &&
                     !task.description.toLowerCase().includes(searchQuery)) return false;
                 return true;
@@ -1167,6 +1215,7 @@ def generate_html(sections, tasks):
         document.getElementById('filter-status').addEventListener('change', applyFilters);
         document.getElementById('filter-section').addEventListener('change', applyFilters);
         document.getElementById('filter-priority').addEventListener('change', applyFilters);
+        document.getElementById('filter-person').addEventListener('change', applyFilters);
         document.getElementById('filter-search').addEventListener('input', applyFilters);
 
         // Initial render with filters applied (default: with-dates)
@@ -1182,6 +1231,9 @@ def generate_section_options(sections):
 
 def generate_priority_options(priorities, priority_labels):
     return '\n'.join(f'<option value="{p}">{priority_labels.get(p, f"P{p}")}</option>' for p in priorities)
+
+def generate_person_options(persons):
+    return '\n'.join(f'<option value="{person}">{person}</option>' for person in persons)
 
 if __name__ == '__main__':
     print("=" * 60)

@@ -45,6 +45,9 @@ def create_project_task_matrix(people, tasks, projects, connections, portfolio_t
     # Extract major projects from connections
     major_projects = ['ONCOINTEGRA', 'PPM4ML', 'VU SMEC Kidnex', 'NEPHROSCAN.LT', 'Hex4Path']
 
+    # Create set of Todoist task names for quick lookup
+    todoist_tasks = set(portfolio_tasks['content'].str.lower().tolist()) if len(portfolio_tasks) > 0 else set()
+
     matrix_data = []
 
     for _, task in tasks.iterrows():
@@ -52,11 +55,15 @@ def create_project_task_matrix(people, tasks, projects, connections, portfolio_t
         tags = task['Tags'] if pd.notna(task['Tags']) else ''
         status = 'ACTIVE' if 'ACTIVE' in str(tags) else ('IDEA' if 'IDEA' in str(tags) else 'DONE' if 'DONE' in str(tags) else 'Unknown')
 
+        # Check if this task is in Todoist
+        in_todoist = any(task_name.lower() in todoist_task or todoist_task in task_name.lower() for todoist_task in todoist_tasks)
+
         # Find which major project this task belongs to
         task_connections = connections[(connections['From'] == task_name) | (connections['To'] == task_name)]
 
         related_projects = []
         related_people = []
+        related_people_data = []
 
         for _, conn in task_connections.iterrows():
             other = conn['To'] if conn['From'] == task_name else conn['From']
@@ -65,13 +72,28 @@ def create_project_task_matrix(people, tasks, projects, connections, portfolio_t
             # Check if it's a person
             if other in people['Label'].values:
                 related_people.append(other)
+                # Get person data including image
+                person_data = people[people['Label'] == other].iloc[0]
+                image_url = person_data.get('Image', '')
+                if pd.notna(image_url) and image_url:
+                    related_people_data.append({
+                        'name': other,
+                        'image': image_url
+                    })
+                else:
+                    related_people_data.append({
+                        'name': other,
+                        'image': ''
+                    })
 
         matrix_data.append({
             'Task': task_name,
             'Status': status,
             'Tags': tags,
+            'In_Todoist': in_todoist,
             'Projects': ', '.join(related_projects) if related_projects else 'Independent',
             'People': ', '.join(related_people[:3]) if related_people else 'Unassigned',
+            'People_Data': related_people_data,
             'Team_Size': len(related_people),
             'Description': task['Description'] if pd.notna(task['Description']) else ''
         })
@@ -291,6 +313,54 @@ def generate_html_matrix(matrix_df, project_summary):
             background: #667eea;
             color: white;
         }}
+
+        select {{
+            padding: 10px 15px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            background: white;
+            cursor: pointer;
+            min-width: 180px;
+        }}
+
+        select:focus {{
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }}
+
+        .person-avatar {{
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+            border: 2px solid #e0e0e0;
+            vertical-align: middle;
+        }}
+
+        .person-chip {{
+            display: inline-flex;
+            align-items: center;
+            margin: 2px;
+            padding: 4px 8px;
+            background: #f5f5f5;
+            border-radius: 16px;
+            font-size: 12px;
+        }}
+
+        .todoist-badge {{
+            display: inline-block;
+            padding: 2px 8px;
+            background: #e44232;
+            color: white;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+        }}
     </style>
 </head>
 <body>
@@ -350,10 +420,35 @@ def generate_html_matrix(matrix_df, project_summary):
         <div class="section">
             <h2>📋 Task Matrix</h2>
             <div class="filters">
-                <button class="filter-btn active" onclick="filterTasks('all')">All Tasks</button>
-                <button class="filter-btn" onclick="filterTasks('ACTIVE')">Active</button>
-                <button class="filter-btn" onclick="filterTasks('IDEA')">Ideas</button>
-                <button class="filter-btn" onclick="filterTasks('DONE')">Done</button>
+                <button class="filter-btn active" onclick="filterByStatus('all')">All Tasks</button>
+                <button class="filter-btn" onclick="filterByStatus('ACTIVE')">Active</button>
+                <button class="filter-btn" onclick="filterByStatus('IDEA')">Ideas</button>
+                <button class="filter-btn" onclick="filterByStatus('DONE')">Done</button>
+            </div>
+            <div class="filters">
+                <select id="todoistFilter" onchange="applyFilters()">
+                    <option value="all">All Tasks</option>
+                    <option value="in-todoist">In Todoist</option>
+                    <option value="not-in-todoist">Not in Todoist</option>
+                </select>
+
+                <select id="tagsFilter" onchange="applyFilters()">
+                    <option value="all">All Tags</option>
+'''
+
+    # Get unique tags
+    all_tags = set()
+    for tags_str in matrix_df['Tags'].unique():
+        if tags_str and pd.notna(tags_str) and str(tags_str).strip():
+            for tag in str(tags_str).split('|'):
+                tag = tag.strip()
+                if tag:
+                    all_tags.add(tag)
+
+    for tag in sorted(all_tags):
+        html += f'                    <option value="{tag}">{tag}</option>\n'
+
+    html += '''                </select>
             </div>
             <table id="taskTable">
                 <thead>
@@ -370,13 +465,32 @@ def generate_html_matrix(matrix_df, project_summary):
 
     for _, row in matrix_df.sort_values(['Status', 'Task']).iterrows():
         status_color = status_colors.get(row['Status'], '#999')
+
+        # Create task name with Todoist badge if applicable
+        task_display = row['Task']
+        if row['In_Todoist']:
+            task_display += '<span class="todoist-badge">TODOIST</span>'
+
+        # Create people display with images
+        people_html = ''
+        if row['People_Data'] and len(row['People_Data']) > 0:
+            for person in row['People_Data'][:3]:
+                if person['image']:
+                    people_html += f'<span class="person-chip"><img src="{person["image"]}" class="person-avatar" alt="{person["name"]}">{person["name"]}</span>'
+                else:
+                    people_html += f'<span class="person-chip">{person["name"]}</span>'
+            if len(row['People_Data']) > 3:
+                people_html += f'<span class="person-chip">+{len(row["People_Data"]) - 3} more</span>'
+        else:
+            people_html = '<span class="people-list">Unassigned</span>'
+
         html += f'''
-                    <tr class="task-row" data-status="{row['Status']}">
-                        <td class="task-name">{row['Task']}</td>
+                    <tr class="task-row" data-status="{row['Status']}" data-todoist="{str(row['In_Todoist']).lower()}" data-tags="{row['Tags']}">
+                        <td class="task-name">{task_display}</td>
                         <td><span class="status-badge" style="background: {status_color};">{row['Status']}</span></td>
                         <td>{row['Projects']}</td>
                         <td><span class="team-size">{row['Team_Size']}</span></td>
-                        <td class="people-list">{row['People']}</td>
+                        <td>{people_html}</td>
                     </tr>
 '''
 
@@ -387,20 +501,51 @@ def generate_html_matrix(matrix_df, project_summary):
     </div>
 
     <script>
-        function filterTasks(status) {
-            const rows = document.querySelectorAll('.task-row');
-            const buttons = document.querySelectorAll('.filter-btn');
+        let currentStatusFilter = 'all';
 
+        function filterByStatus(status) {
+            currentStatusFilter = status;
+            const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const todoistFilter = document.getElementById('todoistFilter').value;
+            const tagsFilter = document.getElementById('tagsFilter').value;
+            const rows = document.querySelectorAll('.task-row');
 
             rows.forEach(row => {
-                if (status === 'all' || row.dataset.status === status) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+                let show = true;
+
+                // Status filter
+                if (currentStatusFilter !== 'all' && row.dataset.status !== currentStatusFilter) {
+                    show = false;
                 }
+
+                // Todoist filter
+                if (todoistFilter === 'in-todoist' && row.dataset.todoist !== 'true') {
+                    show = false;
+                }
+                if (todoistFilter === 'not-in-todoist' && row.dataset.todoist === 'true') {
+                    show = false;
+                }
+
+                // Tags filter
+                if (tagsFilter !== 'all') {
+                    const rowTags = row.dataset.tags || '';
+                    if (!rowTags.includes(tagsFilter)) {
+                        show = false;
+                    }
+                }
+
+                row.style.display = show ? '' : 'none';
             });
+
+            // Update visible count
+            const visibleCount = document.querySelectorAll('.task-row:not([style*="display: none"])').length;
+            console.log(`Showing ${visibleCount} tasks`);
         }
     </script>
 </body>

@@ -1,0 +1,153 @@
+KUMU NETWORK STRUCTURE ANALYSIS
+======================================================================
+
+Element Types:
+  Person: 67
+  Task: 28
+  Project: 5
+
+Task Tags (ACTIVE/IDEA status):
+  VU MIF BC: Įvadas skaitmeninė medicina: ACTIVE
+  Multi-PPM segmentation: ACTIVE|MS study
+  CRC Multimodal: IDEA
+  Analysis and Prediction of Outcomes in Intensive Care Patients Receiving Mechanical Ventilation: ACTIVE|PhD study
+  Kidney Allograft CD8/C4d PPM IFTA: ACTIVE
+  Machine learning algorithms based on polychromatic polarization microscopy data for tissue pathology evaluation: ACTIVE|MS study
+  Assessment of tumour infiltrating lymphocytes by machine learning methods: ACTIVE|MS study
+  Prognostic Modeling of Liver Tumour Pathology by Artificial Intelligence Tools: DONE|PhD study
+  Naviko imuninio atsako įvertinimas skaitmeninės analizės metodais: No tags
+  Modeling of Urothelial Bladder Carcinoma Microenvironment by Digital Pathology and Artificial Intellingence Methods: ACTIVE|PhD study
+  IHC-driven Lymphocyte ML: ACTIVE
+  IgA nephropathy VDA: IDEA
+  Glom Phenotypes: IDEA
+  RCC CD8 Immunogradient: ACTIVE
+  Prognostic Modeling of Primary Cutaneous Melanoma by Digital Pathology and Machine Learning Methods: ACTIVE|PhD study
+  Machine Learning-Driven Assessment of Renal Cancer Microenvironment for Prognostic Modeling: ACTIVE|PhD study
+  Kidney Allograft VDA: ACTIVE
+  Kidney multi-morphometrics: ACTIVE|PhD study
+  HCC CD8 PPM TACS: IDEA
+  Alport Screen VDA: IDEA
+  NEPHROSCAN.LT: ACTIVE
+  Melanoma CD8 PPM TACS: IDEA
+  RCC CD8 PPM TACS: ACTIVE
+  Breast Cancer PPM TACS: IDEA
+  Dirbtinio intelekto sistemų kūrimas, validavimas ir diegimas patologijos diagnostikoje: ACTIVE|MS study
+  Melanoma IHC Hex models: ACTIVE
+  Multimodal Path Hub: No tags
+  Omero Hub: No tags
+
+
+Projects (Tasks) and their connections:
+======================================================================
+
+VU MIF BC: Įvadas skaitmeninė medicina:
+  -> Justas Trinkūnas
+
+Multi-PPM segmentation:
+  -> Vaiva Valaityte
+
+CRC Multimodal:
+  -> ONCOINTEGRA
+
+Analysis and Prediction of Outcomes in Intensive Care Patients Receiving Mechanical Ventilation:
+  -> Raimundas Stasiunaitis
+
+Kidney Allograft CD8/C4d PPM IFTA:
+  -> PPM4ML
+
+Machine learning algorithms based on polychromatic polarization microscopy data for tissue pathology evaluation:
+  -> Breast Cancer PPM TACS
+  -> PPM4ML
+  -> Vilhelmas Landsbergis
+
+Assessment of tumour infiltrating lymphocytes by machine learning methods:
+  -> Justina Rozukaite
+  -> Hex4Path
+  -> IHC-driven Lymphocyte ML
+  -> Sören Marx
+
+Prognostic Modeling of Liver Tumour Pathology by Artificial Intelligence Tools:
+  -> Rokas Stulpinas
+
+Modeling of Urothelial Bladder Carcinoma Microenvironment by Digital Pathology and Artificial Intellingence Methods:
+  -> Julius Drachneris
+  -> VU SMEC Kidnex
+
+IHC-driven Lymphocyte ML:
+  -> Prognostic Modeling of Primary Cutaneous Melanoma by Digital Pathology and Machine Learning Methods
+  -> Aistė
+  -> Sören Marx
+  -> Assessment of tumour infiltrating lymphocytes by machine learning methods
+
+IgA nephropathy VDA:
+  -> NEPHROSCAN.LT
+
+RCC CD8 Immunogradient:
+  -> RCC CD8 PPM TACS
+  -> Mantas Fabijonavicius
+  -> ONCOINTEGRA
+
+Prognostic Modeling of Primary Cutaneous Melanoma by Digital Pathology and Machine Learning Methods:
+  -> IHC-driven Lymphocyte ML
+  -> Vygante Maskoliunaite
+
+Machine Learning-Driven Assessment of Renal Cancer Microenvironment for Prognostic Modeling:
+  -> ONCOINTEGRA
+  -> Mantas Fabijonavicius
+
+Kidney Allograft VDA:
+  -> NEPHROSCAN.LT
+
+Kidney multi-morphometrics:
+  -> Renaldas Augulis
+
+HCC CD8 PPM TACS:
+  -> PPM4ML
+
+Alport Screen VDA:
+  -> NEPHROSCAN.LT
+
+NEPHROSCAN.LT:
+  -> VU SMEC Kidnex
+  -> Kidney Allograft VDA
+  -> IgA nephropathy VDA
+  -> Alport Screen VDA
+
+Melanoma CD8 PPM TACS:
+  -> PPM4ML
+  -> Melanoma IHC Hex models
+
+RCC CD8 PPM TACS:
+  -> Hirali Sangani
+  -> RCC CD8 Immunogradient
+  -> Martynas Riauka
+  -> Ana Frei
+  -> PPM4ML
+  -> Aida Laurinaviciene
+
+Breast Cancer PPM TACS:
+  -> Machine learning algorithms based on polychromatic polarization microscopy data for tissue pathology evaluation
+  -> PPM4ML
+  -> PPM4ML
+  -> Vilhelmas Landsbergis
+  -> Aistė
+
+Dirbtinio intelekto sistemų kūrimas, validavimas ir diegimas patologijos diagnostikoje:
+  -> Edgaras Zaboras
+  -> Hex4Path
+
+Melanoma IHC Hex models:
+  -> Hex4Path
+  -> Melanoma CD8 PPM TACS
+  -> Vygante Maskoliunaite
+  -> Dovile Zilenaite-Petrulaitiene
+
+Multimodal Path Hub:
+  -> ONCOINTEGRA
+  -> Justas Trinkūnas
+  -> Omero Hub
+
+Omero Hub:
+  -> Multimodal Path Hub
+  -> Dovile Zilenaite-Petrulaitiene
+  -> Renaldas Augulis

@@ -1,0 +1,29 @@
+Connection Labels Analysis:
+======================================================================
+
+Label value counts:
+  nan: 99
+  MS study: 7
+  PhD study: 5
+  BC study: 3
+  Lead: 2
+
+
+Sample connections with labels:
+Sören Marx --[MS study]--> Arvydas Laurinavicius
+Arvydas Laurinavicius --[PhD study]--> Renaldas Augulis
+Justina Rozukaite --[MS study]--> Dovile Zilenaite-Petrulaitiene
+Arvydas Laurinavicius --[MS study]--> Vilhelmas Landsbergis
+Arvydas Laurinavicius --[PhD study]--> Vygante Maskoliunaite
+Arvydas Laurinavicius --[PhD study]--> Julius Drachneris
+Arvydas Laurinavicius --[PhD study]--> Mantas Fabijonavicius
+Hirali Sangani --[BC study]--> Arvydas Laurinavicius
+Dirbtinio intelekto sistemų kūrimas, validavimas ir diegimas patologijos diagnostikoje --[MS study]--> Edgaras Zaboras
+Allan Rasmusson --[Lead]--> Hex4Path
+Julija Raudyte --[MS study]--> Linas Petkevicius
+Arvydas Laurinavicius --[MS study]--> Edgaras Zaboras
+Arvydas Laurinavicius --[Lead]--> PPM4ML
+Flora Hernady --[BC study]--> Aida Laurinaviciene
+Arvydas Laurinavicius --[PhD study]--> Rokas Stulpinas
+Assessment of tumour infiltrating lymphocytes by machine learning methods --[MS study]--> Sören Marx
+Julia Augustin --[BC study]--> Aida Laurinaviciene

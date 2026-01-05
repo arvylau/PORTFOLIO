@@ -501,6 +501,17 @@
             </div>
 
             <div class="filter-group">
+                <label for="filter-person">Person</label>
+                <select id="filter-person">
+                    <option value="all">All People</option>
+                    <option value="Aida">Aida</option>
+<option value="Arvydas">Arvydas</option>
+<option value="Danutė">Danutė</option>
+<option value="jolita.jaskoniene">jolita.jaskoniene</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
                 <label for="filter-search">Search</label>
                 <input type="text" id="filter-search" placeholder="Search tasks...">
             </div>
@@ -509,11 +520,11 @@
         <div class="stats">
             <div class="stat-item">
                 <span class="stat-label">Total Tasks:</span>
-                <span class="stat-value" id="total-tasks">65</span>
+                <span class="stat-value" id="total-tasks">69</span>
             </div>
             <div class="stat-item">
                 <span class="stat-label">Visible:</span>
-                <span class="stat-value" id="visible-tasks">65</span>
+                <span class="stat-value" id="visible-tasks">69</span>
             </div>
             <div class="stat-item">
                 <span class="stat-label">Sections:</span>
@@ -521,7 +532,7 @@
             </div>
             <div class="stat-item">
                 <span class="stat-label">With Deadlines:</span>
-                <span class="stat-value">19</span>
+                <span class="stat-value">27</span>
             </div>
         </div>
 
@@ -561,7 +572,7 @@
     "section": "EXPLORE",
     "author": "Arvydas (43613934)",
     "responsible": "Arvydas (43613934)",
-    "date": "2026-01-04",
+    "date": null,
     "deadline": "2025-12-02",
     "deadline_lang": "en",
     "notes": [
@@ -612,7 +623,7 @@
     "section": "EXPLORE",
     "author": "Danutė (43831156)",
     "responsible": "",
-    "date": "2026-01-04",
+    "date": null,
     "deadline": null,
     "deadline_lang": "",
     "notes": [
@@ -818,16 +829,16 @@
   },
   {
     "id": 12,
-    "content": "PPM LMT 2024-2027 @PROJECT",
+    "content": "PPM LMT 2024-2027 @EXPERIMENT",
     "description": "[Network • Co-Intell / F2 • Kumu](https://kumu.io/arvylau/network#co-intell/ppm4ml)\n\n[PPMTest](onenote:https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/Documents/PPMTest/)  ([Web view](https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/_layouts/Doc.aspx?sourcedoc=%7bD4A4E6AC-452D-48B8-8204-0C9136D5A48F%7d&end=\\(\\)&end))\n\n**The Aim** of the study is to assess the potential of PPM imaging for ML-based tissue pathology biomarkers.\n\n**Objective 1**. Explore and optimize tissue processing/data extraction approaches by PPM imaging for informative ML algorithms.\n\n**Objective 2**. Explore diagnostic and clinical utility of PPM-based computational biomarkers in tissue pathology.\n\nThe expected outputs of the study will contribute to the rapidly advancing domain of computational pathology with affordable and unique modality of polarized microscopy which enables vectorial data on collagen microarchitecture to supplement clinical models of tissue microenvironment.\n\n**Objective 1**. \n\nMultiple combinations of tissue processing, imaging and analytical techniques will be explored to establish most informative and robust data extraction and processing pathways. Formalin fixed paraffin embedded (FFPE) tissue techniques, routinely used in pathology labs, will form the basis of the experiments to ensure broad applicability of the techniques to be developed. Along with unstained (label-free) FFPE sections, various histochemistry screening methods will be tested for the informative value and signal-to-noise ratio of the tissue components be represented. Further, the PPM-extracted data will be verified by immunofluorescence (IF) and/or immunohistochemistry (IHC) labeling techniques as well as combined brightfield/PPM/fluorescence protocols will be tested for specific tissue component assessment tasks. Performance of PPM imaging with reference to SHG microscopy will be assessed (in collaboration with prof. Virginijus Barzda). Both single PPM-extracted signals and combined (multimodal) imaging data will be tested by image processing and ML algorithms to generate informative and reproducible computational signatures of tissue components, with primary focus on normal, fibrotic, neoplastic, and peri-neoplastic collagen architecture. In addition, pathologic substances like amyloid, hyaline, will be explored.  The image-generated data will be processed with multivariate/spatial analysis methods, DL neural networks and other ML methods.\n\n**Activity 1.1 Months 1-24.**\n\nCalibrate PPM imaging equipment to further streamline and automate experimental tissue and image processing workflow.\n\nVarious regimes of PPM imaging settings will be tested to optimize signal-to-noise ratio and reproducibility, also taking into account the impact of tissue specimen preparation variance such as section thickness, slide cover-slipping, etc.\n\nNext, a series of experiments testing various tissue staining techniques and their combinations will be tested for their interactions with the PPM imaging to explore light absorbance and other possible effects.\n\nBenefits and drawbacks of combining PPM imaging with IF and IHC will be assessed.\n\nWhere needed, IF and/or IHC will be used as a reference method to verify the PPM-generated signals, also producing labels for ML algorithms.\n\nOn the other hand, potential synergies of the PPM and other staining/imaging techniques will be sought for innovative research and clinical applications.\n\n**Objective 2.**\n\nSelected PPM-based biomarker candidates will be assessed for their diagnostic and clinical value in retrospective patient cohorts with renal cell carcinoma and non-neoplastic kidney pathology. This will allow to cover a broad spectrum of microarchitectural collagen patterns in the context of diverse pathologic conditions and their interfaces.\n\n**Activity 2.1 Months 25-36.**\n\nSelected tissue processing/PPM protocols will be used to generate digital data from microscopy sections from patients (at least 250) with neoplastic and non-neoplastic kidney pathology. Primary focus will be on tumor-associated collagen signatures, especially in the tumor-host interface area, as well as fibrotic transformations in the non-neoplastic renal tissue. Segmentation of kidney structures will be applied for specific sampling of the PPM data. Potential diagnostic and predictive value of the novel indicators will be assessed in the context of clinical and pathology data available.\n\nIn addition, the annexes include the project implementation plan (Annex 1), the project risk and risk management plan (Annex 2), and a description of the project's main equipment and data resources (Annex 3).\n\n **Objective 1**.  **Activity 1.1 Months 1-24.**\n\nOUTPUT 1.1.1. An expert document representing a procedure manual for optimized PPM-imaging settings applied for various tissue processing and staining techniques, their expected imaging and data processing results. This output is important for quality assurance and reproducibility of the applications.\n\nOUTPUT 1.1.2 Digitized research object (a sample dataset of at least 40 FFPE samples processed with PPM technology). This will include a library of experimental digital signatures of various tissue components including visual representation and description of the analysis results. The output will focus on candidate methods for research and clinical applications.\n\nOUTPUT 1.1.3. Two peer-reviewed research articles in Clarivate Analytics Web of Science (CA WOS) journals accepted for publication (experimental methods and potential applications based on PPM). The results will represent novel opportunities of PPM imaging for tissue pathology assessment.\n\nOUTPUT 1. 1.4 Two oral or poster presentations in international meetings.\n\n**Objective 2. Activity 2.1 Months 25-36.**\n\nOUTPUT 2.1.1 One peer-reviewed research article in CA WOS journals accepted for publication (PPM-biomarkers for kidney pathology).\n\nOUTPUT 2.1.2 Two oral or poster presentations in international meetings.",
     "priority": 1,
     "indent": 1,
     "section": "ACTIVE",
     "author": "Danutė (43831156)",
     "responsible": "Arvydas (43613934)",
-    "date": null,
-    "deadline": null,
-    "deadline_lang": "",
+    "date": "2026-01-05",
+    "deadline": "2027-08-31",
+    "deadline_lang": "en",
     "notes": [
       {
         "content": "LMT **pratęsė paraiškų teikimo terminą** iki sausio 31 d. 24 val.\n\nNauji pateikimo vidiniam derinimui ir tvirtinimui VU terminai:\n\n- paraiškas pirminei peržiūrai ir biudžeto suderinimui atsiųsti iki **sausio 19 d.**\n- paraiškas tvirtinimui pateikti iki **sausio 29 d.** imtinai.",
@@ -901,7 +912,7 @@
     "section": "ACTIVE",
     "author": "Arvydas (43613934)",
     "responsible": "",
-    "date": null,
+    "date": "2026-01-05",
     "deadline": "2026-08-31",
     "deadline_lang": "en",
     "notes": [],
@@ -909,7 +920,7 @@
   },
   {
     "id": 14,
-    "content": "OUTPUT 1.1.2 Digitized research object (40 FFPE samples processed with PPM technology)",
+    "content": "OUTPUT 1.1.2 Digitized research object (40 FFPE PPM)",
     "description": "",
     "priority": 4,
     "indent": 2,
@@ -931,22 +942,22 @@
     "section": "ACTIVE",
     "author": "Arvydas (43613934)",
     "responsible": "",
-    "date": null,
-    "deadline": "2026-02-28",
+    "date": "2026-01-05",
+    "deadline": "2026-08-31",
     "deadline_lang": "en",
     "notes": [],
     "children": []
   },
   {
     "id": 16,
-    "content": "Martynas et al PPM pipepine @PAPER",
+    "content": "Martynas et al PPM ML Pipeline @PAPER",
     "description": "",
     "priority": 1,
     "indent": 3,
     "section": "ACTIVE",
     "author": "Arvydas (43613934)",
     "responsible": "",
-    "date": null,
+    "date": "2026-01-05",
     "deadline": "2026-01-31",
     "deadline_lang": "en",
     "notes": [],
@@ -954,15 +965,15 @@
   },
   {
     "id": 17,
-    "content": "Mantas et al RCC PPM TACS @PAPER",
+    "content": "Mantas et al RCC CD8 PPM TACS @PAPER",
     "description": "",
     "priority": 2,
     "indent": 3,
     "section": "ACTIVE",
     "author": "Arvydas (43613934)",
     "responsible": "",
-    "date": null,
-    "deadline": "2026-02-26",
+    "date": "2026-01-05",
+    "deadline": "2026-03-31",
     "deadline_lang": "en",
     "notes": [],
     "children": []
@@ -976,7 +987,7 @@
     "section": "ACTIVE",
     "author": "Arvydas (43613934)",
     "responsible": "",
-    "date": null,
+    "date": "2026-01-05",
     "deadline": "2026-08-31",
     "deadline_lang": "en",
     "notes": [],
@@ -999,8 +1010,8 @@
   },
   {
     "id": 20,
-    "content": "ESDIP Gratz Deadline for abstract submission: [European Society of Digital and Integrative Pathology | ECDP2026 | 22nd European Congress on Digital Pathology 2026](https://www.ecdp2026.org/) @ABSTRACT",
-    "description": "",
+    "content": "ECDP Gratz Deadline for abstract submission: @ABSTRACT",
+    "description": "[European Society of Digital and Integrative Pathology | ECDP2026](https://www.ecdp2026.org/)",
     "priority": 2,
     "indent": 3,
     "section": "ACTIVE",
@@ -1016,19 +1027,34 @@
     "id": 21,
     "content": "OUTPUT 2.1.1 One peer-reviewed research article.",
     "description": "",
-    "priority": 4,
+    "priority": 3,
     "indent": 2,
     "section": "ACTIVE",
     "author": "Arvydas (43613934)",
     "responsible": "",
     "date": null,
-    "deadline": "2027-08-31",
+    "deadline": "2026-12-31",
     "deadline_lang": "en",
     "notes": [],
     "children": []
   },
   {
     "id": 22,
+    "content": "**Vilhelmas et al Breast Cancer PPM TACS** @PAPER",
+    "description": "",
+    "priority": 3,
+    "indent": 3,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "",
+    "date": null,
+    "deadline": "2026-08-01",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 23,
     "content": "OUTPUT 2.1.2 Two oral or poster presentations in international meetings.",
     "description": "",
     "priority": 4,
@@ -1043,7 +1069,52 @@
     "children": []
   },
   {
-    "id": 23,
+    "id": 24,
+    "content": "Exp 3 PPM for IF-driven segmentation",
+    "description": "[Exp 3 PPM for IF-driven segmentation](onenote:https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/Documents/PPMTest/EXPERIMENTS.one#Exp%203%20PPM%20for%20IF-driven%20segmentation&section-id={54C61F1B-D842-4356-8A24-8BC078E5897A}&page-id={87445A71-22F4-4D70-A0EE-345D7CA991E6}&end)  ([Web view](https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/_layouts/Doc.aspx?sourcedoc=%7bD4A4E6AC-452D-48B8-8204-0C9136D5A48F%7d&wd=target%28EXPERIMENTS.one%7C54C61F1B-D842-4356-8A24-8BC078E5897A%2FExp%203%20PPM%20for%20IF-driven%20segmentation%7C87445A71-22F4-4D70-A0EE-345D7CA991E6%2F%29&wdpartid=%7bED635726-9313-40AD-A5ED-B0E67004C7DB%7d%7b1%7d&wdsectionfileid=%7b592C68B6-D388-46AA-B58A-29ABAA41B407%7d&end))",
+    "priority": 3,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "Aida (43629179)",
+    "date": "2026-01-05",
+    "deadline": "2026-02-28",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 25,
+    "content": "Exp 4 Does heating degrade collagen detectable by PPM? @EXPERIMENT",
+    "description": "[Exp 4 Does heating degrade collagen detectable by PPM?](onenote:https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/Documents/PPMTest/EXPERIMENTS.one#Exp%204%20Does%20heating%20degrade%20collagen%20detectable%20by%20PPM&section-id={54C61F1B-D842-4356-8A24-8BC078E5897A}&page-id={63C029CA-AC01-4676-AC9E-80C6AB3B7796}&end)  ([Web view](https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/_layouts/Doc.aspx?sourcedoc=%7bD4A4E6AC-452D-48B8-8204-0C9136D5A48F%7d&wd=target%28EXPERIMENTS.one%7C54C61F1B-D842-4356-8A24-8BC078E5897A%2FExp%204%20Does%20heating%20degrade%20collagen%20detectable%20by%20PPM%3F%7C63C029CA-AC01-4676-AC9E-80C6AB3B7796%2F%29&wdpartid=%7b4BAA0BE4-3D67-40D7-8479-A054A0950FC3%7d%7b1%7d&wdsectionfileid=%7b592C68B6-D388-46AA-B58A-29ABAA41B407%7d&end))",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "Aida (43629179)",
+    "date": "2026-01-05",
+    "deadline": "2026-01-17",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 26,
+    "content": "Exp 5 Kidney Tx Bx CD3 C4d PPM feasibility",
+    "description": "[Exp 5 Kidney Tx Bx CD3 C4d PPM feasibility](onenote:https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/Documents/PPMTest/EXPERIMENTS.one#Exp%205%20Kidney%20Tx%20Bx%20CD3%20C4d%20PPM%20feasibility&section-id={54C61F1B-D842-4356-8A24-8BC078E5897A}&page-id={E5D6E613-2DA4-4193-A33E-C9E1231E611C}&end)  ([Web view](https://santariskes-my.sharepoint.com/personal/arvydas_laurinavicius_santa_lt/_layouts/Doc.aspx?sourcedoc=%7bD4A4E6AC-452D-48B8-8204-0C9136D5A48F%7d&wd=target%28EXPERIMENTS.one%7C54C61F1B-D842-4356-8A24-8BC078E5897A%2FExp%205%20Kidney%20Tx%20Bx%20CD3%20C4d%20PPM%20feasibility%7CE5D6E613-2DA4-4193-A33E-C9E1231E611C%2F%29&wdpartid=%7b2F12AA63-B3DD-41ED-98D7-DF034EF4C693%7d%7b1%7d&wdsectionfileid=%7b592C68B6-D388-46AA-B58A-29ABAA41B407%7d&end))",
+    "priority": 4,
+    "indent": 2,
+    "section": "ACTIVE",
+    "author": "Arvydas (43613934)",
+    "responsible": "Aida (43629179)",
+    "date": "2026-01-05",
+    "deadline": "2026-01-31",
+    "deadline_lang": "en",
+    "notes": [],
+    "children": []
+  },
+  {
+    "id": 27,
     "content": "LMT PhD Melanoma Vygante",
     "description": "",
     "priority": 3,
@@ -1058,17 +1129,17 @@
     "children": []
   },
   {
-    "id": 24,
+    "id": 28,
     "content": "VU SMEC Kidnex @PROJECT",
     "description": "Skaitmeninės medicinos ekselencijos centras\n\nUniversitetų ekscelencijos iniciatyva",
-    "priority": 1,
+    "priority": 2,
     "indent": 1,
     "section": "ACTIVE",
     "author": "Arvydas (43613934)",
     "responsible": "Arvydas (43613934)",
-    "date": null,
-    "deadline": null,
-    "deadline_lang": "",
+    "date": "2026-01-05",
+    "deadline": "2026-05-31",
+    "deadline_lang": "en",
     "notes": [
       {
         "content": "Informuojame, kad atliktas ekspertinis Jūsų pateiktos paraiškos „**Duomenų centras mašininio mokymo ir dirbtinio intelekto taikymams gyvybės mokslų ir biomodeliavimo srityse**“ vertinimas. Atsižvelgdami į paraiškos turinį bei į ekspertų išsakytas rekomendacijas, o taip pat į VU vadovų sprendimus, teikiame siūlymą FINANSUOTI Jūsų pateikto ekscelencijos centro idėją su sąlyga: apjungiant Jūsų teikta paraišką su paraiška  „Skaitmeninės medicinos ekscelencijos centras“ ir integruojant žemiau nurodytų paraiškų dalis, susijusias su centro veiklos tematika:\n\n- paraiškos „Debesų kompiuterija paremto integruoto HPC ir kvantinių skaičiavimų duomenų centro sukūrimas: skaičiavimo infrastruktūros evoliucija“ dalis\n\n- paraiškos “Tvarios medžiagos – tvariai aplinkai“ dalis, susijusias su dirbtinio intelekto taikymais.\n\nŠio ekscelencijos centro (įskaitant ir siūlomus įjungti centrus) biudžetas 2023 – 2027 metams būtų iki 2,5 mln Eur. Įrangai – iki 1 mln. Eur be PVM. Dalis lėšų turi būti panaudotos 2023 m.\n\nMinėtų paraiškų kontaktiniai asmenys:\n\n- Skaitmeninės medicinos ekscelencijos centras – [danute.uzusieniene@mf.vu.lt](mailto:danute.uzusieniene@mf.vu.lt) (vadovas – prof. Arvydas Laurinavičius)\n\n- Debesų kompiuterija <...>  ekscelencijos centras – [paulius.drungilas@mif.vu.lt](mailto:paulius.drungikas@mif.vu.lt) (vadovas – prof. Povilas Treigys)\n\n-  Centras Tvarios medžiagos – tvariai aplinkai – [lina.mikoliunaite@chf.vu.lt](mailto:lina.mikoliunaite@chf.vu.lt) (vadovas – prof. Aivaras Kareiva)\n\nSvarbi informacija: LR ŠMSM pakoregavo Ekscelencijos centrų aprašą ir patikslino sąvokas atitinkamai:\n\n1. Pritrauktos tarptautinės lėšos – lėšos gautos iš projektų pateiktų po pažangos priemonės (ekscelencijos centrų – pastaba mano) patvirtinimo arba verslo užsakymų, sudarytų ne ankščiau nei pažangos priemonės patvirtinimo  dieną (t.y. ekscelencijos centre vystomomis temomis, o ne bendrai toje MSI)\n2. Nauji tyrėjai – bent 2 metus iki projekto pradėjimo Lietuvos MSI nedirbę tyrėjai.",
@@ -1114,7 +1185,7 @@
     "children": []
   },
   {
-    "id": 25,
+    "id": 29,
     "content": "VPC-VU-SK skaitmenine platforma - ADMIN",
     "description": "",
     "priority": 1,
@@ -1145,7 +1216,7 @@
     "children": []
   },
   {
-    "id": 26,
+    "id": 30,
     "content": "SMEC ADMIN",
     "description": "",
     "priority": 4,
@@ -1160,7 +1231,7 @@
     "children": []
   },
   {
-    "id": 27,
+    "id": 31,
     "content": "Parengti turinį įkėlimui į SMEC tinklapį",
     "description": "",
     "priority": 4,
@@ -1175,7 +1246,7 @@
     "children": []
   },
   {
-    "id": 28,
+    "id": 32,
     "content": "HALO intaliacija VU MF GPU",
     "description": "",
     "priority": 4,
@@ -1190,7 +1261,7 @@
     "children": []
   },
   {
-    "id": 29,
+    "id": 33,
     "content": "1 publication Jarvis et al Urothelial Histology AI feature @PAPER",
     "description": "",
     "priority": 1,
@@ -1198,7 +1269,7 @@
     "section": "ACTIVE",
     "author": "Danutė (43831156)",
     "responsible": "",
-    "date": "2026-01-04",
+    "date": null,
     "deadline": "2026-01-31",
     "deadline_lang": "en",
     "notes": [
@@ -1221,7 +1292,7 @@
     "children": []
   },
   {
-    "id": 30,
+    "id": 34,
     "content": "3 publication Ernesta et al IgA digital Oxford VDA? @PAPER",
     "description": "",
     "priority": 3,
@@ -1236,7 +1307,7 @@
     "children": []
   },
   {
-    "id": 31,
+    "id": 35,
     "content": "2 publication Renaldas et al Kidney Tx prognostic model @PAPER",
     "description": "",
     "priority": 2,
@@ -1251,7 +1322,7 @@
     "children": []
   },
   {
-    "id": 32,
+    "id": 36,
     "content": "PROBASE @PROJECT",
     "description": "\\bbsrv\\Research\\2023_PROBASE_lauar_Smailyte\n\n\\filesrv\\Projects\\Bioetika\\12_Agne Krilaviciute_prostata\n\nhttps://aperio.vpc.lt/EditRecord.php?TableName=Project&Ids%5B%5D=190",
     "priority": 2,
@@ -1260,7 +1331,7 @@
     "author": "Arvydas (43613934)",
     "responsible": "",
     "date": null,
-    "deadline": "2026-02-22",
+    "deadline": "2026-02-28",
     "deadline_lang": "en",
     "notes": [
       {
@@ -1337,7 +1408,7 @@
     "children": []
   },
   {
-    "id": 33,
+    "id": 37,
     "content": "6\\. Select Ox - Darius",
     "description": "",
     "priority": 4,
@@ -1352,7 +1423,7 @@
     "children": []
   },
   {
-    "id": 34,
+    "id": 38,
     "content": "7\\. Scan Ox - Aida.",
     "description": "",
     "priority": 4,
@@ -1367,7 +1438,7 @@
     "children": []
   },
   {
-    "id": 35,
+    "id": 39,
     "content": "PROBASE bioetikos papildymas",
     "description": "",
     "priority": 4,
@@ -1418,7 +1489,7 @@
     "children": []
   },
   {
-    "id": 36,
+    "id": 40,
     "content": "Bioetikų suvestinė",
     "description": "\\\\\\filesrv\\Projects\\Projektai\\PORTFOLIO",
     "priority": 4,
@@ -1479,17 +1550,17 @@
     "children": []
   },
   {
-    "id": 37,
+    "id": 41,
     "content": "ONCOINTEGRA @PROJECT",
     "description": "",
-    "priority": 1,
+    "priority": 2,
     "indent": 1,
     "section": "ACTIVE",
     "author": "Danutė (43831156)",
     "responsible": "Arvydas (43613934)",
-    "date": "2026-01-04",
-    "deadline": null,
-    "deadline_lang": "",
+    "date": null,
+    "deadline": "2026-03-31",
+    "deadline_lang": "en",
     "notes": [
       {
         "content": "Priminta Gagilui, kad jau dabar būtų rašomi raštai dėl projekto pratęsimo - tai leistų panaudoti suplanuotas lėšas VULSK rezidentams, kurių ne visas darbas yra gretinamas.",
@@ -1505,7 +1576,7 @@
     "children": []
   },
   {
-    "id": 38,
+    "id": 42,
     "content": "Onco panelės pirkimas",
     "description": "",
     "priority": 4,
@@ -1641,7 +1712,7 @@
     "children": []
   },
   {
-    "id": 39,
+    "id": 43,
     "content": "IHC/molekulinių reagentų pirkimas",
     "description": "",
     "priority": 4,
@@ -1702,7 +1773,7 @@
     "children": []
   },
   {
-    "id": 40,
+    "id": 44,
     "content": "Nuspręsti koks yra galutinis perkamų antikūnų sąrašas",
     "description": "",
     "priority": 4,
@@ -1717,7 +1788,7 @@
     "children": []
   },
   {
-    "id": 41,
+    "id": 45,
     "content": "Parengti specifikaciją pagal anksčiau pirktų reagentų pavyzdį (Aida)",
     "description": "",
     "priority": 4,
@@ -1743,7 +1814,7 @@
     "children": []
   },
   {
-    "id": 42,
+    "id": 46,
     "content": "Biudžeto keitimas: 1) pagrindimas 2) finansai 3) IA ir CPVA pritarimas",
     "description": "",
     "priority": 4,
@@ -1809,7 +1880,7 @@
     "children": []
   },
   {
-    "id": 43,
+    "id": 47,
     "content": "Darbuotojų darbinimai",
     "description": "",
     "priority": 4,
@@ -1835,7 +1906,7 @@
     "children": []
   },
   {
-    "id": 44,
+    "id": 48,
     "content": "Ataskaitos",
     "description": "",
     "priority": 4,
@@ -1876,7 +1947,7 @@
     "children": []
   },
   {
-    "id": 45,
+    "id": 49,
     "content": "The Hub",
     "description": "",
     "priority": 1,
@@ -1891,7 +1962,7 @@
     "children": []
   },
   {
-    "id": 46,
+    "id": 50,
     "content": "Hex4Path @PROJECT",
     "description": "[Network • Co-Intell / F2 • Kumu](https://kumu.io/arvylau/network#co-intell/hex4path)\n\nKvietimas: “Informacinės technologijos mokslo ir žinių visuomenės plėtrai”\n\nProjektas: Technology Platform for Hexagonal Grid Analytics in Pathology (Hex4Path)\n\nKomanda:\n\n1. Allan Rasmusson\n2. Arvydas Laurinavičius\n3. Aida Laurinavičienė\n4. Vincas Urbonas\n5. Dovilė Žilėnaitė-Petrulaitienė\n6. Paulius Milmantas\n7. Vygantė Maskoliūnaitė\n8. Martynas Riauka\n9. Sören Marx\n10. Vilhelmas Konstantinas Landsbergis\n11. Edgaras Zaboras\n12. Student (IT Specialist)\n13. Student (Data Analyst)\n14. Student (Data Analyst)",
     "priority": 2,
@@ -1899,9 +1970,9 @@
     "section": "ACTIVE",
     "author": "Danutė (43831156)",
     "responsible": "jolita.jaskoniene (48808321)",
-    "date": null,
-    "deadline": null,
-    "deadline_lang": "",
+    "date": "2026-01-05",
+    "deadline": "2027-08-31",
+    "deadline_lang": "en",
     "notes": [
       {
         "content": "2025 gegužės pabaigoje turėtų pasirodyti pirminiai paraiškų vertinimai",
@@ -1927,7 +1998,7 @@
     "children": []
   },
   {
-    "id": 47,
+    "id": 51,
     "content": "PATHFINDER PARAISKA MACIULAITIS",
     "description": "Per VU, kovo 7\n\n\\filesrv\\Projects\\Projektai",
     "priority": 2,
@@ -1948,7 +2019,7 @@
     "children": []
   },
   {
-    "id": 48,
+    "id": 52,
     "content": "Startiniai galimybių paketai",
     "description": "Erika:\nDanutei balandžio pradžioje persiunčiau  šabloną ir kitą informaciją, susijusią su CPVA paraiškos rengimu. Atkreipiu dėmesį, kad papildytas PFSA šia informacija: didžiausia galima tinkamų finansuoti išlaidų suma veiklai „startiniai galimybių projektai” - iki 30 000 Eur (projekto trukmė iki 12 mėn.), **jeigu projektas įgyvendinamas programos „Europos horizontas“ misijų srityse – iki 60 000 Eur.**\n\nParaiškai parengti man reikės iš jūsų trumpo projekto idėjos aprašymo, t.y. trumpai apibūdinti, kokį projektą planuojama teikti HE kvietimui, kokia MTEP veikla bus vykdoma šio projekto metu, kokie projekto tikslai, kokios problemos sprendžiamos ir pan. Ši informacija reikalinga pagrįsti, kad jums reikalingos pvz. komandiruotės (viena iš jų bus į Paryžių), kad susirastumėte projekto partnerių šiai idėjai įgyvendinti, nes planuojate teikti HE paraišką XXX kvietimui. Tuomet galėsime paieškoti, kuri HE priemonė tiktų pagrindimui (Marie Curie (Personalo mainai), Vėžio misijos ar kt.)\n\nCPVA paraiškoje nusimatysite konkrečias išlaidas (kelionės, DU ir/ar paslaugos), kurių reikia, kad galėtumėte pateikti HE paraišką (kokiuose reginiuose reikia sudalyvauti, kad susirastumėte partnerių, ką reikėtų patikrinti, kas dabar nėra aišku dėl tos idėjos, kokių duomenų reikia, kaip turėtų vykti MTEP idėjos patikrinimas).\n\nNuo kito antradienio iki gegužės 10 d. atostogausiu, tai jei per tą laiką paruošite šią info, grįžusi iš atostogų galėsiu Jums padėti užpildyti paraišką.",
     "priority": 1,
@@ -1969,7 +2040,7 @@
     "children": []
   },
   {
-    "id": 49,
+    "id": 53,
     "content": "ESDP Vilnius 2024",
     "description": "[European Society of Digital and Integrative Pathology | ECDP2024 | 20th European Congress on Digital Pathology 2024](https://www.ecdp2024.org/)\n\n[ECDP 2024 (gediminasgrazys.lt)](https://galerijos.gediminasgrazys.lt/-ecdp2024/gallery)",
     "priority": 1,
@@ -1984,7 +2055,7 @@
     "children": []
   },
   {
-    "id": 50,
+    "id": 54,
     "content": "Kvietimas tapti MSCA podoktorantūros stažuotojų vadovu - papildoma informacija",
     "description": "[MSCA POSTDOCTORAL FELLOWSHIPS AT VU FACULTY OF MEDICINE, INSTITUTE OF BIOMEDICAL SCIENCES, DEPARTMENT OF PATHOLOGY AND FORENSIC MEDICINE (nephropathology; tumor microenvironment; computational biomarkers; pathology informatics; artificial intelligence) | EURAXESS (europa.eu)](https://euraxess.ec.europa.eu/jobs/hosting/msca-postdoctoral-fellowships-vu-faculty-medicine-institute-biomedical-sciences-0)",
     "priority": 1,
@@ -1999,7 +2070,7 @@
     "children": []
   },
   {
-    "id": 51,
+    "id": 55,
     "content": "Jarvis",
     "description": "",
     "priority": 4,
@@ -2014,7 +2085,7 @@
     "children": []
   },
   {
-    "id": 52,
+    "id": 56,
     "content": "Norman",
     "description": "",
     "priority": 4,
@@ -2029,7 +2100,7 @@
     "children": []
   },
   {
-    "id": 53,
+    "id": 57,
     "content": "Nasir",
     "description": "",
     "priority": 4,
@@ -2044,7 +2115,7 @@
     "children": []
   },
   {
-    "id": 54,
+    "id": 58,
     "content": "Paraiška. Studentų tyrimai semestrų metu.",
     "description": "STUDENTŲ tyrimas semestro metu.\n\n**Studento tyrimų projektas -** tai rudens ir pavasario semestrais laisvu nuo studijų metu studento pagal individualią programą **atliekamas mokslo (meno) tiriamasis darbas**, **vadovaujant tyrimo vadovui.**\n\n**Tyrimo vadovas – vykdančiojoje institucijoje dirbantis asmuo, kuris turi atitikti šiuos reikalavimus** paskutinę kvietime nurodytą paraiškų pateikimo termino dieną: 1) būti mokslininkas, meno daktaras arba pripažintas menininkas, 2) neturėti Lietuvos mokslo tarybos mokslo ir sklaidos projektų [konkursinio finansavimo bendrųjų taisyklių 76–80 punktuose](https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/9f1a51a257da11e9a461a9899f91e827/asr) nurodytų apribojimų svarstant jo teikiamą paraišką.\n\n**Studentas - Lietuvos aukštojoje mokykloje studijuojantis asmuo, kuris turi atitikti šiuos reikalavimus** paskutinę kvietime nurodytą paraiškų pateikimo termino dieną: 1) būti pirmosios pakopos ir (ar) vientisųjų studijų pirmo ar antro kurso studentas, 2) turėti paskutinio semestro visų studijuotų dalykų įvertinimų svertinį vidurkį ne mažesnį kaip 8,0.\n\n**Projektai vykdomi** **7 mėnesius** 2025 m. rudens – 2026 m. pavasario semestrais (**2025 m. spalio – 2026 m. balandžio mėn.).** Projekto biudžetas **-** **4800 Eur**. Studento veikla bus remiama  **400 EUR per mėnesį stipendija.**\n\n**Paraiškų pateikimo terminas** - iki 2025 m. gegužės 16 d. 16:00 val. **Tyrimo vadovas** kartu su vykdančiąja institucija Lietuvos mokslo tarybos paraiškų ir ataskaitų teikimo elektroninėje **sistemoje** [https://junkis.lmt.lt](https://junkis.lmt.lt/) **turi pateikti paraišką lietuvių kalba** **su privalomais priedais:** 1) vykdančiosios institucijos raštą dėl projekto vykdymo užtikrinimo (lietuvių kalba), 2) pažymą apie studento studijų rezultatus (lietuvių kalba), 3) įgaliojimas Studijų prorektoriui (lietuvių kalba). Tyrimo vadovas ir studentas gali būti nurodyti **tik vienoje kvietimo paraiškoje.**\n\n**Ekspertiniam vertinimui teikiamos tik administracinės patikros reikalavimus atitikusios paraiškos.** Paraiškų ekspertinis vertinimas atliekamas vadovaujantis Lietuvos mokslo tarybos pirmininko patvirtintu Projektų ir jų ataskaitų ekspertinio vertinimo tvarkos aprašu ir ekspertinio vertinimo formomis skirtomis HSCV bei GTMŽ sričių paraiškoms. Paraiškas vertina Lietuvos ekspertų komisijos, sudarytos vadovaujantis Lietuvos mokslo tarybos ekspertų ir jų veiklos bendrosiomis taisyklėmis.\n\n**Metodinę medžiagą ir dokumentų formas galite parsisiųsti** paspaudę nuorodą pavadinimu „[Dokumentai pareiškėjams (STSM2025)](https://filesender.vu.lt/filesender/?s=download&token=07baa469-db59-44b1-863a-c8e7ed1e6fc2)”. Kvietimo informaciją galite rasti Lietuvos mokslo tarybos puslapyje čia >>>\n\nPradėjus rengti projekto paraišką pirmiausia informuokite padalinio paskirtus darbuotojus apie tokios projekto paraiškos rengimą. Paskirtų darbuotojų padaliniuose sąrašą rasite dokumentų pakete pavadinimu „Dokumentai pareiškėjams (STSM2025)”.\n\n**Išsamesnę informaciją Vilniaus universitete teikia Plėtros departamento darbuotojos:**\n\nVilma Rutkauskaitė, tel. (+370 5) 219 3201, el.p. [vilma.rutkauskaite@cr.vu.lt](mailto:vilma.rutkauskaite@cr.vu.lt) (konsultuojami padaliniai: FF, KF, MF, TF)",
     "priority": 4,
@@ -2065,7 +2136,7 @@
     "children": []
   },
   {
-    "id": 55,
+    "id": 59,
     "content": "LT-TW paraiška 2025",
     "description": "Kvietimas: Lietuvos-Taivano mokslo projektai\n\nParaiškos Nr.: P-LT-TW-25-25\n\nVykdančioji institucija: VU\n\nPavadinimas ***“Artificial Intelligence Models to Predict Clinical Endpoints in Urological Cancers***”\n\nAkronimas “***AI4UroCa***”\n\n**LT komanda**:\n\n1. Arvydas Laurinavičius - vadovas\n2. Aida Laurinavičienė\n3. Feliksas Jankevičius\n4. Julius Drachneris\n5. Lin Yu-Chien\n6. Mantas Fabijonavičius",
     "priority": 4,
@@ -2091,7 +2162,7 @@
     "children": []
   },
   {
-    "id": 56,
+    "id": 60,
     "content": "MSCA podoktorantūros stipendijų kvietimas",
     "description": "[MSCA POSTDOCTORAL FELLOWSHIPS AT VU FACULTY OF MEDICINE, TRANSLATIONAL… | Arvydas Laurinavicius](https://www.linkedin.com/posts/arvydas-laurinavicius-7710837_msca-postdoctoral-fellowships-at-vu-faculty-activity-7324713829081178112-uqWN?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAFBkIUBv09Tc3aLhA6mYZYg99Ta8nsJbWo)\n\nMarie Skłodowska-Curie veiksmų (MSCA) 2025 m. podoktorantūros stipendijų kvietimas (HORIZON-MSCA-2025-PF-01-01) skirtas skatinti mokslininkų kūrybinį ir inovacinį potencialą, suteikiant galimybę įgyti naujų įgūdžių per pažangų mokymąsi, tarptautinį, tarpdisciplininį ir tarpsektorinį mobilumą. ​[CORDIS+2marie-sklodowska-curie-actions.ec.europa.eu+2European Research Executive Agency+2](https://marie-sklodowska-curie-actions.ec.europa.eu/calls/msca-postdoctoral-fellowships-2025?utm_source=chatgpt.com)\n\n**Pagrindiniai kvietimo etapai**\n\n- **2025 m. gegužės 8 d.** – kvietimo paskelbimas\n- **2025 m. rugsėjo 10 d.** – pasiūlymų pateikimo terminas\n- **2026 m. vasaris** – rezultatų paskelbimas pareiškėjams (numatoma)\n- **2026 m. balandis** – sutarties pasirašymas ir projektų pradžia (numatoma)​\n\n**Stipendijų rūšys**\n\n- **Europos podoktorantūros stipendijos**: skirtos mokslininkams, norintiems vykdyti mokslinius tyrimus ES valstybėse narėse arba Horizon Europe asocijuotose šalyse. Trukmė: 12–24 mėnesiai.\n- **Globalios podoktorantūros stipendijos**: skirtos ES arba asocijuotų šalių piliečiams ar ilgalaikiams gyventojams, norintiems vykdyti tyrimus trečiosiose šalyse (neasocijuotose su Horizon Europe). Reikalinga išvykimo fazė (12–24 mėn.) ir privaloma 12 mėn. grįžimo fazė į ES ar asocijuotą šalį.​[marie-sklodowska-curie-actions.ec.europa.eu](https://marie-sklodowska-curie-actions.ec.europa.eu/calls/msca-postdoctoral-fellowships-2025?utm_source=chatgpt.com)\n\n**Tinkamumo kriterijai**\n\n- Doktorantūros laipsnis turi būti įgytas iki kvietimo termino pabaigos.\n- Ne daugiau kaip 8 metai mokslinių tyrimų patirties po doktorantūros laipsnio įgijimo (tam tikros pertraukos, pvz., motinystės atostogos, neįskaičiuojamos).\n- Mobilumo taisyklės: pareiškėjas neturi būti gyvenęs ar vykdęs pagrindinės veiklos (darbo, studijų ir pan.) priimančioje šalyje ilgiau nei 12 mėnesių per paskutinius 36 mėnesius iki kvietimo termino.​",
     "priority": 2,
@@ -2142,7 +2213,7 @@
     "children": []
   },
   {
-    "id": 57,
+    "id": 61,
     "content": "Eureka paraiška. LT-TW",
     "description": "Kvietimas [Globalstars call with Taiwan - Eureka](https://eurekanetwork.org/opencalls/globalstars-taiwan-2025/)\n\nParaiškos pateikimo terminas: 2025-08-29**; 17:00 CEST**\n\nMokymai 2025-05-14 d.\n\nKvietimo [Globalstars call with Taiwan - Eureka](https://eurekanetwork.org/opencalls/globalstars-taiwan-2025/) terminas: 2025 rugpjūčio 29 d. (17:00 CEST)\n\nPagrindiniai nacionaliniai EUREKA „Globalstars“ su Taivanu projekto reikalavimai ir sąlygos:\n\n• Projekto trukmė – iki 36 mėnesių.\n\n• Finansavimas – dotacija, ne daugiau kaip 300 000 eurų vienam projektui (tai yra, Lietuvos daliai).\n\n• Pagrindinis partneris / pagrindinis pareiškėjas turi būti Lietuvos universitetas, aukštojo mokslo įstaiga (kolegija) arba mokslinių tyrimų centras.\n\n• Projekto partneris yra MVĮ, bendradarbiaujanti su mokslinių tyrimų įstaiga, siekiant sukurti naują produktą, procesą ar paslaugą, turinčią rinkos potencialą.\n\n• Privalomas tarptautinis partneris – įmonė iš Taivano.\n\n• Projektas turi prasidėti nuo ne žemesnio technologinio pasirengimo (TRL) 5 lygio (ir įrodyti, kad TRL 4 yra pasiektas) ir iki projekto pabaigos pasiekti bent TRL 7, pageidautina – TRL 9.\n\n• Biudžetas turi būti paskirstytas taip, kad nė vienas subjektas ar šalis negalėtų turėti daugiau nei 70 % projekto biudžeto.\n\n• Projekto rezultatas turi būti skirtas civiliniam naudojimui (ne kariniam), o projekto MTEP veikla turi atitikti nacionalinius išmaniosios specializacijos / strategijos prioritetus. \n\n• Finansavimas teikiamas iš ESF, projektai turi atitikti valstybės pagalbos taisykles:\n\n• Universitetai, mokslinių tyrimų ir studijų institucijos (neekonominei veiklai): gali būti finansuojamos 100 % tinkamų finansuoti išlaidų\n\n• MVĮ: tinkamos finansuoti išlaidos gali būti finansuojamos / padengiamos iki 80 %, priklausomai nuo jų dydžio ir tyrimų etapo (taikomųjų tyrimų ar eksperimentinės plėtros).\n\nŠis kvietimas teikia prioritetą mokslinių tyrimų ir eksperimentinės plėtros (MTEP) projektams šiose srityse:\n\n1. Aukštosios technologijos, tokios kaip (bet neapsiribojant):\n2. Puslaidininkiai ir fotonika (integriniai grandynai)\n3. Telekomunikacijos (5G, 6G)\n4. Pažangioji gamyba\n5. Skaitmeninė sveikata / biotechnologijos\n6. Tvarumas, toks kaip (bet neapsiribojant):\n7. Žiedinė ekonomika, įskaitant anglies apytakos ciklą ir pramoninių procesų uždarą ciklą\n8. Judumas",
     "priority": 4,
@@ -2173,7 +2244,7 @@
     "children": []
   },
   {
-    "id": 58,
+    "id": 62,
     "content": "ONCOINTEGRA with VUGENE @PROJECT",
     "description": "",
     "priority": 2,
@@ -2279,7 +2350,7 @@
     "children": []
   },
   {
-    "id": 59,
+    "id": 63,
     "content": "Bioethics / Study design",
     "description": "",
     "priority": 4,
@@ -2294,7 +2365,7 @@
     "children": []
   },
   {
-    "id": 60,
+    "id": 64,
     "content": "NefBx bioetika",
     "description": "",
     "priority": 4,
@@ -2325,7 +2396,7 @@
     "children": []
   },
   {
-    "id": 61,
+    "id": 65,
     "content": "Paraiška. **Studentų vasaros praktika**",
     "description": "Studentų vasaros praktika.\n\nLietuvos mokslo taryba **yra pradėjusi studentų vasaros praktikos konkursą**, kuris vyks 3 etapais.\n\nPasibaigus konkurso I etapo studentų vasaros praktikos temų atrankai, **paskelbtas kvietimas** **šio konkurso** **II etapui** – **studentų paraiškų teikimui.** Dalyvauti konkurse kviečiami studentai.\n\n**Studentų vasaros praktikos** – vasaros atostogų metu studento pagal individualią programą atliekamas tiriamasis darbas, vadovaujant praktikos vadovui. **Praktika atliekama** studentų vasaros atostogų metu, t. y., **2025 m. liepos–rugpjūčio mėn. Studentas** vasaros metu **negali turėti jokių kitų darbo santykių** su vykdančiąja institucija, išskyrus darbo santykius dėl pačios vasaros praktikos atlikimo.\n\nĮ vasaros praktikos vietą **gali pretenduoti** **Lietuvos ar užsienio aukštosios mokyklos studentas.** Prašymus į studentų vasaros praktikos vietas gali teikti **pirmos (bakalauro) pakopos, antros (magistro) pakopos ir vientisųjų studijų studentai, išskyrus:** 1) paskutinę kvietime nurodyto paraiškų pateikimo termino dieną yra paskutiniųjų kursų studentai, 2) gavusius finansavimą šiai programai 2022 m. ar vėlesniais metais, 3) doktorantus arba jau įgijusius daktaro laipsnį. Studento paskutinio semestro visų studijuotų dalykų įvertinimų **svertinis vidurkis turi būti lygus 8,0 arba didesnis**. Tais atvejais, **kai į vasaros praktikos vietą pretenduoja studentas iš užsienio mokslo ir studijų institucijos,** paskutinio semestro visų studijuotų dalykų įvertinimų **svertinis vidurkis turi atitikti bent 80 proc.** maksimalaus toje užsienio mokslo ir studijų institucijoje taikomo įverčių svertinio vidurkio.\n\nPraktikos vietos finansavimo suma: **4000 Eur** arba **4900 Eur** (jeigu studentas vykdys vasaros praktiką atvykęs iš užsienio mokslo ir studijų institucijos arba jeigu studentas studijas vykdo kitoje Lietuvos mokslo ir studijų institucijoje, esančioje kitame mieste negu numatoma vasaros praktikos vieta vykdančiojoje institucijoje).\n\n**Studentų paraiškų pateikimo terminas -** iki 2025-05-08 16 val. **Studentas** Lietuvos mokslo tarybos paraiškų ir ataskaitų teikimo elektroninėje **sistemoje** adresu [Lmtpais: išorinis portalas](https://projektai.lmt.lt/#login) **turi pateikti ne daugiau kaip du prašymus į vasaros praktikos vietas kartu su šiais dokumentais**: gyvenimo aprašymu, pažyma apie studijų rezultatus ([pažymų apie studijų rezultatus formos lietuvių ir anglų kalbomis](https://lmt.lrv.lt/public/canonical/1738044406/4024/SVP%20Apra%C5%A1o%204%20priedas.pdf)) ir motyvaciniu laišku. Lietuvos mokslo tarybos parengtą studentų vasaros praktikos **temų pasirinkimo** **pildymo instrukciją lietuvių kalba rasite** [**čia >>>**](https://lmt.lrv.lt/public/canonical/1744108076/4481/2Pildymo%20instrukcija%20SV%20studentams.pdf)**, o anglų kalba rasite** [**čia >>>**](https://lmt.lrv.lt/public/canonical/1744108090/4482/2EN%20Pildymo%20instrukcija%20SV%20studentams.pdf)**.**\n\n**Studentų atranka į praktikos vietas vyks tokiais etapais:**\n\n1. Studentų prašymų administracinė patikra bus atliekama pagal [studento atitikties konkurso reikalavimams patikros pažymą](https://lmt.lrv.lt/public/canonical/1737973808/4019/SVP%20Apra%C5%A1o%205%20priedas%20(studento%20atikit.%20AP).pdf).\n2. Praktikos vadovai bus informuojami apie studentus, atitikusius administracinės patikros reikalavimus.\n3. Praktikos vadovai vertins kiekvieną studentą, pretendavusį į jų pasiūlytas temas ir atitikusį administracinės patikros reikalavimus, pagal [studento tinkamumo vasaros praktikos temai vertinimo anketą](https://lmt.lrv.lt/public/canonical/1737973837/4020/SVP%20Apra%C5%A1o%206%20priedas.pdf), vadovaudamiesi skaidrumo, nešališkumo ir sąžiningumo principais, atsižvelgdami į pretenduojančio studento motyvaciją, pasiekimus, ir užtikrindami, jog praktikai nebus pasirinkti su jais santuokos, giminystės ar svainystės ryšiais susiję studentai.\n\nLietuvos mokslo tarybos **paskelbtą kvietimą** **II etapui** rasite [čia >>>](https://lmt.lrv.lt/lt/kvietimai/kvietimas-teikti-paraiskas-studentu-vasaros-praktikai-ii-etapas/), o **Studentų vasaros praktikos finansavimo sąlygų aprašą ir kitus dokumentus** rasite dalyje „Informacija pareiškėjams ir projekto vykdytojams“ [čia >>>](https://lmt.lrv.lt/lt/veiklos-sritys/mokslo-finansavimas/karjeros-mobilumo-sklaidai-skatinimo-priemones/studentu-tyrimai-vasaros-metu/).\n\n**Išsamesnę informaciją Plėtros departamente teikia šie darbuotojai:**\n\nDalia Papievienė, tel. [(+370 5) 236 6034](mailto:(+370%205)%20236%206034), el. p. [dalia.papieviene@cr.vu.lt](mailto:dalia.papieviene@cr.vu.lt) (konsultuojami padaliniai: CHGF, EVAF, FSF, MF, TF)",
     "priority": 4,
@@ -2356,7 +2427,7 @@
     "children": []
   },
   {
-    "id": 62,
+    "id": 66,
     "content": "**Kvietimas. Dėl lėšų paskelbti mokslinius straipsnius kompensavimo. Mantui?**",
     "description": "[2025 m. kvietimas teikti paraiškas dėl lėšų paskelbti mokslinius straipsnius kompensavimo - Lietuvos mokslo taryba](https://lmt.lrv.lt/lt/kvietimai/2025-m-kvietimas-teikti-paraiskas-del-lesu-paskelbti-mokslinius-straipsnius-kompensavimo/)",
     "priority": 4,
@@ -2377,7 +2448,7 @@
     "children": []
   },
   {
-    "id": 63,
+    "id": 67,
     "content": "Kvietimas. Technologinės plėtros projektas",
     "description": "[Technologinės plėtros priemonės III-iasis kvietimas teikti paraiškas įgyvendinti projektus 2026-2027 m. - Lietuvos mokslo taryba](https://lmt.lrv.lt/lt/kvietimai/technologines-pletros-priemones-iii-iasis-kvietimas-teikti-paraiskas-igyvendinti-projektus-2026-2027-m/)",
     "priority": 4,
@@ -2408,7 +2479,7 @@
     "children": []
   },
   {
-    "id": 64,
+    "id": 68,
     "content": "EMPAIA",
     "description": "[What is EMPAIA? | EMPAIA Konsortium](https://www.empaia.org/en)\n\n\\filesrv\\users\\lauar\\PROJECTS_2023_EMPAIA",
     "priority": 1,
@@ -2423,7 +2494,7 @@
     "children": []
   },
   {
-    "id": 65,
+    "id": 69,
     "content": "Rotomskio iniciatyva",
     "description": "Skambino Mantas Grigalavicius 064444494\n\nVU 20% inasas",
     "priority": 4,
@@ -2786,6 +2857,11 @@
 
             let barHtml = '';
             let dateTooltip = '';
+
+            // Extract person info (available for all rendering modes)
+            const personName = task.responsible ? task.responsible.split('(')[0].trim() : '';
+            const personDisplay = personName ? `👤 ${personName}` : '';
+
             if (showBars && hasDate) {
                 const start = task.date ? new Date(task.date) : new Date(task.deadline);
                 const end = task.deadline ? new Date(task.deadline) : new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -2798,19 +2874,35 @@
                     ? `${startStr} → ${endStr}`
                     : (startStr || endStr);
 
-                barHtml = `
-                    <div style="position: absolute; left: ${startOffset}%; width: ${Math.max(duration, 0.5)}%; height: 28px; background: ${priorityColor}; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" title="${dateTooltip}"></div>
-                    <div style="position: absolute; left: ${startOffset + Math.max(duration, 0.5) + 0.5}%; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-                        <span style="background: ${priorityColor}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;">${priorityLabel}</span>
-                        <span style="font-size: 12px; font-weight: ${isMainTask ? '700' : '500'}; color: #333;">${task.content}</span>
-                        <span style="font-size: 11px; color: #666;">(${dateTooltip})</span>
-                    </div>
-                `;
+                // For master tasks with long enough bars, put text inside the bar
+                const isLongBar = duration >= 15; // Bar is at least 15% of timeline
+                const putTextInside = isMainTask && isLongBar;
+
+                if (putTextInside) {
+                    barHtml = `
+                        <div style="position: absolute; left: ${startOffset}%; width: ${Math.max(duration, 0.5)}%; height: 28px; background: ${priorityColor}; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; padding: 0 10px; overflow: hidden;" title="${dateTooltip}">
+                            <span style="color: white; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${task.content}</span>
+                            ${personDisplay ? `<span style="color: rgba(255,255,255,0.85); font-size: 10px; margin-left: 10px; white-space: nowrap;">${personDisplay}</span>` : ''}
+                            <span style="color: rgba(255,255,255,0.9); font-size: 10px; margin-left: 8px; white-space: nowrap;">(${dateTooltip})</span>
+                        </div>
+                    `;
+                } else {
+                    barHtml = `
+                        <div style="position: absolute; left: ${startOffset}%; width: ${Math.max(duration, 0.5)}%; height: 28px; background: ${priorityColor}; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" title="${dateTooltip}"></div>
+                        <div style="position: absolute; left: ${startOffset + Math.max(duration, 0.5) + 0.5}%; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                            <span style="background: ${priorityColor}; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;">${priorityLabel}</span>
+                            <span style="font-size: 12px; font-weight: ${isMainTask ? '700' : '500'}; color: #333;">${task.content}</span>
+                            ${personDisplay ? `<span style="font-size: 10px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${personDisplay}</span>` : ''}
+                            <span style="font-size: 11px; color: #666;">(${dateTooltip})</span>
+                        </div>
+                    `;
+                }
             } else if (!showBars) {
                 barHtml = `
                     <div style="width: 100%; display: flex; align-items: center; gap: 8px; padding: 4px 8px;">
                         <span style="background: ${priorityColor}; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600;">${priorityLabel}</span>
                         <span style="font-weight: ${isMainTask ? '700' : '400'};">${task.content}</span>
+                        ${personDisplay ? `<span style="font-size: 10px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${personDisplay}</span>` : ''}
                         <span style="color: #999; font-size: 12px; margin-left: 10px;">(no date)</span>
                     </div>
                 `;
@@ -2820,6 +2912,7 @@
                     <div style="display: flex; align-items: center; gap: 8px; padding: 4px 8px;">
                         <span style="background: ${priorityColor}; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600;">${priorityLabel}</span>
                         <span style="font-weight: ${isMainTask ? '700' : '400'}; color: #666;">${task.content}</span>
+                        ${personDisplay ? `<span style="font-size: 10px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">${personDisplay}</span>` : ''}
                         <span style="color: #999; font-size: 11px;">(no date)</span>
                     </div>
                 `;
@@ -2833,7 +2926,7 @@
                 padding: 6px 0;
                 border-bottom: 1px solid #f5f5f5;
                 position: relative;
-                background: ${isMainTask ? '#f8f8f8' : 'transparent'};
+                background: ${isMainTask ? '#d8d8d8' : 'transparent'};
             `;
 
             let html = `
@@ -2912,6 +3005,7 @@
             const statusFilter = document.getElementById('filter-status').value;
             const sectionFilter = document.getElementById('filter-section').value;
             const priorityFilter = document.getElementById('filter-priority').value;
+            const personFilter = document.getElementById('filter-person').value;
             const searchQuery = document.getElementById('filter-search').value.toLowerCase();
 
             return allTasks.filter(task => {
@@ -2921,6 +3015,13 @@
 
                 if (sectionFilter !== 'all' && task.section !== sectionFilter) return false;
                 if (priorityFilter !== 'all' && task.priority !== parseInt(priorityFilter)) return false;
+
+                // Person filter
+                if (personFilter !== 'all') {
+                    const taskPerson = task.responsible ? task.responsible.split('(')[0].trim() : '';
+                    if (taskPerson !== personFilter) return false;
+                }
+
                 if (searchQuery && !task.content.toLowerCase().includes(searchQuery) &&
                     !task.description.toLowerCase().includes(searchQuery)) return false;
                 return true;
@@ -2940,6 +3041,7 @@
         document.getElementById('filter-status').addEventListener('change', applyFilters);
         document.getElementById('filter-section').addEventListener('change', applyFilters);
         document.getElementById('filter-priority').addEventListener('change', applyFilters);
+        document.getElementById('filter-person').addEventListener('change', applyFilters);
         document.getElementById('filter-search').addEventListener('input', applyFilters);
 
         // Initial render with filters applied (default: with-dates)
